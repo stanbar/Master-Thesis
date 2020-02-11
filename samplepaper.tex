@@ -35,19 +35,13 @@ Gdansk, Poland\\
 \begin{abstract}
 Information-centric networks introduce new vector of problems, one of them is content poisoning, which when performed successfully, can create destructive damages. Currently known protection methods like login/password, private key, biometry, SMS/email confirmation operate on the same dimension of authentication, thus can be reduced to "general private key". We propose another dimension of authentication which is time. Publisher can be authenticated only if he is able to proof access to private key, over defined period of time. In this paper we will present two implementations of such protocol, former is based on graph infection, latter is based on blockchain technology. Both implementations 
 
-%JS wypunktować co jest wkładem artykułu
 
 \keywords{Blockchain \and Voting  \and Tokenization} %JS  e? i? Voting 
 \end{abstract}
 
 
 \section{Introduction}
-Blockchain as a technology provides two major properties that are highly desirable in applications like election voting. Those properties are immutability which ensures that no one can modify the data once wrote into a blockchain. Another property is transparency that allows everyone to validates the election correctness and calculate results on its own. In consequences, one can distrust authorities, while trust voting results. 
-
-Blockchain initially introduced by Satoshi Nakamoto in Bitcoin Whitepaper offered one simple application, i.e. ledger for transferring Bitcoin cryptocurrency. 5 years later Vitalik Buterin proposed generalization to this concept by allowing to process not only transactions but also so-called smart contracts which are in fact scripts run on Ethereum platform. Those “scripts” are executed and validated by all Ethereum nodes and use blockchain as persistent storage. This innovation allowed to create domain-specific behavior on top of Ethereum blockchain, leveraging already existing infrastructure.
-
-%\subsection{Tokenization}
-Currently, the most popular application of smart contracts is token issuance. Those tokens can represent any arbitrary asset either in the virtual or physical world. One can create tokens for funding his startup; hence token represent company shares. This pattern is called ICO (Initial Coin Offering) or STO (Security Token Offering), alluding to IPO (Initial Public Offering). Another one can issue tokens backed by a physical asset like national currency; bypassing slow and expensive international transfers and taxes from exchanging cryptocurrencies with national currencies. This pattern is called Stable Coin. There are many other token applications particularly vote as a token used here in this survey.
+Content poisoning 
 
 \subsection{E-Voting system requirements}
 \textbf{Privacy}: relation between voter and his vote, must be keep in secret. Each voter must be sure about his opinion privacy. 
