@@ -44,19 +44,20 @@ One might assume that if there is at least one person who doesn't trust him, the
 
 At this point it's worth introducing some convention. When we say friend we mean a trustworthy person, in other words, person to who we have trust relation to. Let $N$ to be a set of all considered person group, friends and non friends. Let $F$ be a set of all our friends $f \in F$. Let $F_n$ be a subset of $F$ where all $f$ trust person $n$. Then we will call $\%_n = |F_n|/|F|$ the proportion of our fiends who trust particular person $n$. Let's call $\xi$ (where $0 \le \xi \leq 1$) the minimum proportion of our friends $\%_n$ who needs to trust person $n$ in order to make me trust him. 
 
-So as we said previously that we will trust DavidCharlie only if majority of our friends trust him. We denote trust function as $T(n) = \%_n > \xi : (N) \rightarrow \{0,1\}$.
-Let's use this formula to evaluate if $David$Charlie$ is trustworthy person. Let $\xi = 0.5$, then
-\[T(DavidCharlie) = \%_{DavidCharlie} > \xi\]
-We know that Alice and Bob do trust David, while Charlie don't.
+So as we said previously that we will trust David only if majority of our friends trust him. We denote trust function as $T(n) = \%_n > \xi : (N) \rightarrow \{0,1\}$. 
+Let's use this formula to evaluate if $David$ is trustworthy person. Let $\xi = 0.5$. We know that Alice and Bob do trust David, while Charlie don't.
 \[T(David) = \%_{David} > \xi\]
 \[= |F_n|/|F| > \xi\]
 \[= \frac{2}{3} > \frac{1}{2}\]
 \[= 1\]
 Then it turns out that $David$ is \textbf{Trustworthy}
 
+But this view is based on static network of connections. We somehow meet Alice, Bob and Charlie, and we gets convinced about their trustworthness. Thus there must be a second way of gaining our trust. Let's modify our trust function by allowing external trust obtaining. $T(n) = \%_n > \xi \lor ETG(n) : (N) \rightarrow \{0,1\}$. 
 
-People with low x easly gets manipulated, we call them naive.
-People with high x hardly gets convinced, we call them stubborn. 
+how to What if we meet new person and he convinces us to be trustworthy, thus becoming "friend".
+
+People with low $\xi$ easly gets manipulated, we call them naive.
+People with high $\xi$ hardly gets convinced, we call them stubborn. 
 
 Another generalisation might be adding weights to this evaluator, let's say that Charlie is our brother, while Alice and Bob are our cousins, and we trust 3 times stronger to our brother than cousin. Let's call $W(f): (F) \rightarrow \Re$ the function that maps our friend to the weight of how strong we trust him. In this case weighted proportion of our friends \[\%_n = \frac{\sum\limits_f^{F_n} W(f)}{\sum\limits_f^{F} W(f)}\]
 
@@ -67,6 +68,8 @@ When we assume weights $W(Alice) = 1, W(Bob) = 1, W(Charlie) = 3$, and $\xi = 0.
 \[= \frac{2}{5} > \frac{1}{2}\]
 \[= 0\]
 Then it turns out that $David$ is \textbf{Not-Trustworthy}
+
+But this view is based on static network of connections. We somehow meet Alice, Bob and Charlie, and we gets convinced about their trustworthness. Thus there must be a second way of gaining our trust. Let's modify our trust function by allowing External Trust Obtaining(ETO). $T(n) = \%_n > \xi \lor ETO(n) : (N) \rightarrow \{0,1\}$. 
 
 Another think we can observe in the context of trust network is time. Should we still trust our friend from elementary school if we haven't seen him for decades ? We argue that trust is function of time.
 
