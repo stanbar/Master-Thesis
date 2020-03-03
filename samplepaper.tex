@@ -42,13 +42,31 @@ Yuval Noah Harari in his book "Sapiens: A Brief History of Humankind" states tha
 What if we have three friends Alice, Bob, Charlie. Alice and  Bob tells us that David is trustworthy, while Charlie claims that he's not. Decision of labeling David as trusted or not, requires some kind of decision evaluation algorithm.
 One might assume that if there is at least one person who doesn't trust him, there must be something wrong with him, and will label him as Not-Trustworthy. One can use the most natural to human beings evaluator which says, do want majority of people do, thus if Charlie is trusted by majority, I will trust her too. Another one can slightly generalise this evaluator and say that person is trustworthy, only if $\xi$ percentage of my friends trust him. 
 
-At this point it's worth introducing some convention. When we say friend we mean a trustworthy person, in other words, person to who we have trust relation to. Let $N$ be a set of all our friends. We will call $\%_n = |T_n|/|N|$ the proportion of our fiends who trust particular person $n$, where $T_n$ is set of our friends who trust person $n$. Let's call $\xi$ (where $0 \le \xi \leq 1$) the minimum proportion of our friends $\%_n$ who needs to trust person $n$ in order to make me trust him. 
+At this point it's worth introducing some convention. When we say friend we mean a trustworthy person, in other words, person to who we have trust relation to. Let $N$ to be a set of all considered person group, friends and non friends. Let $F$ be a set of all our friends $f \in F$. Let $F_n$ be a subset of $F$ where all $f$ trust person $n$. Then we will call $\%_n = |F_n|/|F|$ the proportion of our fiends who trust particular person $n$. Let's call $\xi$ (where $0 \le \xi \leq 1$) the minimum proportion of our friends $\%_n$ who needs to trust person $n$ in order to make me trust him. 
 
-So as we said previously that we will trust Charlie only if majority of our friends trust him. We can write $T(n) = \%_n > \xi$.
+So as we said previously that we will trust DavidCharlie only if majority of our friends trust him. We denote trust function as $T(n) = \%_n > \xi : (N) \rightarrow \{0,1\}$.
+Let's use this formula to evaluate if $David$Charlie$ is trustworthy person. Let $\xi = 0.5$, then
+\[T(DavidCharlie) = \%_{DavidCharlie} > \xi\]
+We know that Alice and Bob do trust David, while Charlie don't.
+\[T(David) = \%_{David} > \xi\]
+\[= |F_n|/|F| > \xi\]
+\[= \frac{2}{3} > \frac{1}{2}\]
+\[= 1\]
+Then it turns out that $David$ is \textbf{Trustworthy}
+
 
 People with low x easly gets manipulated, we call them naive.
-People with high x hardly gets convinced, we call them stubborn.
-Another generalisation might be adding weights to this evaluator, let's say that Charlie is our brother, while Alice and Bob are our cousins, and we trust 3 times stronger to our brother than cousin. In such case $\%_n = \sum{}|T_n|/|N|$
+People with high x hardly gets convinced, we call them stubborn. 
+
+Another generalisation might be adding weights to this evaluator, let's say that Charlie is our brother, while Alice and Bob are our cousins, and we trust 3 times stronger to our brother than cousin. Let's call $W(f): (F) \rightarrow \Re$ the function that maps our friend to the weight of how strong we trust him. In this case weighted proportion of our friends \[\%_n = \frac{\sum\limits_f^{F_n} W(f)}{\sum\limits_f^{F} W(f)}\]
+
+When we assume weights $W(Alice) = 1, W(Bob) = 1, W(Charlie) = 3$, and $\xi = 0.5$. We can calculate weighted proportion $T(David)$ as follows:
+\[T(David) = \%_n > \xi\]
+\[= \frac{\sum\limits_f^{F_n} W(f)}{\sum\limits_f^{F} W(f)} > \xi\]
+\[= \frac{\sum \{1,1\}}{\sum\{1,1,3\}} > \frac{1}{2}\]
+\[= \frac{2}{5} > \frac{1}{2}\]
+\[= 0\]
+Then it turns out that $David$ is \textbf{Not-Trustworthy}
 
 Another think we can observe in the context of trust network is time. Should we still trust our friend from elementary school if we haven't seen him for decades ? We argue that trust is function of time.
 
