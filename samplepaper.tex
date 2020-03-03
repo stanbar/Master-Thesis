@@ -37,6 +37,22 @@ How are they created ? In life, in networks ? What does it mean to create trust 
 Then we assume that such relation is already achieved. 
 LOCKSS - solve the problem in one way, Wikipedia in another (experts consensus), but they doesn't fit to us, why ?. 
 
+Why do we even look for solution for our problem in the context of human trust ? It turns out that people are still one of the most advanced technology, thus we can get inspired by some of the solutions that worked in human societies for centuries. Let's dive into it.
+Yuval Noah Harari in his book "Sapiens: A Brief History of Humankind" states that the most important feature of human language is rumor. Rumor let us know which person is not trustworthy without having to interact with him directly. If our best friend Bob, tells us, that Carlie is theft, we don't need to get stolen to be convinced about it. Same applies in inverse scenario, if Bob tells us, that Carlie, sells great quality products, we are now more likely to buy some products from him. We notice that each person we know directly or indirectly, gets labeled by some tags. One can be labeled as Helpful, Conscientiousness and also Not-Trustworthy, while other can be labeled as Unhelpful, Lazy but Trustworthy. Here is this paper we are limiting our range of study just to dimension of trust.
+What if we have three friends Alice, Bob, Charlie. Alice and  Bob tells us that David is trustworthy, while Charlie claims that he's not. Decision of labeling David as trusted or not, requires some kind of decision evaluation algorithm.
+One might assume that if there is at least one person who doesn't trust him, there must be something wrong with him, and will label him as Not-Trustworthy. One can use the most natural to human beings evaluator which says, do want majority of people do, thus if Charlie is trusted by majority, I will trust her too. Another one can slightly generalise this evaluator and say that person is trustworthy, only if $\xi$ percentage of my friends trust him. 
+
+At this point it's worth introducing some convention. When we say friend we mean a trustworthy person, in other words, person to who we have trust relation to. Let $N$ be a set of all our friends. We will call $\%_n = |T_n|/|N|$ the proportion of our fiends who trust particular person $n$, where $T_n$ is set of our friends who trust person $n$. Let's call $\xi$ (where $0 \le \xi \leq 1$) the minimum proportion of our friends $\%_n$ who needs to trust person $n$ in order to make me trust him. 
+
+So as we said previously that we will trust Charlie only if majority of our friends trust him. We can write $T(n) = \%_n > \xi$.
+
+People with low x easly gets manipulated, we call them naive.
+People with high x hardly gets convinced, we call them stubborn.
+Another generalisation might be adding weights to this evaluator, let's say that Charlie is our brother, while Alice and Bob are our cousins, and we trust 3 times stronger to our brother than cousin. In such case $\%_n = \sum{}|T_n|/|N|$
+
+Another think we can observe in the context of trust network is time. Should we still trust our friend from elementary school if we haven't seen him for decades ? We argue that trust is function of time.
+
+
 
 
 
