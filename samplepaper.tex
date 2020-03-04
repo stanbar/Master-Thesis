@@ -20,7 +20,7 @@ Current internet architecture is mostly based on TCP/IP stack, which allow  esta
 % Write more about how the internet is used today
 % Write more about why current architecture doesn't fit 
 % ICN - the solution !!!
-The Information-centric networks like NDN, DONA or IPFS \cite{benet2014ipfs} introduce paradigm shift from location addressing to content addressing. Placing content in the center of interest allow us to achieve number of benefits. All network participates become more aware of the transferring content. This kind of awareness allows to implement various improvements over host-based paradigm such as content caching, mobility, integrity and security assurance. All of those features are guaranteed naively by ICN transport layer in contrast to TCP/IP where we needed to build them on top of it.
+The Information-centric networks like NDN, DONA or IPFS \cite{benet2014ipfs} introduce paradigm shift from host-centric to content-oriented paradigmshift from location addressing to content addressing. Placing content in the center of interest allow us to achieve number of benefits. All network participates become more aware of the transferring content. This kind of awareness allows to implement various improvements over host-based paradigm such as content caching, mobility, integrity and security assurance. All of those features are guaranteed naively by ICN transport layer in contrast to TCP/IP where we needed to build them on top of it.
 % continue with Content protection in NDN
 
 \section{Content Poisoning - Problem}
@@ -32,9 +32,12 @@ By attacker we understand malicious provider who gets access to a "signing machi
 Let's look how other content centric networks solve the problem of content posioning. We will start with Wikipedia. Each article creation or modification needs to be agreed by consensus.  
 When we think about our problem it seems to be quite similar to content posioning on Wikipedia. 
 
+\section{Blockchain}
+When we speak about trust, openess and decentralization it's always worth to consider Blockchain technology. Here we will try to use Blockchain to achieve previously stated requirements. Some of the properties Blockchain technology gives us are: immutability - once written, data can not be modified. Time assurance - each block is published in apprx. 10min. This feature gives us a clock that will provide us signed timestamps. Sign ensure trust based on consensus settled by proof-of-work algorithm.
 
 \section{Proof of Time - Abstract solution}
 We propose system where authentication is based on \textit{proof of time} access to private keys. 
+We noticed that the proof-of-time must be published in either neutral place or in verifier place. So the publisher can not use it's influence to modify the data. 
 
 \section{Trust graph}
 How are they created ? In life, in networks ? What does it mean to create trust relationship. What do we understand by trust relationship. In environments that or another. 
@@ -94,7 +97,7 @@ The graph we are considering is limited only to one content at a time. So we can
 \section{Blockchain - Concrete solution}
 Blockchain requirements.
 \begin{itemize}
-\item \textbf{Permissionless}
+\item \textbf{Open and permissionless}
 We argue that if such blockchain would have to operate in open internet, it also have to be open, so such blochain have to be completely permissionless, and allow to join new participants freely. 
 \item \textbf{Free}
 Most of the open permissionless blockchain charge fee for transaction. It incentivise participants to mantain network nodes.
@@ -103,6 +106,19 @@ Here we have different kind of incentiviation, that is trust.
 \item \textbf{Scalable} If we think of implementing such software on global scale, it must be scalable. 
 \end{itemize}
 
+
+\section{Comparison}
+\begin{table}[]
+\begin{tabular}{lll}
+                                   & Graph Infections & Blockchain \\
+Byzantine tolerant system          & False            & True       \\
+Determined                         & False            & True       \\
+Memory expensive                   & True             & True       \\
+Progressive trust                  & False            & True       \\
+Transport layer dependent          & True             & Optional   \\
+Require Network topology awareness & True             & False     
+\end{tabular}
+\end{table}
 
 
 \section{Discussion}
