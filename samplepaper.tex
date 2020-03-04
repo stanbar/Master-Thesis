@@ -28,6 +28,11 @@ The most significant benefit of ICN networks is content caching. It turns out th
 % can we say that?.
 By attacker we understand malicious provider who gets access to a "signing machine" used by legitimate provider. In consequences it's impossible just by verifying packet signature to determine if the content is poisoned or not. NDN network is designed to ease content diffusion, not matter if genuine or not.
 
+\section{Wikipedia}
+Let's look how other content centric networks solve the problem of content posioning. We will start with Wikipedia. Each article creation or modification needs to be agreed by consensus.  
+When we think about our problem it seems to be quite similar to content posioning on Wikipedia. 
+
+
 \section{Proof of Time - Abstract solution}
 We propose system where authentication is based on \textit{proof of time} access to private keys. 
 
@@ -52,9 +57,6 @@ Let's use this formula to evaluate if $David$ is trustworthy person. Let $\xi = 
 \[= 1\]
 Then it turns out that $David$ is \textbf{Trustworthy}
 
-But this view is based on static network of connections. We somehow meet Alice, Bob and Charlie, and we gets convinced about their trustworthness. Thus there must be a second way of gaining our trust. Let's modify our trust function by allowing external trust obtaining. $T(n) = \%_n > \xi \lor ETG(n) : (N) \rightarrow \{0,1\}$. 
-
-how to What if we meet new person and he convinces us to be trustworthy, thus becoming "friend".
 
 People with low $\xi$ easly gets manipulated, we call them naive.
 People with high $\xi$ hardly gets convinced, we call them stubborn. 
