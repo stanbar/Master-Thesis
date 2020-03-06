@@ -29,12 +29,20 @@ The most significant benefit of ICN networks is content caching. It turns out th
 By attacker we understand malicious provider who gets access to a "signing machine" used by legitimate provider. In consequences it's impossible just by verifying packet signature to determine if the content is poisoned or not. NDN network is designed to ease content diffusion, not matter if genuine or not.
 
 \section{Wikipedia}
-Wikipedia is great example of system that face with content posioning problem. Let's investigate how do they solve the problem. 
-Everyone can become Wikipedia editor. Editor can create new article or modify existing one. But before the change is publicly available, other editors read the proposed change and vote for it's approval or propose further edit. If they can not achieve consensus, they start a discussion where they exchange their arguments, finally if they argue on one version, consensus is achieved and new version of article is published (keeping the whole history of changes).
+Wikipedia is great example of system that face with content poisoning problem. Let's investigate how do they solve the problem. 
+Everyone can become Wikipedia editor just by creating free account. Account reqistration doesn't even require email address. Editor can create new article or modify existing one. But before the change is publicly available, other editors read the proposition, and have a chance to reject it or propose further edit. If they can not achieve consensus, they start a discussion where they exchange their arguments, finally if they agree on one version, consensus is achieved and new version of article is published (keeping the whole history of changes).
+% What are the kinds of sockpuppeting 
+% How to fight with sockpuppeting
+% https://en.wikipedia.org/wiki/Wikipedia:Sock_puppetry
+% they take into account the 5 phillars  etc. etc.
+Such ease of account creation makes Wikipedia vulnerable to   Sockpuppeting (also known as Sybil attack). This breach allows one user to create multiple accounts with different identity. In consequence, one person control fake "public opinion", which can support his position in edits discussions. That's why raw voting system is non-prefered method in conflict resolutions. Wikipedia consensus is rather collaborative, in contrast to competition consensus used in Bitcoin, where only one account who first find the proof-of-work wins all bitcoin reward. 
+Wikipedia fight with content poisoning attacks, by using human to detect bogus changes. This mechanism seems to work well in such service, but it doesn't scale to public internet protocol.
 
 \section{Bitcoin}
-It turns out that bitcoin as a synonym of decentralization, faces simillar problem when it comes to two aspects - project development, - blockchain consensus. 
+It turns out that bitcoin is one of the most successfully mantained decentralized system. Thus it's worth investigation on how they fight with CPA problem. We will look at two aspects of Bitcoin, first is project development, and second is Blockchain consensus.
+
 \subsection{Project Development}
+
 \subsection{Blockchain consensus}
 
 Let's look how other content centric networks solve the problem of content posioning. We will start with Wikipedia. Each article creation or modification needs to be agreed by consensus.  
