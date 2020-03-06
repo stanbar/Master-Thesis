@@ -20,7 +20,7 @@ Current internet architecture is mostly based on TCP/IP stack, which allow  esta
 % Write more about how the internet is used today
 % Write more about why current architecture doesn't fit 
 % ICN - the solution !!!
-The Information-centric networks like NDN, DONA or IPFS \cite{benet2014ipfs} introduce paradigm shift from host-centric to content-oriented paradigmshift from location addressing to content addressing. Placing content in the center of interest allow us to achieve number of benefits. All network participates become more aware of the transferring content. This kind of awareness allows to implement various improvements over host-based paradigm such as content caching, mobility, integrity and security assurance. All of those features are guaranteed naively by ICN transport layer in contrast to TCP/IP where we needed to build them on top of it.
+The Information-centric networks like NDN, DONA or IPFS \cite{benet2014ipfs} introduce paradigm shift from host-centric to content-oriented paradigm. Placing content in the center of interest allow us to achieve number of benefits. All network participates become more aware of the transferring content. This kind of awareness allows to implement various improvements over host-based paradigm such as content caching, mobility, integrity and security assurance. All of those features are guaranteed naively by ICN transport layer in contrast to TCP/IP where we needed to build them on top of it.
 % continue with Content protection in NDN
 
 \section{Content Poisoning - Problem}
@@ -29,6 +29,8 @@ The most significant benefit of ICN networks is content caching. It turns out th
 By attacker we understand malicious provider who gets access to a "signing machine" used by legitimate provider. In consequences it's impossible just by verifying packet signature to determine if the content is poisoned or not. NDN network is designed to ease content diffusion, not matter if genuine or not.
 
 \section{Wikipedia}
+Wikipedia is great example of system that face with content posioning problem. Let's investigate how do they solve the problem. 
+Everyone can become Wikipedia editor. Editor can create new article or modify existing one. But before the change is publicly available, other editors read the proposed change and vote if it 
 Let's look how other content centric networks solve the problem of content posioning. We will start with Wikipedia. Each article creation or modification needs to be agreed by consensus.  
 When we think about our problem it seems to be quite similar to content posioning on Wikipedia. 
 
