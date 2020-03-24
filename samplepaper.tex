@@ -3,14 +3,14 @@
 \begin{document}
 \title{Application of blockchain and infection processes in graphs to
 mitigate content poisoning attacks in information-centric networks}
-\author{Stanisław Barański, Jerzy Konorski}
+\author{Stanisław Barański}
 \institute{Faculty of Electronics, Telecommunications and Informatics\\
 Gdansk University of Technology\\
 Gdansk, Poland\\
 \email{s160518@student.pg.edu.gda.pl}}
 \maketitle
 \begin{abstract}
-Information-centric networks introduce new vector of attacks, one of them is content poisoning, which when performed successfully, can create destructive damages. Currently known authentication methods like login/password, private key, biometry, SMS/email confirmation operate on the same dimension of authentication. We propose another dimension of authentication which is time availability. When intruder publisher is operating in time-constrained environment, his access to target identity is limited, whereas honest publisher is not constrained in any way.such constrains doesn't apply to honest publisher. And such distinguish Wwe leverage such distingshion to propose new authentication mechanism. Two implementations are proposed, first one is based on infection processes in graphs and second one is backed by blockchain technology. 
+Information-centric networks introduce new vector of attacks, one of them is content poisoning, which when performed successfully, can create destructive damages. Currently known authentication methods like login/password, private key, biometry, SMS/email confirmation operate on the same dimension of authentication. We propose another dimension of authentication which is time availability. When intruder publisher is operating in time-constrained environment, his access to target identity is limited, whereas honest publisher is not constrained in any way. We leverage such distingshion to propose new authentication mechanism. Two implementations are proposed, first one is based on infection processes in graphs and second one is backed by blockchain technology. 
 
 \keywords{Content Poisoning \and Blockchain \and ICN  \and Graph infection}
 \end{abstract}
@@ -20,7 +20,7 @@ Current internet architecture is mostly based on TCP/IP stack, which allow  esta
 % Write more about how the internet is used today
 % Write more about why current architecture doesn't fit 
 % ICN - the solution !!!
-The Information-centric networks like NDN, DONA or IPFS \cite{benet2014ipfs} introduce paradigm shift from host-centric to content-oriented paradigm. Placing content in the center of interest allow us to achieve number of benefits. All network participates become more aware of the transferring content. This kind of awareness allows to implement various improvements over host-based paradigm such as content caching, mobility, integrity and security assurance. All of those features are guaranteed naively by ICN transport layer in contrast to TCP/IP where we needed to build them on top of it.
+The Information-centric networks like NDN\cite{zhang2014named}, DONA\cite{koponen2007data} or IPFS \cite{benet2014ipfs} introduce paradigm shift from host-centric to content-oriented paradigm. Placing content in the center of interest allow us to achieve number of benefits. All network participates become more aware of the transferring content. This kind of awareness allows to implement various improvements over host-based paradigm such as content caching, mobility, integrity and security assurance. All of those features are guaranteed naively by ICN transport layer in contrast to TCP/IP where we needed to build them on top of it.
 % continue with Content protection in NDN
 
 \section{Content Poisoning - Problem}
@@ -38,11 +38,21 @@ Everyone can become Wikipedia editor just by creating free account. Account reqi
 Such ease of account creation makes Wikipedia vulnerable to Sockpuppeting (also known as Sybil attack). This breach allows one user to create multiple accounts with different identity. In consequence, one person control fake "public opinion", which can support his position in edits discussions. That's why raw voting system is non-prefered method in conflict resolutions. Wikipedia consensus is rather collaborative, in contrast to competition consensus (e.g. used in Bitcoin where only one account who first find the proof-of-work wins all bitcoin reward). 
 Wikipedia fight with content poisoning attacks, by using human to detect bogus changes. This mechanism seems to work well in such service, but it doesn't scale to public internet protocol.
 
+\section{LOCKSS}
+LOCKSS is decentralized p2p digital preservation system. It was build by Standford University for libraries \cite{maniatis2003preserving}. Currently it's open source, decentralized system used by many institutions, helping them to maintain digital collection of journals, articles etc. If we abstract from the specific type of data the system is operating on. We notice that it has some similarities with ICN networks, that we believe are worth investigation. Main difference between LOCKSS and ICN is the fact that the former is very conservative, that mean it rather prevent, than expedite change of data. But this property may be useful in context of preventing bogus data diffusion. 
+Write more about
+No long-term secrets.
+Use inertia.
+Avoid third-party reputation.
+Reduce predictability.
+Intrusion detection is intrinsic.
+Assume a strong adversary.
+
 \section{Bitcoin}
-It turns out that bitcoin is one of the most successfully mantained decentralized system. Thus it's worth investigation on how they fight with CPA problem. We will look at two aspects of Bitcoin, first is project development, and second is Blockchain consensus.
+Bitcoin is one of the most successfully maintained decentralized peer-to-peer system nowadays. Thus it's worth investigation on how they fight with CPA problem. We will look at two aspects of Bitcoin, first is project development, and second is Blockchain consensus.
 
 \subsection{Project Development}
-
+Although Bitcoin protocol is fully decentralized, its project development is maintained similar way Wikipedia does. Each change needs to be discussed by developers, everyone can join the discussion and express his opinion. Something that distinguishes Bitcoin from Wikipedia is the 
 \subsection{Blockchain consensus}
 
 Let's look how other content centric networks solve the problem of content posioning. We will start with Wikipedia. Each article creation or modification needs to be agreed by consensus.  
@@ -107,6 +117,7 @@ How does it differ from out solution ? Where to place fire so it burn as fast as
 
 \section{Graph Infections - Concrete solution}
 Proposition \cite{jekon2019content}
+Simulator \url{https://github.com/stasbar/MASTI}
 
 The graph we are considering is limited only to one content at a time. So we can assume that all nodes in the graph are interested in such content trust.
 
