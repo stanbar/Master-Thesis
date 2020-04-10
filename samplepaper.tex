@@ -1,6 +1,24 @@
-\documentclass[runningheads]{llncs}
+\documentclass[nostrict]{szablonPG}
+\usepackage[unicode=true]{hyperref}
+\newcommand\PDFtitle{Application of blockchain and infection processes in graphs}
+\newcommand\PDFauthors{Stanisław Barański}
 \usepackage{graphicx}
+\hypersetup{
+  pdftitle={\PDFtitle},
+  pdfauthor={\PDFauthors},
+%   pdfsubject={},
+%   pdfkeywords={}
+ }
+\makeatletter
+\renewcommand{\verbatim@font}{\ttfamily\small}
+\makeatother
+ 
 \begin{document}
+
+\tableofcontents
+\listoffigures
+\bibliographystyle{plain}
+
 \title{Application of blockchain and infection processes in graphs to
 mitigate content poisoning attacks in information-centric networks}
 \author{Stanisław Barański}
@@ -44,23 +62,32 @@ In LOCKSS, each participating library becomes a node in p2p network. Node run so
 Due to copyrights of publishers, it's important that no node redistribute its content blindly to other peers. Other nodes can help to repair damaged or completely missed materials only to nodes that previously proved the ownership of such content. New materials can only be acquired directly from publisher website to libraries which paid for subscription. 
 Damage detection is solved in cyclic polls, where each interested peer, vote on the hash of the storing Archive Unit (smallest unit in which nodes identify each content). Since each node consist of different set of Archive Units (AU), the protocol treat each AU independently. If it turns out that some node contains AU with different hash than majority of the poll, it start sequence of repairs. In result LOCKSS become self-healing store of data, and does not increase risk of free-loading non-purchased content.
 LOCKSS is designed in a way that doesn't rely on long-time public-key cryptography. System that must operate for decades, is highly susceptible to eventually private-key leakage. Since it doesn't rely on public-key cryptography, the peer identity is very limited, therefore such system can not rely on peer reputations.
-Write more about
-No long-term secrets.
-Use inertia.
-Avoid third-party reputation.
-Reduce predictability.
-Intrusion detection is intrinsic.
-Assume a strong adversary.
 
-\section{Bitcoin}
-Bitcoin is one of the most successfully maintained decentralized peer-to-peer system nowadays. Thus it's worth investigation on how they fight with CPA problem. We will look at two aspects of Bitcoin, first is project development, and second is Blockchain consensus.
 
-\subsection{Project Development}
-Although Bitcoin protocol is fully decentralized, its project development is maintained similar way Wikipedia does. Each change needs to be discussed by developers, everyone can join the discussion and express his opinion. Something that distinguishes Bitcoin from Wikipedia is the 
-\subsection{Blockchain consensus}
+%\section{Bitcoin}
+%Bitcoin is one of the most successfully maintained decentralized peer-to-peer system nowadays. Thus it's worth investigation on how they fight with CPA problem. We will look at two aspects of Bitcoin, first is project development, and second is Blockchain consensus.
 
-Let's look how other content centric networks solve the problem of content posioning. We will start with Wikipedia. Each article creation or modification needs to be agreed by consensus.  
-When we think about our problem it seems to be quite similar to content posioning on Wikipedia. 
+%\subsection{Project Development}
+%Although Bitcoin protocol is fully decentralized, its project development is maintained similar way Wikipedia does. Each change needs to be discussed by developers, everyone can join the discussion and express his opinion. Something that distinguishes Bitcoin from Wikipedia is the fact that two different versions of procol can coexists. If a proposed change doesn't 
+
+\section{Consensus protocols}
+Distributed systems require some kind of mechanism that let them achieve common state. We deep dive into different kind of consensus mechanisms that might be useful for our CPA problem.
+
+\subsection{DNS - Domain Name Server}
+
+\subsection{Satoshi consensus}
+Satoshi consensus based on proof-of-work was firstly introduced by Satoshi Nakamoto in Bitcoin Whitepaper.
+Bitcoin nodes uses consensus to acquire one common state on global ledger, called Blockchain. Bitcoin nodes achieve consensus by following common rules. The most significant rule require each block in blockchain \ref{blockchain}, must satisfy NP-hard puzzle in order to be validated and accepted. 
+
+\subsection{Proof-of-Stake}
+
+
+\subsection{Byzantine Agreement}
+
+
+\subsection{Federated Byzantine Agreement}
+Federated Byzatine Agreement (FBA) introduced in Stellar network is modification of Byzantine Agreement consensus protocol \cite{mazieres2015stellar}. Stellar is another blockchain network created for fast and cheap transfer of value. In contrast to Bitcoin's Satoshi Consensus, Stellar Consensus Protocol (SCP), doesn't use proof-of-work, instead construct called quorum slices is used to achieve consensus over global ledger. What makes SCP interesting for us, is the fact that it is model designed for internet level consensus. Additionally each node can freely chose the set of trusted nodes, to build so called quorum slice.
+
 
 \section{Blockchain}
 When we speak about trust, openess and decentralization it's always worth to consider Blockchain technology. Here we will try to use Blockchain to achieve previously stated requirements. Some of the properties Blockchain technology gives us are: immutability - once written, data can not be modified. Time assurance - each block is published in apprx. 10min. This feature gives us a clock that will provide us signed timestamps. Sign ensure trust based on consensus settled by proof-of-work algorithm.
