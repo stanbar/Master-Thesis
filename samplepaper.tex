@@ -6,9 +6,11 @@
 \hypersetup{
   pdftitle={\PDFtitle},
   pdfauthor={\PDFauthors},
-%   pdfsubject={},
-%   pdfkeywords={}
+   pdfsubject={Mitigation Content Posioning},
+   pdfkeywords={Content Poisoning, Blockchain, ICN, Graph infection}
  }
+ 
+\usepackage{multicol} 
 \makeatletter
 \renewcommand{\verbatim@font}{\ttfamily\small}
 \makeatother
@@ -17,21 +19,16 @@
 
 \tableofcontents
 \listoffigures
-\bibliographystyle{plain}
 
-\title{Application of blockchain and infection processes in graphs to
-mitigate content poisoning attacks in information-centric networks}
-\author{Stanisław Barański}
-\institute{Faculty of Electronics, Telecommunications and Informatics\\
-Gdansk University of Technology\\
-Gdansk, Poland\\
-\email{s160518@student.pg.edu.gda.pl}}
-\maketitle
+
 \begin{abstract}
 Information-centric networks introduce new vector of attacks, one of them is content poisoning, which when performed successfully, can create destructive damages. Currently known authentication methods like login/password, private key, biometry, SMS/email confirmation operate on the same dimension of authentication. We propose another dimension of authentication which is time availability. When intruder publisher is operating in time-constrained environment, his access to target identity is limited, whereas honest publisher is not constrained in any way. We leverage such distingshion to propose new authentication mechanism. Two implementations are proposed, first one is based on infection processes in graphs and second one is backed by blockchain technology. 
 
 \keywords{Content Poisoning \and Blockchain \and ICN  \and Graph infection}
+
 \end{abstract}
+
+
 
 \section{Introduction - State of the art}
 Current internet architecture is mostly based on TCP/IP stack, which allow  establish communication channels between two IP addresses. While it worked great for past years,  it struggle to fit current demands. Today internet is dominated by transporting content such as audio, video, images and text[source] from content creators to content consumers.
@@ -90,7 +87,7 @@ Federated Byzatine Agreement (FBA) introduced in Stellar network is modification
 
 
 \section{Blockchain}
-When we speak about trust, openess and decentralization it's always worth to consider Blockchain technology. Here we will try to use Blockchain to achieve previously stated requirements. Some of the properties Blockchain technology gives us are: immutability - once written, data can not be modified. Time assurance - each block is published in apprx. 10min. This feature gives us a clock that will provide us signed timestamps. Sign ensure trust based on consensus settled by proof-of-work algorithm.
+When we speak about trust, openness and decentralization it's always worth to consider Blockchain technology. Here we will try to use Blockchain to achieve previously stated requirements. Some of the properties Blockchain technology gives us are: immutability - once written, data can not be modified. Time assurance - each block is published in apprx. 10min. This feature gives us a clock that will provide us signed timestamps. Sign ensure trust based on consensus settled by proof-of-work algorithm.
 
 \section{Proof of Time - Abstract solution}
 We propose system where authentication is based on \textit{proof of time} access to private keys. 
@@ -103,11 +100,11 @@ Then we assume that such relation is already achieved.
 LOCKSS - solve the problem in one way, Wikipedia in another (experts consensus), but they doesn't fit to us, why ?. 
 
 Why do we even look for solution for our problem in the context of human trust ? It turns out that people are still one of the most advanced technology, thus we can get inspired by some of the solutions that worked in human societies for centuries. Let's dive into it.
-Yuval Noah Harari in his book "Sapiens: A Brief History of Humankind" states that the most important feature of human language is rumor. Rumor let us know which person is not trustworthy without having to interact with him directly. If our best friend Bob, tells us, that Carlie is theft, we don't need to get stolen to be convinced about it. Same applies in inverse scenario, if Bob tells us, that Carlie, sells great quality products, we are now more likely to buy some products from him. We notice that each person we know directly or indirectly, gets labeled by some tags. One can be labeled as Helpful, Conscientiousness and also Not-Trustworthy, while other can be labeled as Unhelpful, Lazy but Trustworthy. Here is this paper we are limiting our range of study just to dimension of trust.
-What if we have three friends Alice, Bob, Charlie. Alice and  Bob tells us that David is trustworthy, while Charlie claims that he's not. Decision of labeling David as trusted or not, requires some kind of decision evaluation algorithm.
+Yuval Noah Harari in his book "Sapiens: A Brief History of Humankind" states that the most important feature of human language is rumor. Rumor let us know which person is not trustworthy without having to interact with him directly. If our best friend Bob, tells us, that Carlie is theft, we don't need to get stolen to be convinced about it. Same applies in inverse scenario, if Bob tells us, that Carlie sells great quality products, we are now more likely to buy products from him. We notice that each person we know directly or indirectly, gets labeled by some tags. One can be labeled as Helpful, Conscientiousness and also Not-Trustworthy, while other can be labeled as Unhelpful, Lazy but Trustworthy. Here is this paper we are limiting our range of study just to dimension of trust.
+What if we have three friends Alice, Bob, Charlie. Alice and  Bob tells us that David is Trustworthy, while Charlie claims that he's not. Decision of labeling David as Trustworthy or not, requires some kind of decision evaluation algorithm.
 One might assume that if there is at least one person who doesn't trust him, there must be something wrong with him, and will label him as Not-Trustworthy. One can use the most natural to human beings evaluator which says, do want majority of people do, thus if Charlie is trusted by majority, I will trust her too. Another one can slightly generalise this evaluator and say that person is trustworthy, only if $\xi$ percentage of my friends trust him. 
 
-At this point it's worth introducing some convention. When we say friend we mean a trustworthy person, in other words, person to who we have trust relation to. Let $N$ to be a set of all considered person group, friends and non friends. Let $F$ be a set of all our friends $f \in F$. Let $F_n$ be a subset of $F$ where all $f$ trust person $n$. Then we will call $\%_n = |F_n|/|F|$ the proportion of our fiends who trust particular person $n$. Let's call $\xi$ (where $0 \le \xi \leq 1$) the minimum proportion of our friends $\%_n$ who needs to trust person $n$ in order to make me trust him. 
+At this point it's worth introducing some convention. When we say friend we mean a trustworthy person, in other words, person to who we have trust relation to. Let $N$ to be a set of all considered person group, friends and non-friends. Let $F$ be a set of all our friends $f \in F$. Let $F_n$ be a subset of $F$ where all $f$ trust person $n$. Then we will call $\%_n = |F_n|/|F|$ the proportion of our fiends who trust particular person $n$. Let's call $\xi$ (where $0 \le \xi \leq 1$) the minimum proportion of our friends $\%_n$ who needs to trust person $n$ in order to make me trust him. 
 
 So as we said previously that we will trust David only if majority of our friends trust him. We denote trust function as $T(n) = \%_n > \xi : (N) \rightarrow \{0,1\}$. 
 Let's use this formula to evaluate if $David$ is trustworthy person. Let $\xi = 0.5$. We know that Alice and Bob do trust David, while Charlie don't.
@@ -183,15 +180,8 @@ Require Network topology awareness & True             & False
 
 \section{Discussion}
 
-%
-% ---- Bibliography ----
-%
-% BibTeX users should specify bibliography style 'splncs04'.
-% References will then be sorted and formatted in the correct style.
-%
-\bibliographystyle{splncs04}
+\bibliographystyle{plain}
 \bibliography{refs}
 
-%
 \end{document}
 
