@@ -2,7 +2,6 @@
 \usepackage[unicode=true]{hyperref}
 \newcommand\PDFtitle{Application of blockchain and infection processes in graphs}
 \newcommand\PDFauthors{Stanisław Barański}
-\usepackage{graphicx}
 \hypersetup{
   pdftitle={\PDFtitle},
   pdfauthor={\PDFauthors},
@@ -24,7 +23,6 @@
 \begin{abstract}
 Information-centric networks introduce new vector of attacks, one of them is content poisoning, which when performed successfully, can create destructive damages. Currently known authentication methods like login/password, private key, biometry, SMS/email confirmation operate on the same dimension of authentication. We propose another dimension of authentication which is time availability. When intruder publisher is operating in time-constrained environment, his access to target identity is limited, whereas honest publisher is not constrained in any way. We leverage such distingshion to propose new authentication mechanism. Two implementations are proposed, first one is based on infection processes in graphs and second one is backed by blockchain technology. 
 
-\keywords{Content Poisoning \and Blockchain \and ICN  \and Graph infection}
 
 \end{abstract}
 
@@ -150,6 +148,7 @@ Simulator \url{https://github.com/stasbar/MASTI}
 The graph we are considering is limited only to one content at a time. So we can assume that all nodes in the graph are interested in such content trust.
 
 \section{Blockchain - Concrete solution}
+We could use Bitcoin blockchain, or any other blockchain with constant time block creation, to ensure that 
 Blockchain requirements.
 \begin{itemize}
 \item \textbf{Open and permissionless}
