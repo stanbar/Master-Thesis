@@ -152,9 +152,16 @@ We could use Bitcoin blockchain, or any other blockchain with constant time bloc
 
 Our solution to this problem is modification of \cite{jekon2019content}, by adding Blockchain as a storage, and modifying consensus algorithm.
 
-Each publisher who wants to publish the content to the network, must start with its home node. That node, create transaction in which he certifies the content proved by the publisher. Such certificate is then flooded to (whole network | all neighbours, and nodes that were previously infected)), so they can update the current state of trust to the content. After some delay (clock tic), such node also create certificate in which he point to the one of neighbours node which can be infected, and point to the neighbour node, where the publisher is also allowed to publish the content. Such certificate is flooded into the network, so each node can update the current state of the trust to the content. The next node will accept the infeccontention only when it is their home publisher or if they are pointed as the next node by the previous node. they show valid certificate (signed by previous node, and by themself - proving access to private key). Each node can create certification only once per content. 
+Each publisher who wants to publish the content to the network, must start with its home node. That node, create transaction in which he certifies the content proved by the publisher. Such certificate is then flooded to whole network, so they can update the current state of trust to the content. After some delay (clock tic), such node also create certificate in which he point to the one of neighbours node which can be infected next, where the publisher is also allowed to publish the content. The next node will accept the infection only if he is an home publisher, or if he is pointed as the next node by the previous node. Publisher show valid certificate (signed by previous node, and by himself - proving access to private key). Each node can create certification only once per content. 
 
-We follow the idea that publisher can initially infect his home node. 
+That way, each node control the time of infection dissemination. If any notice that, the new certification was published earlier than previous certification + some fixed delay, it can assume that such node is cheating, and filter the certifications from such node.
+
+Therefore we constructed new consensus algorithm where each node spread infection only iffollows those rules:
+- didn't spread the infection for such content before
+- previous time of infection was x time ago
+- it is the home publisher or contains authorization token issued by some neighbour pointing to the node.
+- if it is your home publisher, send the certification
+- if the publisher contains , send the certification
 
 \chapter{Fusion - Graph infection blockchain based scheme}
 We notice that, the chain of approval can be threat like a blockchain. Consensus mechanism here is based purely on each node. Each node control the time delay of the next block. If some node block the transaction, or sends it faster than designed (malicious actor), we can distrust that node. Each external publication create next block. Publisher is responsible for extending that chain to the length of acceptable trust to that content.
