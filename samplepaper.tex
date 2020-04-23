@@ -28,7 +28,7 @@ Information-centric networks introduce new vector of attacks, one of them is con
 
 
 
-\chapter{Introduction - State of the art}
+\section{Introduction - State of the art}
 Current internet architecture is mostly based on TCP/IP stack, which allow  establish communication channels between two IP addresses. While it worked great for past years,  it struggle to fit current demands. Today internet is dominated by transporting content such as audio, video, images and text[source] from content creators to content consumers.
 % Write more about how the internet is used today
 % Write more about why current architecture doesn't fit 
@@ -36,12 +36,12 @@ Current internet architecture is mostly based on TCP/IP stack, which allow  esta
 The Information-centric networks like NDN\cite{zhang2014named}, DONA\cite{koponen2007data} or IPFS \cite{benet2014ipfs} introduce paradigm shift from host-centric to content-oriented paradigm. Placing content in the center of interest allow us to achieve number of benefits. All network participates become more aware of the transferring content. This kind of awareness allows to implement various improvements over host-based paradigm such as content caching, mobility, integrity and security assurance. All of those features are guaranteed naively by ICN transport layer in contrast to TCP/IP where we needed to build them on top of it.
 % continue with Content protection in NDN
 
-\chapter{Content Poisoning - Problem}
-The most significant benefit of ICN networks is content caching. It turns out that this benefit becomes double-edged sword when we take into account security concerns. Attacker who successfully performs CPA (content-poisoning attack) on one CS (content cache), may achieve destructive success 
+\section{Content Poisoning - Problem}
+The most significant benefit of ICN networks is content caching. It turns out that this benefit becomes double-edged sword when we take into account security concerns. Attacker who successfully performs CPA (content-poisoning attack) on one CS (content cache), may achieve destructive success.
 % can we say that?.
 By attacker we understand malicious provider who gets access to a "signing machine" used by legitimate provider. In consequences it's impossible just by verifying packet signature to determine if the content is poisoned or not. NDN network is designed to ease content diffusion, not matter if genuine or not.
 
-\chapter{Wikipedia}
+\section{Wikipedia}
 Wikipedia is great example of system that face with content poisoning problem. Let's investigate how do they solve the problem. 
 Everyone can become Wikipedia editor just by creating free account. Account reqistration doesn't even require email address. Editor can create new article or modify existing one. But before the change is publicly available, other editors read the proposition, and have a chance to reject it or propose further edit. If they can not achieve consensus, they start a discussion where they exchange their arguments, finally if they agree on one version, consensus is achieved and new version of article is published (keeping the whole history of changes).
 % What are the kinds of sockpuppeting 
@@ -51,7 +51,7 @@ Everyone can become Wikipedia editor just by creating free account. Account reqi
 Such ease of account creation makes Wikipedia vulnerable to Sockpuppeting (also known as Sybil attack). This breach allows one user to create multiple accounts with different identity. In consequence, one person control fake "public opinion", which can support his position in edits discussions. That's why raw voting system is non-prefered method in conflict resolutions. Wikipedia consensus is rather collaborative, in contrast to competition consensus (e.g. used in Bitcoin where only one account who first find the proof-of-work wins all bitcoin reward). 
 Wikipedia fight with content poisoning attacks, by using human to detect bogus changes. This mechanism seems to work well in such service, but it doesn't scale to public internet protocol.
 
-\chapter{LOCKSS}
+\section{LOCKSS}
 LOCKSS is decentralized p2p digital preservation system. It was build by Standford University for libraries \cite{maniatis2003preserving}. Currently it's open source, decentralized system used by many institutions. Helping them to maintain digital collection of journals, articles, books etc. If we abstract from the specific type of data the system is operating on. We notice that it has some similarities with ICN networks, that we believe are worth investigation. Main difference between LOCKSS and ICN is the fact that the former is very conservative, that mean it rather prevent, than expedite change of data. But this property may be useful in context of preventing bogus data diffusion. 
 In LOCKSS, each participating library becomes a node in p2p network. Node run software that is responsible for collecting new content from e-journal websites by crawler, serving already stored materials to local readers, and cooperating with other nodes in preserving materials when they gets damaged. 
 Due to copyrights of publishers, it's important that no node redistribute its content blindly to other peers. Other nodes can help to repair damaged or completely missed materials only to nodes that previously proved the ownership of such content. New materials can only be acquired directly from publisher website to libraries which paid for subscription. 
@@ -65,7 +65,7 @@ LOCKSS is designed in a way that doesn't rely on long-time public-key cryptograp
 %\subsection{Project Development}
 %Although Bitcoin protocol is fully decentralized, its project development is maintained similar way Wikipedia does. Each change needs to be discussed by developers, everyone can join the discussion and express his opinion. Something that distinguishes Bitcoin from Wikipedia is the fact that two different versions of procol can coexists. If a proposed change doesn't 
 
-\chapter{Consensus protocols}
+\section{Consensus protocols}
 Distributed systems require some kind of mechanism that let them achieve common state. We deep dive into different kind of consensus mechanisms that might be useful for our CPA problem.
 
 \section{DNS - Domain Name Server}
@@ -84,14 +84,14 @@ Bitcoin nodes uses consensus to acquire one common state on global ledger, calle
 Federated Byzatine Agreement (FBA) introduced in Stellar network is modification of Byzantine Agreement consensus protocol \cite{mazieres2015stellar}. Stellar is another blockchain network created for fast and cheap transfer of value. In contrast to Bitcoin's Satoshi Consensus, Stellar Consensus Protocol (SCP), doesn't use proof-of-work, instead construct called quorum slices is used to achieve consensus over global ledger. What makes SCP interesting for us, is the fact that it is model designed for internet level consensus. Additionally each node can freely chose the set of trusted nodes, to build so called quorum slice.
 
 
-\chapter{Blockchain}
+\section{Blockchain}
 When we speak about trust, openness and decentralization it's always worth to consider Blockchain technology. Here we will try to use Blockchain to achieve previously stated requirements. Some of the properties Blockchain technology gives us are: immutability - once written, data can not be modified. Time assurance - each block is published in apprx. 10min. This feature gives us a clock that will provide us signed timestamps. Sign ensure trust based on consensus settled by proof-of-work algorithm.
 
-\chapter{Proof of Time - Abstract solution}
+\section{Proof of Time - Abstract solution}
 We propose system where authentication is based on \textit{proof of time} access to private keys. 
 We noticed that the proof-of-time must be published in either neutral place or in verifier place. So the publisher can not use it's influence to modify the data. 
 
-\chapter{Trust graph}
+\section{Trust graph}
 How are they created ? In life, in networks ? What does it mean to create trust relationship. What do we understand by trust relationship. In environments that or another. 
 
 Then we assume that such relation is already achieved. 
@@ -134,39 +134,40 @@ Another think we can observe in the context of trust network is time. Should we 
 
 
 
-\chapter{Stolen Credentials Problem}
+\section{Stolen Credentials Problem}
 How long on average does it take to detect stolen credentials on average.
 
-\chapter{Graph Burning}
+\section{Graph Burning}
 How does it differ from out solution ? Where to place fire so it burn as fast as possible ?
 
 
-\chapter{Graph Infections - Concrete solution}
+\section{Graph Infections - Concrete solution}
 Proposition \cite{jekon2019content}
 Simulator \url{https://github.com/stasbar/MASTI}
 
 The graph we are considering is limited only to one content at a time. So we can assume that all nodes in the graph are interested in such content trust.
 
-\chapter{Blockchain - Concrete solution}
+\section{Bitcoin - naive solution}
+In previous section we discussed solution based on graph infections. Here we will propose naive solution based on one of the core features of Bitcoin Blockchain, preciselly on probabilisticof-of-work fixed interval between blocks creation. In bitcoin protocol, transactions are stored in data structure called Blockchain. Each node in p2p Bitcoin network can participate in block creation process called mining, this becoming miner. Each node becomes validator of new transactions that gets to Bitcoin network. follows strict rules that 
+
+\section{Blockchain - Concrete solution}
 We could use Bitcoin blockchain, or any other blockchain with constant time block creation, to persist proof-of-time claims. In Bitcoin each block is created in appx. 10min. We could take advantage of it, as a global, secure signing clock. Each new block has it's own unique hash, which can be used as a signing key. For our proof-of-time claims, or better we could persist our claims inside blockchain itself. Naive approach would be to send a empty (just fee) transaction from publisher account to hash of the content address. This way everyone can check, the history of hash of the content. Ensuring that it was proven by publisher for long enough. Of course this approach is conceptual. Bitcoin network is not suitable to operate in for network devices. Therefore we will outline the properties especially interesting in blockchain, and try to find out another blockhain or propose our own design. We consider Blockchain in first place, mainly because it's secure. Secure in terms of Byzantine Fault Tolerant system, but also as immutable storage. Not one can change the previously written data, without recalculating the proof-of-work puzzle, and overtaking rest of the network in computational power competition. This mechanisms works great for blockchains that servers store of value purposes. Our needs are completely different, we need a system that is asymptotic secure, so no (more powerful) node can overtake the whole network. That way, we lose the property of ~10min period ticking clock. We also can not incentivese nodes to behave honest by staking electrical power. We also need to get rid of fees since the Internet protocol on this level must be free. Therefore we need to protect from DoS attack in different way. Another important properties are openness and scalability. We need to design system that allow joining new participants and is highly scalable, otherwise we are limiting the protocol to special use cases, rather than global Internet protocol. Such software needs to operate on network devices which are resources constrained. Thus it needs to be lightweight, both in computational power and memory consumption.
 
 Our solution to this problem is modification of \cite{jekon2019content}, by adding Blockchain as a storage, and modifying consensus algorithm.
 
 Each publisher who wants to publish the content to the network, must start with its home node. That node, create transaction in which he certifies the content proved by the publisher. Such certificate is then flooded to whole network, so they can update the current state of trust to the content. After some delay (clock tic), such node also create certificate in which he point to the one of neighbours node which can be infected next, where the publisher is also allowed to publish the content. The next node will accept the infection only if he is an home publisher, or if he is pointed as the next node by the previous node. Publisher show valid certificate (signed by previous node, and by himself - proving access to private key). Each node can create certification only once per content. 
 
-That way, each node control the time of infection dissemination. If any notice that, the new certification was published earlier than previous certification + some fixed delay, it can assume that such node is cheating, and filter the certifications from such node.
+That way, each node control the time of infection dissemination. If any node notice, that, the new certification was published earlier than previous certification + some fixed delay, it can assume that such node is cheating, and filter the certifications from such node.
 
-Therefore we constructed new consensus algorithm where each node spread infection only iffollows those rules:
+Therefore we constructed new consensus algorithm where each node spread infection only if:
 - didn't spread the infection for such content before
 - previous time of infection was x time ago
 - it is the home publisher or contains authorization token issued by some neighbour pointing to the node.
-- if it is your home publisher, send the certification
-- if the publisher contains , send the certification
 
-\chapter{Fusion - Graph infection blockchain based scheme}
+\section{Fusion - Graph infection blockchain based scheme}
 We notice that, the chain of approval can be threat like a blockchain. Consensus mechanism here is based purely on each node. Each node control the time delay of the next block. If some node block the transaction, or sends it faster than designed (malicious actor), we can distrust that node. Each external publication create next block. Publisher is responsible for extending that chain to the length of acceptable trust to that content.
 
-\chapter{Comparison}
+\section{Comparison}
 \begin{table}[]
 \begin{tabular}{lll}
                                    & Graph Infections & Blockchain \\
@@ -180,7 +181,7 @@ Require Network topology awareness & True             & False
 \end{table}
 
 
-\chapter{Discussion}
+\section{Discussion}
 
 \bibliographystyle{plain}
 \bibliography{refs}
