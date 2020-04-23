@@ -37,9 +37,25 @@ The Information-centric networks like NDN\cite{zhang2014named}, DONA\cite{kopone
 % continue with Content protection in NDN
 
 \section{Content Poisoning - Problem}
-The most significant benefit of ICN networks is content caching. It turns out that this benefit becomes double-edged sword when we take into account security concerns. Attacker who successfully performs CPA (content-poisoning attack (CPA) on one CS (content cache (CS)), may achieve destructive success.
+The most significant benefit of ICN networks is content caching. It turns out that this benefit becomes double-edged sword when we take into account security concerns. Attacker who successfully perform content-poisoning attack (CPA) on one content cache (CS), may achieve destructive success.
 % can we say that?.
-By attacker we understand malicious provider who gets access to a "signing machine" used by legitimate provider. In consequences it's impossible just by verifying packet signature to determine if the content is poisoned or not. NDN network is designed to ease content diffusion, not matter if genuine or not.
+By attacker we understand malicious provider who gets access to a "signing machine" used by legitimate provider. In consequences it's impossible just by verifying packet signature to determine if the content is poisoned or not. Information-centric networks are designed to ease content diffusion, not matter if genuine or not. 
+
+
+\section{Fake News}
+Fake News is an deliberate disinformative news that is hard to identify, and can lead to descructive consequences if not mitigated on time. Social media are perfect ecosystem for disseminating such kind of content, where the algorithms are designed to serve us the content we are likely to agree. In \cite{zhou2018fake} authors point out, why social media algorithms are very effective in fake news dissemination. Social media allow to form a similar minded people into groups, easier than ever before. Such groups facilitate Echo Chamber effect, where each individual is surrounded by people who share and produce content that fits our current world view. This leads to segmented and polarized society, which is very prone to believe in fake news that confirm current opinions, even if there is limited or no reason to believe in such. 
+
+
+Fake News are written in very provocative fashion, making the content more attractive to interaction, more interaction lead to higher dissemination, which make even more interaction, and so on. While for honest publisher and valuable content this feature is helpful, it becomes very dangerous tool in hands of malicious publishers. Additionally the low cost of creating new accounts makes it even easier for attacker to initiate the snow-ball effect, using fake accounts. Bots can interact with people or even with other bots, creating fake social opinion.  
+
+We notice that this concept fits perfectly into our Content Posioning Attack model. Thus it might be worth to reach some solutions used in that matter. 
+In some sense, we are facing similar problem Fake News in social media does. We want to allow valuable content to spread really fast, and to reach as much people as possible, without any censorship. But the problem arises when we 
+Fake News 
+We notice that CPA is similar to Fake News. 
+
+\subsection{How to mitigate fake news}
+One idea is to create centralized services, that reveal known fake news. So each time someone is susceptible to some news, he can check if the news in not present in blacklisted news. Although this might seem great solution, it struggle with one significant flaw. Attacker can publish honest news in such "oracle" service, leading to revoking genuine news, which can he as harmful as fake news. Better way would be to check many services, and decide if they are convincing you, would be to  . 
+Yet, the problem still persist during the first time such fake news is blacklisted in one of such services. misinformation 
 
 \section{Wikipedia}
 Wikipedia is great example of system that face with content poisoning problem. Let's investigate how do they solve the problem. 
