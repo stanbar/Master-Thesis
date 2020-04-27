@@ -47,9 +47,9 @@ By attacker we understand malicious provider who gets access to a "signing machi
 Fake News is an deliberate disinformative news that is hard to identify, and can lead to descructive consequences if not mitigated on time. Social media are perfect ecosystem for disseminating such kind of content, where the algorithms are designed to serve us the content we are likely to agree. In \cite{zhou2018fake} authors point out, why social media algorithms are very effective in fake news dissemination. Social media allow to form a similar minded people into groups, easier than ever before. Such groups facilitate Echo Chamber effect, where each individual is surrounded by people who share and produce content that fits our current world view. This leads to segmented and polarized society, which is very prone to believe in fake news that confirm current opinions, even if there is limited or no reason to believe in such. 
 
 
-Fake News are written in very provocative fashion, making the content more attractive to interaction, more interaction lead to higher dissemination, which make even more interaction, and so on. While for honest publisher and valuable content this feature is helpful, it becomes very dangerous tool in hands of malicious publishers. Additionally the low cost of creating new accounts makes it even easier for attacker to initiate the snow-ball effect, using fake accounts. Bots can interact with people or even with other bots, creating fake social opinion.  
+Fake News are written in very provocative fashion, making the content more attractive to interaction, more interaction lead to higher dissemination, which make even more interaction, and so on. While for honest publisher and valuable content this feature is helpful, it becomes very dangerous tool in hands of malicious publishers. Additionally the low cost of creating new accounts makes it even easier for attacker to initiate the snow-ball effect, using fake accounts. Bots can interact with people or even with other bots, creating fake social opinions.  
 
-We notice that this concept fits perfectly into our Content Posioning Attack model. Thus it might be worth to reach some solutions used in that matter. 
+We notice that this thread model concept fits perfectly into our Content Posioning Attack model. Thus it might be worth to reach some solutions used in that matter. 
 In some sense, we are facing similar problem Fake News in social media does. We want to allow valuable content to spread really fast, and to reach as much people as possible, without any censorship. But the problem arises when we 
 Fake News 
 We notice that CPA is similar to Fake News. 
@@ -74,13 +74,6 @@ In LOCKSS, each participating library becomes a node in p2p network. Node run so
 Due to copyrights of publishers, it's important that no node redistribute its content blindly to other peers. Other nodes can help to repair damaged or completely missed materials only to nodes that previously proved the ownership of such content. New materials can only be acquired directly from publisher website to libraries which paid for subscription. 
 Damage detection is solved in cyclic polls, where each interested peer, vote on the hash of the storing Archive Unit (smallest unit in which nodes identify each content). Since each node consist of different set of Archive Units (AU), the protocol treat each AU independently. If it turns out that some node contains AU with different hash than majority of the poll, it start sequence of repairs. In result LOCKSS become self-healing store of data, and does not increase risk of free-loading non-purchased content.
 LOCKSS is designed in a way that doesn't rely on long-time public-key cryptography. System that must operate for decades, is highly susceptible to eventually private-key leakage. Since it doesn't rely on public-key cryptography, the peer identity is very limited, therefore such system can not rely on peer reputations.
-
-
-%\section{Bitcoin}
-%Bitcoin is one of the most successfully maintained decentralized peer-to-peer system nowadays. Thus it's worth investigation on how they fight with CPA problem. We will look at two aspects of Bitcoin, first is project development, and second is Blockchain consensus.
-
-%\subsection{Project Development}
-%Although Bitcoin protocol is fully decentralized, its project development is maintained similar way Wikipedia does. Each change needs to be discussed by developers, everyone can join the discussion and express his opinion. Something that distinguishes Bitcoin from Wikipedia is the fact that two different versions of procol can coexists. If a proposed change doesn't 
 
 \section{Consensus protocols}
 Distributed systems require some kind of mechanism that let them achieve common state. We deep dive into different kind of consensus mechanisms that might be useful for our CPA problem.
