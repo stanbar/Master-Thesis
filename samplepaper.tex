@@ -41,6 +41,7 @@ The most significant benefit of ICN networks is content caching. It turns out th
 % can we say that?.
 By attacker we understand malicious provider who gets access to a "signing machine" used by legitimate provider. In consequences it's impossible just by verifying packet signature to determine if the content is poisoned or not. Information-centric networks are designed to ease content diffusion, not matter if genuine or not. 
 
+\section{Content Propagation Models}
 
 \section{Fake News}
 Fake News is an deliberate disinformative news that is hard to identify, and can lead to descructive consequences if not mitigated on time. Social media are perfect ecosystem for disseminating such kind of content, where the algorithms are designed to serve us the content we are likely to agree. In \cite{zhou2018fake} authors point out, why social media algorithms are very effective in fake news dissemination. Social media allow to form a similar minded people into groups, easier than ever before. Such groups facilitate Echo Chamber effect, where each individual is surrounded by people who share and produce content that fits our current world view. This leads to segmented and polarized society, which is very prone to believe in fake news that confirm current opinions, even if there is limited or no reason to believe in such. 
@@ -55,7 +56,7 @@ We notice that CPA is similar to Fake News.
 
 \subsection{How to mitigate fake news}
 One idea is to create centralized services, that reveal known fake news. So each time someone is susceptible to some news, he can check if the news in not present in blacklisted news. Although this might seem great solution, it struggle with one significant flaw. Attacker can publish honest news in such "oracle" service, leading to revoking genuine news, which can he as harmful as fake news. Better way would be to check many services, and decide if they are convincing you, would be to  . 
-Yet, the problem still persist during the first time such fake news is blacklisted in one of such services. misinformation 
+Yet, the problem still persist during the first time such fake news is blacklisted in one of such services. 
 
 \section{Wikipedia}
 Wikipedia is great example of system that face with content poisoning problem. Let's investigate how do they solve the problem. 
@@ -84,24 +85,24 @@ LOCKSS is designed in a way that doesn't rely on long-time public-key cryptograp
 \section{Consensus protocols}
 Distributed systems require some kind of mechanism that let them achieve common state. We deep dive into different kind of consensus mechanisms that might be useful for our CPA problem.
 
-\section{DNS - Domain Name Server}
+%\section{DNS - Domain Name Server}
 
-\section{Satoshi consensus}
-Satoshi consensus based on proof-of-work was firstly introduced by Satoshi Nakamoto in Bitcoin Whitepaper.
-Bitcoin nodes uses consensus to acquire one common state on global ledger, called Blockchain. Bitcoin nodes achieve consensus by following common rules. The most significant rule require each block in blockchain \ref{blockchain}, must satisfy NP-hard puzzle in order to be validated and accepted. 
+%\section{Satoshi consensus}
+%Satoshi consensus based on proof-of-work was firstly introduced by Satoshi Nakamoto in Bitcoin Whitepaper.
+%Bitcoin nodes uses consensus to acquire one common state on global ledger, called Blockchain. Bitcoin nodes achieve consensus by following common rules. The most significant rule require each block in blockchain \ref{blockchain}, must satisfy NP-hard puzzle in order to be validated and accepted. 
 
-\section{Proof-of-Stake}
-
-
-\section{Byzantine Agreement}
+%\section{Proof-of-Stake}
 
 
-\section{Federated Byzantine Agreement}
-Federated Byzatine Agreement (FBA) introduced in Stellar network is modification of Byzantine Agreement consensus protocol \cite{mazieres2015stellar}. Stellar is another blockchain network created for fast and cheap transfer of value. In contrast to Bitcoin's Satoshi Consensus, Stellar Consensus Protocol (SCP), doesn't use proof-of-work, instead construct called quorum slices is used to achieve consensus over global ledger. What makes SCP interesting for us, is the fact that it is model designed for internet level consensus. Additionally each node can freely chose the set of trusted nodes, to build so called quorum slice.
+%\section{Byzantine Agreement}
 
 
-\section{Blockchain}
-When we speak about trust, openness and decentralization it's always worth to consider Blockchain technology. Here we will try to use Blockchain to achieve previously stated requirements. Some of the properties Blockchain technology gives us are: immutability - once written, data can not be modified. Time assurance - each block is published in apprx. 10min. This feature gives us a clock that will provide us signed timestamps. Sign ensure trust based on consensus settled by proof-of-work algorithm.
+%\section{Federated Byzantine Agreement}
+%Federated Byzatine Agreement (FBA) introduced in Stellar network is modification of Byzantine Agreement consensus protocol \cite{mazieres2015stellar}. Stellar is another blockchain network created for fast and cheap transfer of value. In contrast to Bitcoin's Satoshi Consensus, Stellar Consensus Protocol (SCP), doesn't use proof-of-work, instead construct called quorum slices is used to achieve consensus over global ledger. What makes SCP interesting for us, is the fact that it is model designed for internet level consensus. Additionally each node can freely chose the set of trusted nodes, to build so called quorum slice.
+
+
+%\section{Blockchain}
+%When we speak about trust, openness and decentralization it's always worth to consider Blockchain technology. Here we will try to use Blockchain to achieve previously stated requirements. Some of the properties Blockchain technology gives us are: immutability - once written, data can not be modified. Time assurance - each block is published in apprx. 10min. This feature gives us a clock that will provide us signed timestamps. Sign ensure trust based on consensus settled by proof-of-work algorithm.
 
 \section{Proof of Time - Abstract solution}
 We propose system where authentication is based on \textit{proof of time} access to private keys. 
