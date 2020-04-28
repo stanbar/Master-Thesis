@@ -43,20 +43,8 @@ By attacker we understand malicious provider who gets access to a "signing machi
 
 \section{Content Propagation Models}
 
-\section{Fake News}
-Fake News is an deliberate disinformative news that is hard to identify, and can lead to descructive consequences if not mitigated on time. Social media are perfect ecosystem for disseminating such kind of content, where the algorithms are designed to serve us the content we are likely to agree. In \cite{zhou2018fake} authors point out, why social media algorithms are very effective in fake news dissemination. Social media allow to form a similar minded people into groups, easier than ever before. Such groups facilitate Echo Chamber effect, where each individual is surrounded by people who share and produce content that fits our current world view. This leads to segmented and polarized society, which is very prone to believe in fake news that confirm current opinions, even if there is limited or no reason to believe in such. 
 
 
-Fake News are written in very provocative fashion, making the content more attractive to interaction, more interaction lead to higher dissemination, which make even more interaction, and so on. While for honest publisher and valuable content this feature is helpful, it becomes very dangerous tool in hands of malicious publishers. Additionally the low cost of creating new accounts makes it even easier for attacker to initiate the snow-ball effect, using fake accounts. Bots can interact with people or even with other bots, creating fake social opinions.  
-
-We notice that this thread model concept fits perfectly into our Content Posioning Attack model. Thus it might be worth to reach some solutions used in that matter. 
-In some sense, we are facing similar problem Fake News in social media does. We want to allow valuable content to spread really fast, and to reach as much people as possible, without any censorship. But the problem arises when we 
-Fake News 
-We notice that CPA is similar to Fake News. 
-
-\subsection{How to mitigate fake news}
-One idea is to create centralized services, that reveal known fake news. So each time someone is susceptible to some news, he can check if the news in not present in blacklisted news. Although this might seem great solution, it struggle with one significant flaw. Attacker can publish honest news in such "oracle" service, leading to revoking genuine news, which can he as harmful as fake news. Better way would be to check many services, and decide if they are convincing you, would be to  . 
-Yet, the problem still persist during the first time such fake news is blacklisted in one of such services. 
 
 \section{Wikipedia}
 Wikipedia is great example of system that face with content poisoning problem. Let's investigate how do they solve the problem. 
@@ -75,7 +63,31 @@ Due to copyrights of publishers, it's important that no node redistribute its co
 Damage detection is solved in cyclic polls, where each interested peer, vote on the hash of the storing Archive Unit (smallest unit in which nodes identify each content). Since each node consist of different set of Archive Units (AU), the protocol treat each AU independently. If it turns out that some node contains AU with different hash than majority of the poll, it start sequence of repairs. In result LOCKSS become self-healing store of data, and does not increase risk of free-loading non-purchased content.
 LOCKSS is designed in a way that doesn't rely on long-time public-key cryptography. System that must operate for decades, is highly susceptible to eventually private-key leakage. Since it doesn't rely on public-key cryptography, the peer identity is very limited, therefore such system can not rely on peer reputations.
 
-\section{Consensus protocols}
+\section{Fake News}
+Fake News is an deliberate disinformative news that is hard to identify, and can lead to descructive consequences if not mitigated on time. Social media are perfect ecosystem for disseminating such kind of content, where the algorithms are designed to serve us the content we are likely to agree. In \cite{zhou2018fake} authors point out, why social media algorithms are very effective in fake news dissemination. Social media allow to form a similar minded people into groups, easier than ever before. Such groups facilitate Echo Chamber effect, where each individual is surrounded by people who share and produce content that fits our current world view. This leads to segmented and polarized society, which is very prone to believe in fake news that confirm current opinions, even if there is limited or no reason to believe in such. 
+
+
+Fake News are written in very provocative fashion, making the content more attractive to interaction, more interaction lead to higher dissemination, which make even more interaction, and so on. While for honest publisher and valuable content this feature is helpful, it becomes very dangerous tool in hands of malicious publishers. Additionally the low cost of creating new accounts makes it even easier for attacker to initiate the snow-ball effect, using fake accounts. Bots can interact with people or even with other bots, creating fake social opinions.  
+
+We notice that this thread model fits perfectly into our Content Posioning Attack model. In some sense, we are facing similar problem Fake News in social media does. We want to allow valuable content to spread as fast as possible, while limiting malicious content dissemination to the minimum.
+
+
+\subsection{How to mitigate fake news}
+One idea is to create centralized services, that reveal known fake news. So each time someone is susceptible to some news, he can check if the news in not present in blacklisted news. Although this might seem great solution, it struggle with one significant flaw. Attacker can publish honest news in such "oracle" service, leading to revoking genuine news, which can he as harmful as publishing fake news. A better way would be to check many independent "oracle" services, and evaluate your decision based on how many of them is sceptical to such news.
+
+Another idea would be to create a certification services. Each news could be signed by services who decide that such content is legit or not. The user could decide which certification services he trust, and therefore inherit the trust to the news signed by such services. This idea seems to work for decades in journalism. The reader of reliable journal, does not need to check each article if it's fake or not. He inherit the confidence to each article included the journal, because he trust that the journal's reviewers did the work to eliminate fake, or low quality content. Additionally the journal publisher, has no interest to publish low quality content, because he has economic incentivization to become as creditworthy publisher as possible.
+Of course this idea also comes with the downsides. The process of reviewing article is very slow, and require qualified human interaction. Although some of the work can be outsourced to artifical intelligence, it's still very complex task. Additionally, the journal publisher can introduce some censorship, or just favor some kind of content arbitrary. In other words, this mechanism does not scale for general-purpose content certification.
+
+Let's consider the fake news detection in practice. When Alice forgot to logout from social media account on public library computer, someone can submit a content, a post, that says "I don't want to live anymore the way everyone else is living, this rat race is not for me, from today I become homeless, Goodbay", such content is good candidate to become successful Fake News. Mainly because it's created from the author account, which gives it high credibility. Besides that, it contains some arguable truth, that can make it more trustworthy. Unfortunately as we discussed in previous approach (certification services) this idea of content evaluation doesn't scale to the level we need. So what we can do, to decide if this kind of post is fake or not? We can just wait, in this situation the time is playing crucial role, because if such post is deleted from Alice account after short period, we can be sure that it was something Alice would never post, so it was a fake news. On the other hand, if the post is present for the long time on her account page, with high probability we can be sure, that she really want it to be there, thus become legit content.
+
+This idea seems to be quite native and simplistic approach. But  in the history of technology the simplest solutions, seems to displaces the more complex one. And is there anything simpler than doing nothing? 
+Of course, this approach also has it's downsides, it's slow. If the information is urgent, like information that some country starts World War III, we don't have hours to just wait until the information gets deleted or not. We need to act fast. In such situation this approach is inefficient. But for less urgent content, this approach offer a whole lot of useful features. It scales linearly. For each content publication, there is only one person involved to remove the content or not. It is maintenance-free. By default, no one needs to do anything if the content is legit. It just stays there. It is Flexible. The reader, the content consumer can individually decide if the amount of time from the publication (let's call it a credibility score), is high enough to trust such content or not. If the information is not important, we can trust it from the first hour from the publication, if it's very important like banking webpage update, we could wait couple of hours until we enter the credentials into in. It is like HTTPS and HTTP, but way more flexible. Some pages can be safely browsed over HTTP, while others should be used only over HTTPS. 
+
+As we discussed before, the problem of Fake News in social network is very similar to the CPA problem in ICN networks. So the solutions that work in one domain could possibly work in the other. In this thesis, we will continue the idea of Credibility Score based on time from the publication, further on we call it Proof of Time.
+
+\section{Proof of Time}
+In previous chapter we introduced mechanism for mitigating Fake News propagation on Social Media accounts, by the most natural and lazy mechanism which is waiting. This mechanismWe noticed has high potential from the simplicity and scalability of this approach, so we will try to apply the concept to ICNetworks. We need to outline some assumptions we are working on. First of all, the attacker is operating in time-constraint environment. The stolen credentials he is working on will expire, or the session will be revoked.  We assumed that the attacker is able to publish some content from the legit publisher account, gaining high credibility. We need to add some assumptions here, the attacker is operating in time-constraint environment, he is able to operate on 
+Let's abstract from the idea from previous section to the more general concept.
 Distributed systems require some kind of mechanism that let them achieve common state. We deep dive into different kind of consensus mechanisms that might be useful for our CPA problem.
 
 %\section{DNS - Domain Name Server}
@@ -197,6 +209,4 @@ Require Network topology awareness & True             & False
 \bibliography{refs}
 
 \end{document}
-
-
 
