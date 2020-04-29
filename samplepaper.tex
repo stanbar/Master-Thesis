@@ -29,7 +29,8 @@ Information-centric networks introduce new vector of attacks, one of them is con
 
 
 \section{Introduction - State of the art}
-Current internet architecture is mostly based on TCP/IP stack, which allow  establish communication channels between two IP addresses. While it worked great for past years,  it struggle to fit current demands. Today internet is dominated by transporting content such as audio, video, images and text[source] from content creators to content consumers.
+Current internet architecture is mostly based on TCP/IP stack, which allow  establish communication channels between two IP addresses. While it worked great for past years,  it struggle to fit current demands. Today internet is dominated by transporting content such as audio, video, images and text[source] from content creators to content consumers. 
+https://www.youtube.com/watch?v=8Z685OF-PS8
 % Write more about how the internet is used today
 % Write more about why current architecture doesn't fit 
 % ICN - the solution !!!
@@ -86,9 +87,14 @@ Of course, this approach also has it's downsides, it's slow. If the information 
 As we discussed before, the problem of Fake News in social network is very similar to the CPA problem in ICN networks. So the solutions that work in one domain could possibly work in the other. In this thesis, we will continue the idea of Credibility Score based on time from the publication, further on we call it Proof of Time.
 
 \section{Proof of Time}
-In previous chapter we introduced mechanism for mitigating Fake News propagation on Social Media accounts, by the most natural and lazy mechanism which is waiting. This mechanismWe noticed has high potential from the simplicity and scalability of this approach, so we will try to apply the concept to ICNetworks. We need to outline some assumptions we are working on. First of all, the attacker is operating in time-constraint environment. The stolen credentials he is working on will expire, or the session will be revoked.  We assumed that the attacker is able to publish some content from the legit publisher account, gaining high credibility. We need to add some assumptions here, the attacker is operating in time-constraint environment, he is able to operate on 
-Let's abstract from the idea from previous section to the more general concept.
-Distributed systems require some kind of mechanism that let them achieve common state. We deep dive into different kind of consensus mechanisms that might be useful for our CPA problem.
+In previous chapter we introduced mechanism for mitigating Fake News propagation on Social Media accounts, by the most natural and lazy mechanism which is waiting. This mechanism has high potential from its simplicity and scalability, so we will try to apply the concept to ICNetworks. Before that we need to outline some assumptions. First of all, the attacker is operating in time-constraint environment. He will eventually lose the access to the account, either by revoking, expiration of the  credentials/session/access token or any other external factor. Additionally he is unable to refresh the credentials, session, access token infinitely long. As a result his access to the publisher account is limited; in contrast to real account owner whose access is unrestricted. 
+We will leverage the difference between those two scenarios to create new method of authentication. This method require each publisher to proof the access to his secret key over some period of time, hence the name \b{Proof of Time}.
+
+In previous section we discussed, how the mechanism could work in social media networks. ICNnetworks are different in one main aspect, they doesn't allow to remove the content, because the content is distributed across many routers within their (Content Store) data cache which is designed to ease the content dissemination. To support content removal, each node would need to periodically ask the publisher if the content has been removed or not, in that way, sacrificing the scalability, which was the reason the ICN was created at first place. 
+Fortunately something else can be done, instead of requiring the content removal. We can create the overlay network of trust, where the primitives are the trust to a content. When the trust is low, the user should be discouraged to use it (simillar how modern web browsers discourage usage of unsecure HTTP protocol to browse webpages). In such overlay trust network, each content has its Credibility Score. The Credibility Score is gained by Proving the time access to the publisher secret key proof of time.
+
+    can assume that by default ICN are based on content caching,  thus we can not base auth proof of time, on the fact that the legit user will remove the content from the network.
+Let's abstract from the idea in previous section, to the more general concept.
 
 %\section{DNS - Domain Name Server}
 
