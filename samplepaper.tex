@@ -93,9 +93,92 @@ We will leverage the difference between those two scenarios to create new method
 In previous section we discussed, how the mechanism could work in social media networks. ICNnetworks are different in one main aspect, they doesn't allow to remove the content, because the content is distributed across many routers within their (Content Store) data cache, which is designed to ease the content dissemination. To support content removal, each node would need to periodically ask the publisher if the content has been removed or not, in that way, sacrificing the scalability, which was the reason the ICN was created at first place. 
 Fortunately something else can be done, instead of requiring the publisher to remove the content, we can create the overlay network of trust, where the primitives are the trust to a content. When the trust is low, the user should be discouraged to use it (simillar how modern web browsers discourage usage of unsecure HTTP protocol to browse webpages). In such overlay trust network, each content has its Credibility Score. The Credibility Score is gained by proving the time access to the publisher secret key. In other words, the longer the publisher signs the content, the higher the Credibility Score for the content is. With that model, we assume that malicious actor, is unable to achieve enough Credibility Score to convince the network about its trustworthy. While legitimate Publisher will eventually achieve it over time. In further chapters we will discuss how to design such overlay network to accomplish mentioned authentication mechanism. But before that, let first specify what kind of network we are working on.
 
-
-\section{Network structureGraph Infection}
+\section{Network structure}
 In previous chapter we mentioned the need to create overlay network of trust where each publisher tries to convince the rest of the network about its trustworthy, by increasing Credibility Score of the content. In this chapter we will discuss what kind of network we are working with. 
+
+\section{Trust propagation}
+
+
+As we discussed in previous chapter, the Credibility Score will spread across the ICNetwork nodes. It can be spreaded in various ways, and in this chapter we will explore different models for this kind of mechanism. 
+
+One mechanism proposed by [konor] abstract the concept of trust to the concept of infection. Each node that gains the trust to the content is assumed infected. Each node that does not trust the content is called healthy. By deafult, all nodes are healthly, therefore noone trust the content.
+Publisher has the ability to infect the nodes by sending them the proof-of-time certificate. [Fig of certificate].
+Each node who gets the certificate, sets credibility score to 1 in its local trust table. That way, the publisher can easly flood the whole network in relative short time, and this is not what we want. We want the trust, to increase slowly. Slow enought that malicious publisher is not able to infect whole network - leading to epidemic. In order to slow down the dissemination process we can use various mechanisms. In [konor], the author proposed the mechanism where each node refuses the infection unless the certificate is signed by previous node. That way the publisher could infect new nodes sequentialy which is much slower than infecting them in parallel. But it is still not enough. In order to take control over the speed of infection dissemination. What we can do is to design the nodes to sign the certificate after some time of delay (e.g. 10min). This constraint seems to prevent form rapid dissemination, but the smart publisher could request many nodes at the same time to sign the certificate, and proceed many chain of certification in parallel. To prevent from that, we need to force the publisher to start the chain from its home node (assigned by some external mechanism), and each node needs to point out, which node can trust the certificate in next order. That way, the publisher can not create the certification chain in parallel, it needs to follow the rules set by nodes. This mechanism looks similar to very slow iterative dns query.
+
+[IMG]
+
+There are still some missing points, that we needed to solve. Although we can control the speed of infection dissemination, we don't have the mechanism to recover from malicious publications.  After the limited period of time (the malicious publisher has access to), the network should eventually notice that fact and reject the authentication. While the honest publisher who don't have time constraints, can successfully infect whole network - leading to epidemic, thus authenticating the content. 
+
+We need to add the mechanism of node recovering. Once the node is infected it should stay in that state for limited period of time. After that time, it gets recovered - going to healthly state - distrust the content. The time needs to be carefully designed so the nodes doesn't recover too fast because it would lead to state where we are infecting slower than the nodes are recovering. 
+
+Another problem is the fact that the requirement that we need to infect whole network is unconvinient at best. It would be much better if we could infect just limited number of nodes, while the rest of the network would be infected by another mechanism.
+In [konor] the author proposes additional mechanism of inner infections. Each node gets infected not only by publisher certificate, but also by its neighbour nodes. That way, the publisher would be responsible just for starting the chain reaction process, which when started with required power, would embrace whole network. 
+
+In our model the infection is the abstract representing trust, so we should take a look how the trust graph are build to understand how we could leverage the mechanisms for our infection spread.
+
+\section{Trust graph}
+How are they created ? In life, in networks ? What does it mean to create trust relationship. What do we understand by trust relationship. In environments that or another. 
+
+Then we assume that such relation is already achieved. 
+LOCKSS - solve the problem in one way, Wikipedia in another (experts consensus), but they doesn't fit to us, why ?. 
+
+Why do we even look for solution for our problem in the context of human trust ? It turns out that people are still one of the most advanced technology, thus we can get inspired by some of the solutions that worked in human societies for centuries. Let's dive into it.
+Yuval Noah Harari in his book "Sapiens: A Brief History of Humankind" states that the most important feature of human language is rumor. Rumor let us know which person is not trustworthy without having to interact with him directly. If our best friend Bob, tells us, that Carlie is theft, we don't need to get stolen to be convinced about it. Same applies in inverse scenario, if Bob tells us, that Carlie sells great quality products, we are now more likely to buy products from him. We notice that each person we know directly or indirectly, gets labeled by some tags. One can be labeled as Helpful, Conscientiousness and also Not-Trustworthy, while other can be labeled as Unhelpful, Lazy but Trustworthy. Here is this paper we are limiting our range of study just to dimension of Trustworthness.
+What if we have three friends Alice, Bob, Charlie. Alice and  Bob tells us that David is Trustworthy, while Charlie claims that he's not. Decision of labeling David as Trustworthy or not, requires some kind of decision evaluation algorithm.
+One might assume that if there is at least one person who doesn't trust him, there must be something wrong with him, and will label him as Not-Trustworthy. One can use the most natural to human beings evaluator which says, do want majority of people do, thus if Charlie is trusted by majority, I will trust her too. Another one can slightly generalise this evaluator and say that person is trustworthy, only if $\xi$ percentage of my friends trust him. 
+
+At this point it's worth introducing some convention. When we say friend we mean a trustworthy person, in other words, person to who we have trust relation to. Let $N$ to be a set of all considered person group, friends and non-friends. Let $F$ be a set of all our friends $f \in F$. Let $F_n$ be a subset of $F$ where all $f$ trust person $n$. Then we will call $\%_n = |F_n|/|F|$ the proportion of our fiends who trust particular person $n$. Let's call $\xi$ (where $0 \le \xi \leq 1$) the minimum proportion of our friends $\%_n$ who needs to trust person $n$ in order to make me trust him. 
+
+So as we said previously that we will trust David only if majority of our friends trust him. We denote trust function as $T(n) = \%_n > \xi : (N) \rightarrow \{0,1\}$. 
+Let's use this formula to evaluate if $David$ is trustworthy person. Let $\xi = 0.5$. We know that Alice and Bob do trust David, while Charlie don't.
+\[T(David) = \%_{David} > \xi\]
+\[= |F_n|/|F| > \xi\]
+\[= \frac{2}{3} > \frac{1}{2}\]
+\[= 1\]
+Then it turns out that $David$ is \textbf{Trustworthy}
+
+
+People with low $\xi$ easly gets manipulated, we call them naive.
+People with high $\xi$ hardly gets convinced, we call them stubborn. 
+
+Another generalisation might be adding weights to this evaluator, let's say that Charlie is our brother, while Alice and Bob are our cousins, and we trust 3 times stronger to our brother than cousin. Let's call $W(f): (F) \rightarrow \Re$ the function that maps our friend to the weight of how strong we trust him. In this case weighted proportion of our friends \[\%_n = \frac{\sum\limits_f^{F_n} W(f)}{\sum\limits_f^{F} W(f)}\]
+
+When we assume weights $W(Alice) = 1, W(Bob) = 1, W(Charlie) = 3$, and $\xi = 0.5$. We can calculate weighted proportion $T(David)$ as follows:
+\[T(David) = \%_n > \xi\]
+\[= \frac{\sum\limits_f^{F_n} W(f)}{\sum\limits_f^{F} W(f)} > \xi\]
+\[= \frac{\sum \{1,1\}}{\sum\{1,1,3\}} > \frac{1}{2}\]
+\[= \frac{2}{5} > \frac{1}{2}\]
+\[= 0\]
+Then it turns out that $David$ is \textbf{Not-Trustworthy}
+
+But this view is based on static network of connections. We somehow meet Alice, Bob and Charlie, and we gets convinced about their trustworthness. Thus there must be a second way of gaining our trust. Let's modify our trust function by allowing External Trust Obtaining(ETO). $T(n) = \%_n > \xi \lor ETO(n) : (N) \rightarrow \{0,1\}$. 
+
+Another think we can observe in the context of trust network is time. Should we still trust our friend from elementary school if we haven't seen him for decades ? We argue that trust is function of time.
+
+// How to continue from trust graph subchapter 
+
+
+
+We said that infected node trusts the content published by the publisher, therefore the user who request the content from such "infected" node is convinced that the content can be trusted. In current scheme 
+
+In current schema, the malicious publisher can infect partial population of nodes, 
+
+
+
+ The infection is started by the publisher (honest or not) who publish the first proo-of-time certificate to the home node. Home node is assumed to be assigned to each publisher, do he can not choose arbitrary node. 
+
+
+Content Publisher who is trying to convince the network that can publish the proof-of-time certificate to one of the nodes, 
+
+Overlay Network of trust
+
+For further research, we need some graph models, that we will base our proof-of-time mechanism on. We can not be sure how the structure of ICNetworks will look like, neither assume that the overlay network of trust match it. We want to allow any arbitrary trust graph structures to be build on top of it. Let's investigate how the trust graph can be created. 
+
+Therefore we need to reach the researches from other types of networks. We can losely assume that the structure of ICNetwork will match with the structure of current internet - more precisely internet Autonomous Systems. Yet, we think that the overlay trust network should be independent from the physical structure.  That way, we can allow to create any arbitrary trust graph. It turns out that the structure of internet and structure of social networks shares common distributions called power-law. 
+
+it allows us to create any arbitrary graph  Fortunately we know that structure of internet and social networks share common distributions, called scale-free that satisfies power-law distribution. 
+
+
 
 %\section{DNS - Domain Name Server}
 
