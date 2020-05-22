@@ -1,5 +1,7 @@
 \documentclass[nostrict]{szablonPG}
 \usepackage[unicode=true]{hyperref}
+\usepackage{pgfplots}
+\usepackage{gnuplottex}
 \newcommand\PDFtitle{Application of blockchain and infection processes in graphs}
 \newcommand\PDFauthors{Stanisław Barański}
 \hypersetup{
@@ -25,7 +27,6 @@ Information-centric networks introduce new vector of attacks, one of them is con
 
 
 \end{abstract}
-
 
 
 \section{Introduction - State of the art}
@@ -101,20 +102,139 @@ In previous chapter we mentioned the need to create overlay network of trust whe
 
 As we discussed in previous chapter, the Credibility Score will spread across the ICNetwork nodes. It can be spreaded in various ways, and in this chapter we will explore different models for this kind of mechanism. 
 
-One mechanism proposed by [konor] abstract the concept of trust to the concept of infection. Each node that gains the trust to the content is assumed infected. Each node that does not trust the content is called healthy. By deafult, all nodes are healthly, therefore noone trust the content.
+One mechanism proposed by [konor] abstract the concept of trust to the concept of infection. Therefore allow us to grab the knowledge created by biological researches, and apply it to our problem. In our case, each node that gains the trust to the content is assumed infected. Each node that does not trust the content is called healthy. By deafult, all nodes are healthly, therefore noone trust the content.
 Publisher has the ability to infect the nodes by sending them the proof-of-time certificate. [Fig of certificate].
-Each node who gets the certificate, sets credibility score to 1 in its local trust table. That way, the publisher can easly flood the whole network in relative short time, and this is not what we want. We want the trust, to increase slowly. Slow enought that malicious publisher is not able to infect whole network - leading to epidemic. In order to slow down the dissemination process we can use various mechanisms. In [konor], the author proposed the mechanism where each node refuses the infection unless the certificate is signed by previous node. That way the publisher could infect new nodes sequentialy which is much slower than infecting them in parallel. But it is still not enough. In order to take control over the speed of infection dissemination. What we can do is to design the nodes to sign the certificate after some time of delay (e.g. 10min). This constraint seems to prevent form rapid dissemination, but the smart publisher could request many nodes at the same time to sign the certificate, and proceed many chain of certification in parallel. To prevent from that, we need to force the publisher to start the chain from its home node (assigned by some external mechanism), and each node needs to point out, which node can trust the certificate in next order. That way, the publisher can not create the certification chain in parallel, it needs to follow the rules set by nodes. This mechanism looks similar to very slow iterative dns query.
+Each node who gets the certificate, sets credibility score to 1 in its local trust table. That way, the publisher can easly flood the whole network, leading to epidemic in relative short time.  This is not what we want. We want the trust, to increase slowly. Slow enought that malicious publisher is not able to infect whole network. In order to slow down the spread process, we can use various mechanisms. In [konor], the author proposed the mechanism where each node refuses the infection unless the certificate is signed by previous node. That way the publisher could infect new nodes sequentialy which is much slower than infecting them in parallel. But it is still not enough. In order to take control over the speed of infection dissemination. What we can do is to design the nodes to sign the certificate after some time of delay (e.g. 10min). This might be the analouge to time while the host is infected, but is not infecting other people yet. This constraint seems to prevent form rapid dissemination, but the smart publisher could request many nodes at the same time to sign the certificate, and proceed many chain of certification in parallel. To prevent from that, we need to force the publisher to start the chain from its home node (assigned by some external mechanism), and each node needs to point out, which node can trust the certificate in next order. That way, the publisher can not create the certification chain in parallel, it needs to follow the rules set by nodes. This mechanism looks similar to very slow iterative dns query.
 
 [IMG]
 
 There are still some missing points, that we needed to solve. Although we can control the speed of infection dissemination, we don't have the mechanism to recover from malicious publications.  After the limited period of time (the malicious publisher has access to), the network should eventually notice that fact and reject the authentication. While the honest publisher who don't have time constraints, can successfully infect whole network - leading to epidemic, thus authenticating the content. 
 
-We need to add the mechanism of node recovering. Once the node is infected it should stay in that state for limited period of time. After that time, it gets recovered - going to healthly state - distrust the content. The time needs to be carefully designed so the nodes doesn't recover too fast because it would lead to state where we are infecting slower than the nodes are recovering. 
+We need to add the mechanism of node recovering. Once the node is infected it should stay in that state for limited period of time. After that time, it gets recovered - going to healthly state - distrust the content. The time needs to be carefully designed so the nodes doesn't recover too fast, because it would lead to state where we are infecting slower than the nodes are recovering. 
 
 Another problem is the fact that the requirement that we need to infect whole network is unconvinient at best. It would be much better if we could infect just limited number of nodes, while the rest of the network would be infected by another mechanism.
 In [konor] the author proposes additional mechanism of inner infections. Each node gets infected not only by publisher certificate, but also by its neighbour nodes. That way, the publisher would be responsible just for starting the chain reaction process, which when started with required power, would embrace whole network. 
 
+\subsection{Epidemiology}
+In epidemiology there are some known models used in modeling the spread of disease: SI, SIR, SIS, SIRS. Each letter designate the possible state the host can be in. Respectively S - suspectable, I - infected, R - recovered. An individual in suspectable state is someone who is healthy, but could catch the disease in contact with someone infected; I - someone who is infected and can infect others. R - recovered. Although those classifications are simplified, and don't take into account the inner body mechanisms, there are enought to observe what is happening on the network level. Additionally they completely ignore the contact networks, assuming that each node has equal chace to contact someone else in unit of time, so called homogeneous mixing.
+
+SI is the simplest and most primitive model, assuming that there are only two states of nodes. One can be either suspectable or infected. Let $S(t)$ be the number of nodes who are in suspectable state in time $t$, and $I(t)$ be the number of nodes who are in infected state. Since the diesese-spreading model is random one, those numbers are not deterministic, and can vary on each simulation, even on the same conditions. To get around this problem we will call $S$ and $I$ the average number of suspectable or infected nodes, i.e. average over many simulations with identical conditions.
+In this model we allow only one kind of state transition, from suspected to infected. The state changes when susceptible individual meets infected one. If the total population consist of $n = I + S$ people, then the average probability of a person you meet at random being susceptable is $S/n$.
+Lets $\beta$ be the chance that individual contact someone else in a unit of time. 
+Hence the individual has $\beta*S/n$ chance of contact with susceptible individual.
+Since the total number of infected people is $I$, then the rate of new infections per unit of time is equal $I * \beta*S/n$.
+
+The SI model can be written as ordinary differential equation:
+
+\[\frac{I}{d} = I * \beta * \frac{S}{n}\]
+
+And since $n = (S + I)$, we can write 
+
+\[\frac{I}{d} = I * \beta * (1 - \frac{I}{n})\]
+
+Accordingly, the decreasing rate of suscepcable equals:
+
+\[\frac{S}{d} = - I * \beta * \frac{S}{n}\]
+
+We can also rewrite the equation to the variables representing fractions of susceptible and infected nodes
+
+\[s = \frac{S}{n}, i = \frac{I}{n}\]
+
+Then the SI model can be written in:
+
+\[\frac{i}{d} = i*\beta*s\]
+
+or 
+
+\[\frac{i}{d} = i * \beta * (1-i)\]
+
+This kind of fractional equations are called logistic growth equations, and can be solved with:
+
+\[i(t) =\frac{ i0 * e^{\beta*t} }{(1 - i0) + i0 * e^{\beta*t}}\]
+
+Where i0 is the value of i at t = 0. Here is the example, where $i0 = 0.01$, $\beta = 1$
+
+\begin{gnuplot}[scale=0.8]
+	set ylabel '$i(t)$'
+	set xlabel '$t$'
+	i0 = 0.01
+	beta = 1
+	f(x) = ( i0 * exp(beta*x) ) / (1 - i0 + i0 * exp(beta*x))
+	plot [0:10] f(x) title '$\frac{x0 * e^{\beta*t}}{1 - x0 + x0 * e^{\beta*t}}$'
+\end{gnuplot}
+
+SIR model introduces the Recovery state to the SI model. When in the SI model, the individual is infected, it stays in that state forever, SIR model allows the infected nodes to recovery from the disease, after some period of time. In real world this might be because of the immune system fighting with the disease. Additionally once, the organism recover from the infection, it becomes immutable to further infections. Therefore in SIR the individual can change state, only from susceptible to infected to recovered. In this mathematical model, we don't distinguish if the recovery state is obtained by the immunization, or  by death, since in both cases the individual is removed from the potential diesese hosts pool. Because of that, the model is also called susceptible-infected-removed.
+
+Let's call y the chance of recovering from infected state. Then the rate of recovers over unit of time is equal:
+
+\[dr/dt = y * i(t)\]
+
+And since all those rates sum up to 0:
+
+\[di/dt + ds/dt + dr/dt = 0\]
+
+\[di/dt = ds/dt - dr/dt\]
+
+We can write the ODE for rate of infection in following form:
+
+\[di/dt = -(- i(t) * beta * s(t)) - (y * i(t))\]
+
+Which reduces to:
+
+\[di/dt = i(t) * beta * s(t) - y * i(t)\]
+
+
+Let's see how this model behave with some concrete values.  Consider COVID-19 epidemic with following assumptions; there was 3 people who was initially infected in t0, total human population equals 7.8b people, and no one was immutable to the disease in t0 so:
+\[
+I(0) = 3
+S(0) = 7.8 * 10^9
+R(0) = 0
+\]
+
+In terms of fractions:
+\[
+i(0) =  3.8 * 10^{-10}
+s(0) = 1 - 3.8 * 10^{-10}
+r(0) = 0
+\]
+
+We assume that the average person meets 240 people daily, so the chance of contact is approximately $3.8 * 10^-10$, (we need to remember that we are talking about homogeneous mixing across whole globe), and the infection duration is about 5 days. 
+\[
+b = 3.8 * 10^{-10}
+y = 1/5
+\]
+
+\begin{gnuplot}[scale=0.8]
+	set ylabel '$x(t)$'
+	set xlabel '$t$'
+	x0 = 3.8 * 10^(-10)
+	s0 = 1 - 3.8 * 10^(-10)
+	r0 = 0
+	beta = 1
+	gamma = 0.4
+	n = 7.8 * 10^9 + 3
+	
+	r(x) = s0 * exp(-r0*(r(x) - r0)/n) 
+	sf(x) = ( sx0 * exp(-r0beta*(r(x) - r0)/nx) ) / ( ( 1 - x0) + x0 * exp(beta*x))
+	f(x) = ( x0 * exp(beta*x) ) / ( (1 - x0) + x0 * exp(beta*x))
+	plot [0:10] sf(x) title '$\frac{x0 * e^{\beta*t}}{1 - x0 + x0 * e^{\beta*t}}$'
+\end{gnuplot}
+ 
+
+In addition to SI model, we can add another factor to the formula:
+
+\[di/dt = beta * s(t) * i(t) - y * i(t)\]
+
+The dynamic of this model has two states. In the first stage the susceptible nodes gets infected  when they have contact with infected individuals (with chance of beta). In the second state, the infected nodes recover (or die) with the chance y. 
+
+
+
+Unfortunately those modes doesn't fit exactly to our needs, since they are based on the propability that some individual will meet someone else. In our problem, the network is static, our neighbors don't change in time, thus we have to create different model of dissemination spread. 
+
 In our model the infection is the abstract representing trust, so we should take a look how the trust graph are build to understand how we could leverage the mechanisms for our infection spread.
+
+
+
 
 \section{Trust graph}
 How are they created ? In life, in networks ? What does it mean to create trust relationship. What do we understand by trust relationship. In environments that or another. 
@@ -180,21 +300,6 @@ it allows us to create any arbitrary graph  Fortunately we know that structure o
 
 
 
-%\section{DNS - Domain Name Server}
-
-%\section{Satoshi consensus}
-%Satoshi consensus based on proof-of-work was firstly introduced by Satoshi Nakamoto in Bitcoin Whitepaper.
-%Bitcoin nodes uses consensus to acquire one common state on global ledger, called Blockchain. Bitcoin nodes achieve consensus by following common rules. The most significant rule require each block in blockchain \ref{blockchain}, must satisfy NP-hard puzzle in order to be validated and accepted. 
-
-%\section{Proof-of-Stake}
-
-
-%\section{Byzantine Agreement}
-
-
-%\section{Federated Byzantine Agreement}
-%Federated Byzatine Agreement (FBA) introduced in Stellar network is modification of Byzantine Agreement consensus protocol \cite{mazieres2015stellar}. Stellar is another blockchain network created for fast and cheap transfer of value. In contrast to Bitcoin's Satoshi Consensus, Stellar Consensus Protocol (SCP), doesn't use proof-of-work, instead construct called quorum slices is used to achieve consensus over global ledger. What makes SCP interesting for us, is the fact that it is model designed for internet level consensus. Additionally each node can freely chose the set of trusted nodes, to build so called quorum slice.
-
 
 %\section{Blockchain}
 %When we speak about trust, openness and decentralization it's always worth to consider Blockchain technology. Here we will try to use Blockchain to achieve previously stated requirements. Some of the properties Blockchain technology gives us are: immutability - once written, data can not be modified. Time assurance - each block is published in apprx. 10min. This feature gives us a clock that will provide us signed timestamps. Sign ensure trust based on consensus settled by proof-of-work algorithm.
@@ -203,44 +308,7 @@ it allows us to create any arbitrary graph  Fortunately we know that structure o
 We propose system where authentication is based on \textit{proof of time} access to private keys. 
 We noticed that the proof-of-time must be published in either neutral place or in verifier place. So the publisher can not use it's influence to modify the data. 
 
-\section{Trust graph}
-How are they created ? In life, in networks ? What does it mean to create trust relationship. What do we understand by trust relationship. In environments that or another. 
 
-Then we assume that such relation is already achieved. 
-LOCKSS - solve the problem in one way, Wikipedia in another (experts consensus), but they doesn't fit to us, why ?. 
-
-Why do we even look for solution for our problem in the context of human trust ? It turns out that people are still one of the most advanced technology, thus we can get inspired by some of the solutions that worked in human societies for centuries. Let's dive into it.
-Yuval Noah Harari in his book "Sapiens: A Brief History of Humankind" states that the most important feature of human language is rumor. Rumor let us know which person is not trustworthy without having to interact with him directly. If our best friend Bob, tells us, that Carlie is theft, we don't need to get stolen to be convinced about it. Same applies in inverse scenario, if Bob tells us, that Carlie sells great quality products, we are now more likely to buy products from him. We notice that each person we know directly or indirectly, gets labeled by some tags. One can be labeled as Helpful, Conscientiousness and also Not-Trustworthy, while other can be labeled as Unhelpful, Lazy but Trustworthy. Here is this paper we are limiting our range of study just to dimension of Trustworthness.
-What if we have three friends Alice, Bob, Charlie. Alice and  Bob tells us that David is Trustworthy, while Charlie claims that he's not. Decision of labeling David as Trustworthy or not, requires some kind of decision evaluation algorithm.
-One might assume that if there is at least one person who doesn't trust him, there must be something wrong with him, and will label him as Not-Trustworthy. One can use the most natural to human beings evaluator which says, do want majority of people do, thus if Charlie is trusted by majority, I will trust her too. Another one can slightly generalise this evaluator and say that person is trustworthy, only if $\xi$ percentage of my friends trust him. 
-
-At this point it's worth introducing some convention. When we say friend we mean a trustworthy person, in other words, person to who we have trust relation to. Let $N$ to be a set of all considered person group, friends and non-friends. Let $F$ be a set of all our friends $f \in F$. Let $F_n$ be a subset of $F$ where all $f$ trust person $n$. Then we will call $\%_n = |F_n|/|F|$ the proportion of our fiends who trust particular person $n$. Let's call $\xi$ (where $0 \le \xi \leq 1$) the minimum proportion of our friends $\%_n$ who needs to trust person $n$ in order to make me trust him. 
-
-So as we said previously that we will trust David only if majority of our friends trust him. We denote trust function as $T(n) = \%_n > \xi : (N) \rightarrow \{0,1\}$. 
-Let's use this formula to evaluate if $David$ is trustworthy person. Let $\xi = 0.5$. We know that Alice and Bob do trust David, while Charlie don't.
-\[T(David) = \%_{David} > \xi\]
-\[= |F_n|/|F| > \xi\]
-\[= \frac{2}{3} > \frac{1}{2}\]
-\[= 1\]
-Then it turns out that $David$ is \textbf{Trustworthy}
-
-
-People with low $\xi$ easly gets manipulated, we call them naive.
-People with high $\xi$ hardly gets convinced, we call them stubborn. 
-
-Another generalisation might be adding weights to this evaluator, let's say that Charlie is our brother, while Alice and Bob are our cousins, and we trust 3 times stronger to our brother than cousin. Let's call $W(f): (F) \rightarrow \Re$ the function that maps our friend to the weight of how strong we trust him. In this case weighted proportion of our friends \[\%_n = \frac{\sum\limits_f^{F_n} W(f)}{\sum\limits_f^{F} W(f)}\]
-
-When we assume weights $W(Alice) = 1, W(Bob) = 1, W(Charlie) = 3$, and $\xi = 0.5$. We can calculate weighted proportion $T(David)$ as follows:
-\[T(David) = \%_n > \xi\]
-\[= \frac{\sum\limits_f^{F_n} W(f)}{\sum\limits_f^{F} W(f)} > \xi\]
-\[= \frac{\sum \{1,1\}}{\sum\{1,1,3\}} > \frac{1}{2}\]
-\[= \frac{2}{5} > \frac{1}{2}\]
-\[= 0\]
-Then it turns out that $David$ is \textbf{Not-Trustworthy}
-
-But this view is based on static network of connections. We somehow meet Alice, Bob and Charlie, and we gets convinced about their trustworthness. Thus there must be a second way of gaining our trust. Let's modify our trust function by allowing External Trust Obtaining(ETO). $T(n) = \%_n > \xi \lor ETO(n) : (N) \rightarrow \{0,1\}$. 
-
-Another think we can observe in the context of trust network is time. Should we still trust our friend from elementary school if we haven't seen him for decades ? We argue that trust is function of time.
 
 
 
