@@ -2,6 +2,7 @@
 \usepackage[unicode=true]{hyperref}
 \usepackage{pgfplots}
 \usepackage{gnuplottex}
+\usepackage{graphicx}
 \newcommand\PDFtitle{Application of blockchain and infection processes in graphs}
 \newcommand\PDFauthors{Stanisław Barański}
 \hypersetup{
@@ -167,7 +168,11 @@ SIR model introduces the Recovery state to the SI model. When in the SI model, t
 
 Let's call $\gamma$ the chance of recovering from infected state. Then the rate of recovers over unit of time is equal:
 
-\[dr/dt = \gamma * i(t)\]
+\[\frac{dr}{dt} = \gamma i(t)\]
+
+The Susceptible Equation stays the same as in SI Model:
+
+\[\frac{ds}{dt} = -\beta i(t) s(t)\]
 
 And since all those rates sum up to 0:
 
@@ -177,54 +182,51 @@ And since all those rates sum up to 0:
 
 We can write the ODE for rate of infection in following form:
 
-\[\frac{di}{dt} = -(- i(t) * beta * s(t)) - (\gamma * i(t))\]
+\[\frac{di}{dt} = -(- i(t) \beta s(t)) - (\gamma i(t))\]
 
 Which reduces to:
 
-\[\frac{di}{dt} = i(t) * beta * s(t) - y * i(t)\]
+\[\frac{di}{dt} = i(t) \beta s(t) - \gamma i(t)\]
+
 
 
 Let's see how this model behave with some concrete values.  Consider COVID-19 epidemic with following assumptions; there was 3 people who was initially infected in t0, total human population equals 7.8b people, and no one was immutable to the disease in t0 so:
-\[
-I(0) = 3
-S(0) = 7.8 * 10^9
-R(0) = 0
-\]
+
+\[I(0) = 3\]
+\[S(0) = 7.8 * 10^9\]
+\[R(0) = 0\]
 
 In terms of fractions:
-\[
-i(0) =  3.8 * 10^{-10}
-s(0) = 1 - 3.8 * 10^{-10}
-r(0) = 0
-\]
+\[i(0) = 3.8 * 10^{-10}\]
+\[s(0) = 1 - 3.8 * 10^{-10}\]
+\[r(0) = 0\]
 
-We assume that the average person meets 240 people daily, so the chance of contact is approximately $3.8 * 10^-10$, (we need to remember that we are talking about homogeneous mixing across whole globe), and the infection duration is about 5 days. 
-\[
-b = 3.8 * 10^{-10}
-y = 1/5
-\]
+We assume that each infected person, on average make a possibly infecting contact once per two days (we need to remember that we are talking about homogeneous mixing across whole globe), and the infection duration is about 5 days. 
 
-\begin{gnuplot}[scale=0.8]
-	set ylabel '$x(t)$'
-	set xlabel '$t$'
-	x0 = 3.8 * 10^(-10)
-	s0 = 1 - 3.8 * 10^(-10)
-	r0 = 0
-	beta = 1
-	gamma = 0.4
-	n = 7.8 * 10^9 + 3
-	
-	u(x) = exp(-beta/gamma * r(x))
-	r(x) = s0 * exp(-r0*(r(x) - r0)/n) 
-	s(x) = s0 * exp(-r0*(r(x) - r0)/n) 
-	f(x) = ( x0 * exp(beta*x) ) / ( (1 - x0) + x0 * exp(beta*x))
-	plot [0:10] s(x) title '$\frac{x0 * e^{\beta*t}}{1 - x0 + x0 * e^{\beta*t}}$'
-\end{gnuplot}
- 
+\[b = \frac{1}{2}\]
+\[y = \frac{1}{5}\]
+
+The following plot shows fractions of susceptable, infectious, recovered over whole population in the function of time.
+
+\begin{figure}[htbt!]
+\includegraphics[width=9cm]{covidb12y15.png}
+\centering
+\caption{COVID-19 in SIR Model for $\beta=0.5$ }
+\label{fig:covid1}
+\end{figure} 
+
+But if we increase the number of infections to one per day $\betab = 1$, then the plot look
+
+\begin{figure}[htbt!]
+    \includegraphics[width=9cm]{covidb1y15.png}
+    \centering
+    \caption{COVID-19 in SIR Model for $\beta=1$}
+    \label{fig:covid2}
+\end{figure} 
 
 In addition to SI model, we can add another factor to the formula:
 
-\[\frac{di}{dt} = \beta * s(t) * i(t) - y * i(t)\]
+\[\frac{di}{dt} = \beta s(t) i(t) - y i(t)\]
 
 The dynamic of this model has two states. In the first stage the susceptible nodes gets infected  when they have contact with infected individuals (with chance of beta). In the second state, the infected nodes recover (or die) with the chance y. 
 
