@@ -165,23 +165,23 @@ Where i0 is the value of i at t = 0. Here is the example, where $i0 = 0.01$, $\b
 
 SIR model introduces the Recovery state to the SI model. When in the SI model, the individual is infected, it stays in that state forever, SIR model allows the infected nodes to recovery from the disease, after some period of time. In real world this might be because of the immune system fighting with the disease. Additionally once, the organism recover from the infection, it becomes immutable to further infections. Therefore in SIR the individual can change state, only from susceptible to infected to recovered. In this mathematical model, we don't distinguish if the recovery state is obtained by the immunization, or  by death, since in both cases the individual is removed from the potential diesese hosts pool. Because of that, the model is also called susceptible-infected-removed.
 
-Let's call y the chance of recovering from infected state. Then the rate of recovers over unit of time is equal:
+Let's call $\gamma$ the chance of recovering from infected state. Then the rate of recovers over unit of time is equal:
 
-\[dr/dt = y * i(t)\]
+\[dr/dt = \gamma * i(t)\]
 
 And since all those rates sum up to 0:
 
-\[di/dt + ds/dt + dr/dt = 0\]
+\[\frac{di}{dt} + \frac{ds}{dt} + \frac{dr}{dt} = 0\]
 
-\[di/dt = ds/dt - dr/dt\]
+\[\frac{di}{dt} = \frac{ds}{dt} - \frac{dr}{dt}\]
 
 We can write the ODE for rate of infection in following form:
 
-\[di/dt = -(- i(t) * beta * s(t)) - (y * i(t))\]
+\[\frac{di}{dt} = -(- i(t) * beta * s(t)) - (\gamma * i(t))\]
 
 Which reduces to:
 
-\[di/dt = i(t) * beta * s(t) - y * i(t)\]
+\[\frac{di}{dt} = i(t) * beta * s(t) - y * i(t)\]
 
 
 Let's see how this model behave with some concrete values.  Consider COVID-19 epidemic with following assumptions; there was 3 people who was initially infected in t0, total human population equals 7.8b people, and no one was immutable to the disease in t0 so:
@@ -214,16 +214,17 @@ y = 1/5
 	gamma = 0.4
 	n = 7.8 * 10^9 + 3
 	
+	u(x) = exp(-beta/gamma * r(x))
 	r(x) = s0 * exp(-r0*(r(x) - r0)/n) 
-	sf(x) = ( sx0 * exp(-r0beta*(r(x) - r0)/nx) ) / ( ( 1 - x0) + x0 * exp(beta*x))
+	s(x) = s0 * exp(-r0*(r(x) - r0)/n) 
 	f(x) = ( x0 * exp(beta*x) ) / ( (1 - x0) + x0 * exp(beta*x))
-	plot [0:10] sf(x) title '$\frac{x0 * e^{\beta*t}}{1 - x0 + x0 * e^{\beta*t}}$'
+	plot [0:10] s(x) title '$\frac{x0 * e^{\beta*t}}{1 - x0 + x0 * e^{\beta*t}}$'
 \end{gnuplot}
  
 
 In addition to SI model, we can add another factor to the formula:
 
-\[di/dt = beta * s(t) * i(t) - y * i(t)\]
+\[\frac{di}{dt} = \beta * s(t) * i(t) - y * i(t)\]
 
 The dynamic of this model has two states. In the first stage the susceptible nodes gets infected  when they have contact with infected individuals (with chance of beta). In the second state, the infected nodes recover (or die) with the chance y. 
 
