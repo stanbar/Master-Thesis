@@ -40,6 +40,13 @@ The Information-centric networks introduce paradigm shift from host-centric to c
 % continue with Content protection in NDN
 
 
+\section{NDN}
+
+\section{IPFS}
+
+% continue with Content protection in NDN
+
+
 
 \section{Content Poisoning - Problem}
 The most significant benefit of ICN networks is content caching. It turns out that this benefit becomes double-edged sword when we take into account security concerns. 
@@ -119,6 +126,8 @@ In [konor] the author proposes additional mechanism of inner infections. Each no
 \subsection{Epidemiology}
 In epidemiology there are some known models used in modeling the spread of disease: SI, SIR, SIS, SIRS. Each letter designate the possible state the host can be in. Respectively S - suspectable, I - infected, R - recovered. An individual in suspectable state is someone who is healthy, but could catch the disease in contact with someone infected; I - someone who is infected and can infect others. R - recovered. Although those classifications are simplified, and don't take into account the inner body mechanisms, there are enought to observe what is happening on the network level. Additionally they completely ignore the contact networks, assuming that each node has equal chace to contact someone else in unit of time, so called homogeneous mixing.
 
+\subsection{SI Model}
+
 SI is the simplest and most primitive model, assuming that there are only two states of nodes. One can be either suspectable or infected. Let $S(t)$ be the number of nodes who are in suspectable state in time $t$, and $I(t)$ be the number of nodes who are in infected state. Since the diesese-spreading model is random one, those numbers are not deterministic, and can vary on each simulation, even on the same conditions. To get around this problem we will call $S$ and $I$ the average number of suspectable or infected nodes, i.e. average over many simulations with identical conditions.
 In this model we allow only one kind of state transition, from suspected to infected. The state changes when susceptible individual meets infected one. If the total population consist of $n = I + S$ people, then the average probability of a person you meet at random being susceptable is $S/n$.
 Lets $\beta$ be the chance that individual contact someone else in a unit of time. 
@@ -163,6 +172,8 @@ Where i0 is the value of i at t = 0. Here is the example, where $i0 = 0.01$, $\b
 	f(x) = ( i0 * exp(beta*x) ) / (1 - i0 + i0 * exp(beta*x))
 	plot [0:10] f(x) title '$\frac{x0 * e^{\beta*t}}{1 - x0 + x0 * e^{\beta*t}}$'
 \end{gnuplot}
+
+\subsection{SIR Model}
 
 SIR model introduces the Recovery state to the SI model. When in the SI model, the individual is infected, it stays in that state forever, SIR model allows the infected nodes to recovery from the disease, after some period of time. In real world this might be because of the immune system fighting with the disease. Additionally once, the organism recover from the infection, it becomes immutable to further infections. Therefore in SIR the individual can change state, only from susceptible to infected to recovered. In this mathematical model, we don't distinguish if the recovery state is obtained by the immunization, or  by death, since in both cases the individual is removed from the potential diesese hosts pool. Because of that, the model is also called susceptible-infected-removed.
 
@@ -214,14 +225,6 @@ The following plot shows fractions of susceptable, infectious, recovered over wh
 \label{fig:covid1}
 \end{figure} 
 
-But if we increase the number of infections to one per day $\beta = 1$, then the plot look
-
-\begin{figure}[ht]
-    \includegraphics[width=9cm]{covidb1y15.png}
-    \centering
-    \caption{COVID-19 in SIR Model for $\beta=1$}
-    \label{fig:covid2}
-\end{figure} 
 
 But if we decrease the number of infections to one per 5 days, so the $\beta = 0.2$, then there is no epidemic:
 
@@ -232,32 +235,47 @@ But if we decrease the number of infections to one per 5 days, so the $\beta = 0
     \label{fig:covid3}
 \end{figure} 
 
-We can easly notice that, the factor determining if there will be epidemic is the rate of new infections $\frac{di}{dt}$, if it is positive, then there will be epidemic, and if it's negative, people will recover faster than spread of infection, so there will be no epidemic.
+We can easly notice that, the factor determining if the epidemic will happen is the rate of new infections $\frac{di}{dt}$, if it is positive, then there will be epidemic, and if it's negative, people will recover faster than spread of infection, so there will be no epidemic.
 
 We can calculate the value of $\frac{di}{dt}$ in the t0 and check if the value is negative of positive, the negative value mean the decrease of infections from the beginning, so we can be sure that, there will be no infections.
 
-Let's represent the factor determining of the epidemic in form of inequation, which if satisfied, will lead to epidemic:
+Let's represent the factor determining of the epidemic in form of inequation, which if satisfied, will lead to epidemic
 
-\[\frac{di}{dt} >= i(t) \beta s_0(t) - \gamma i(t) > 0\]
+\[i(t) \beta s_0 - \gamma i(t) > 0\]
 
+Since the fraction of infections $i(t)$ is never negative, we can omit it in our inequation.
 
-Since the number of infections $i(t)$ is never negative, we can omit it in our inequation.
-
-\[\frac{di}{dt} >= \beta s_0(t) - \gamma > 0\]
+\[\beta s_0 - \gamma > 0\]
 \[ s_0 > \frac{\gamma}{\beta}\]
 
+Here we can introduce $R_0$ as Basic Reproduction Number
+
+\[ R_0 = \frac{s_0 \beta}{\gamma}\]
+
+which represent the number of people, each infected person can infect before being recovered. Thus if $R_0 = 2$ then number grows exponentially, and if $R_0 = 0.5$ the number decrease exponentially. $R_0 = 1$ is called $epidemic threshold$ where the number of new infections equals the number of recovers, so the total number of infected people is always the same and equals the initial number of infected people $I_0$. For example, the Basic Reproduction Number $R_0$, for seasonal flu the value is estimated between 0.9–2.1\cite{coburn2009modeling}, whereas for COVID-19 it's estimated to 2.2 in early stage (January) \cite{li2020early} and recently to 5.7 (April) \cite{readeid}.
+
+To decrease the results of epidemic, we can decrease the numbers $s_0$ and/or $\beta$, or increase $\gamma$. Since we have little control over the time of recovery ($\gamma$), the only way to reduce the impact of infection is to reduce the number of contact between infected and suspicious people. That's why, the social distancing is so important in fight with epidemics.
+
+
+
+It might be also valuable to know the maximum number of infected people at any given time. We can calculate it by 
+
+
+\subsection{SIS Model}
+
+There are some kind of diseses, where the individual can gets infected many times e.g. the flu. For this kind of epidemic, the state flow looks following $S -> I -> S$, hence the name SIS. 
+To calculate this kind of model, we need modify the previous equations, that the change $\gamma i(t)$ will go to suspicious state instead of recovery.
+
+\[\frac{si}{dt} = - i(t) \beta s(t) + \gamma i(t)\]
+
+\[\frac{di}{dt} = i(t) \beta s(t) - \gamma i(t)\]
 
 
 
 
-In addition to SI model, we can add another factor to the formula:
-
-\[\frac{di}{dt} = \beta s(t) i(t) - y i(t)\]
-
-The dynamic of this model has two states. In the first stage the susceptible nodes gets infected  when they have contact with infected individuals (with chance of beta). In the second state, the infected nodes recover (or die) with the chance y. 
 
 
-
+\subsection{Summary}
 Unfortunately those modes doesn't fit exactly to our needs, since they are based on the propability that some individual will meet someone else. In our problem, the network is static, our neighbors don't change in time, thus we have to create different model of dissemination spread. 
 
 In our model the infection is the abstract representing trust, so we should take a look how the trust graph are build to understand how we could leverage the mechanisms for our infection spread.
