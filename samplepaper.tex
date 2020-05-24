@@ -189,7 +189,6 @@ Which reduces to:
 \[\frac{di}{dt} = i(t) \beta s(t) - \gamma i(t)\]
 
 
-
 Let's see how this model behave with some concrete values.  Consider COVID-19 epidemic with following assumptions; there was 3 people who was initially infected in t0, total human population equals 7.8b people, and no one was immutable to the disease in t0 so:
 
 \[I(0) = 3\]
@@ -208,21 +207,48 @@ We assume that each infected person, on average make a possibly infecting contac
 
 The following plot shows fractions of susceptable, infectious, recovered over whole population in the function of time.
 
-\begin{figure}[htbt!]
+\begin{figure}[ht]
 \includegraphics[width=9cm]{covidb12y15.png}
 \centering
-\caption{COVID-19 in SIR Model for $\beta=0.5$ }
+\caption{COVID-19 in SIR Model for $\beta=0.5$}
 \label{fig:covid1}
 \end{figure} 
 
-But if we increase the number of infections to one per day $\betab = 1$, then the plot look
+But if we increase the number of infections to one per day $\beta = 1$, then the plot look
 
-\begin{figure}[htbt!]
+\begin{figure}[ht]
     \includegraphics[width=9cm]{covidb1y15.png}
     \centering
     \caption{COVID-19 in SIR Model for $\beta=1$}
     \label{fig:covid2}
 \end{figure} 
+
+But if we decrease the number of infections to one per 5 days, so the $\beta = 0.2$, then there is no epidemic:
+
+\begin{figure}[ht]
+    \includegraphics[width=9cm]{covidb15y15.png}
+    \centering
+    \caption{COVID-19 in SIR Model for $\beta=0.2$}
+    \label{fig:covid3}
+\end{figure} 
+
+We can easly notice that, the factor determining if there will be epidemic is the rate of new infections $\frac{di}{dt}$, if it is positive, then there will be epidemic, and if it's negative, people will recover faster than spread of infection, so there will be no epidemic.
+
+We can calculate the value of $\frac{di}{dt}$ in the t0 and check if the value is negative of positive, the negative value mean the decrease of infections from the beginning, so we can be sure that, there will be no infections.
+
+Let's represent the factor determining of the epidemic in form of inequation, which if satisfied, will lead to epidemic:
+
+\[\frac{di}{dt} >= i(t) \beta s_0(t) - \gamma i(t) > 0\]
+
+
+Since the number of infections $i(t)$ is never negative, we can omit it in our inequation.
+
+\[\frac{di}{dt} >= \beta s_0(t) - \gamma > 0\]
+\[ s_0 > \frac{\gamma}{\beta}\]
+
+
+
+
 
 In addition to SI model, we can add another factor to the formula:
 
