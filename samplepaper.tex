@@ -273,7 +273,7 @@ which then reduces to
 
 here we can replace $\frac{\beta}{\gamma}$ by $q$; so called \it{contact ratio}, which is described as fraction of population, that comes into contact with an infected individual, during the period when they are infectious.
 
-\[\frac{dI}{dS} = -1 + \frac{1}{qS}\]
+\[\frac{dI}{dS} = -1 + \frac{1}{q S}\]
 
 now we can integrate the equation and get
 
@@ -281,7 +281,7 @@ now we can integrate the equation and get
 
 then we apply the initial conditions and get the equation:
 
-\[I + S - \frac{1}{q} \ln{S} = I_0 + S_0 - \frac{1}{q} \ln{S_0}\]
+\[I + S - \frac{1}{q} \ln{S} = I_0 + S_0 - \frac{1}{q} \ln(S_0)\]
 
 We know that to find the function maximum we need to find the place where its deritive equals zero. And here, the right side of the equation 
 
@@ -297,13 +297,72 @@ which happens when
 
 In order to find the maximum value of I, we can replace the $S$ by $\frac{1}{q}$ in the equation
 
-\[I + S - \frac{1}{q} \ln{S} = I_0 + S_0 - \frac{1}{q} \ln{S_0}\]
+\[I + S - \frac{1}{q} \ln(S) = I_0 + S_0 - \frac{1}{q} \ln(S_0)\]
 
 so we get
 
-\[I + \frac{1}{q} - \frac{1}{q} \ln{\frac{1}{q}} = I_0 + S_0 - \frac{1}{q} \ln{S_0}\]
+\[I_{max} + \frac{1}{q} - \frac{1}{q} \ln(\frac{1}{q}) = I_0 + S_0 - \frac{1}{q} \ln(S_0)\]
 
-\[I = - \frac{1}{q} + \frac{1}{q}\ln{\frac{1}{q}} + I_0 + S_0 -\frac{1}{q}ln{S_0}\]
+\[I_{max} = - \frac{1}{q} + \frac{1}{q}\ln(\frac{1}{q}) + I_0 + S_0 -\frac{1}{q}ln(S_0)\]
+
+\[I_{max} = I_0 + S_0 - \frac{1}{q} ( 1 - \ln(\frac{1}{q}) + ln(S_0))\]
+
+\[I_{max} = I_0 + S_0 - \frac{1}{q} ( 1 + \ln(q S_0))\]
+
+For example we can calculate the $I_{max}$ for our COVID-19 example 
+
+\[I(0) = 3\]
+\[S(0) = 7.8 * 10^9\]
+\[R(0) = 0\]
+
+\[\beta = 0.5\]
+\[\gamma = 0.2\]
+
+\[q = 2.5\]
+
+\[I_{max} = 3 + 7.8 * 10^9 - 0.4 ( 1 + \ln(2.5 * 7.8 * 10^9))\]
+
+\[I_{max} = 7799999993.12\]
+
+% check
+
+We can even plot function f(x) where x is the parameter q, to see the parameter q influence the results.
+
+\begin{gnuplot}[scale=0.8]
+	set ylabel '$f(q)$'
+	set xlabel '$q$'
+	gamma = 0.2
+	f(x) = 3 + 7.8 * 10**9 - 1/x * ( 1 + log(x * 7.8 * 10**9))
+	plot [0:10] f(x) '$\frac{x0 * e^{\beta*t}}{1 - x0 + x0 * e^{\beta*t}}$'
+\end{gnuplot}
+
+\begin{gnuplot}[scale=0.8]
+	set ylabel '$f(q)$'
+	set xlabel '$q$'
+	gamma = 0.2
+	f(x) = 1 - 1/x * ( 1 + log(x))
+	plot [1:50] f(x) '$\frac{x0 * e^{\beta*t}}{1 - x0 + x0 * e^{\beta*t}}$'
+\end{gnuplot}
+
+\begin{gnuplot}[scale=0.8]
+	set ylabel '$f(q)$'
+	set xlabel '$q$'
+	gamma = 0.2
+	q(x) = x/gamma
+	f(x) = 1/q(x/gamma) * ( 1 + log(x/gammaq(x) * 7.8 * 10**6))
+	plot [0:100.000001] f(x) '$\frac{x0 * e^{\beta*t}}{1 - x0 + x0 * e^{\beta*t}}$'
+\end{gnuplot}
+
+\begin{gnuplot}[scale=0.8]
+	set ylabel '$\gamma$'
+	set xlabel '$\beta$'
+	set zlabel '$f(\beta,\gamma)$'
+	set xrange [0:0.000005]
+	set yrange [0:0.000005]
+	f(x,y) = y/x * ( 1 + log(x/y * 7.8 * 10**6))
+	splot f(x,y) notitle
+\end{gnuplot}
+
 
 \subsection{SIS Model}
 
