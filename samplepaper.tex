@@ -311,57 +311,28 @@ so we get
 
 For example we can calculate the $I_{max}$ for our COVID-19 example 
 
-\[I(0) = 3\]
-\[S(0) = 7.8 * 10^9\]
-\[R(0) = 0\]
+\[I_0 = 3 \quad S_0 = 7.8 * 10^9 \quad R_0 = 0\]
 
-\[\beta = 0.5\]
-\[\gamma = 0.2\]
-
-\[q = 2.5\]
+\[\beta = 0.5 \quad \gamma = 0.2 \quad q = 2.5\]
 
 \[I_{max} = 3 + 7.8 * 10^9 - 0.4 ( 1 + \ln(2.5 * 7.8 * 10^9))\]
 
-\[I_{max} = 7799999993.12\]
+\[I_{max} = 1 - 0.2/0.5 * (1 + ln(0.5/02 * 1)) = 0.233\]
+Which, based on the total population of the world would result in maximum of $7.8 * 10^9 * 0.233 = 1.8 * 10^9$ infected people at a time.
 
-% check
-
-We can even plot function f(x) where x is the parameter q, to see the parameter q influence the results.
-
-\begin{gnuplot}[scale=0.8]
-	set ylabel '$f(q)$'
-	set xlabel '$q$'
-	gamma = 0.2
-	f(x) = 3 + 7.8 * 10**9 - 1/x * ( 1 + log(x * 7.8 * 10**9))
-	plot [0:10] f(x) '$\frac{x0 * e^{\beta*t}}{1 - x0 + x0 * e^{\beta*t}}$'
-\end{gnuplot}
+We can plot function $f(\beta)$, and see how parameter $\beta$, influences the maximum number of infectious fraction of population at a given time. For readability we use log scale.
 
 \begin{gnuplot}[scale=0.8]
-	set ylabel '$f(q)$'
-	set xlabel '$q$'
-	gamma = 0.2
-	f(x) = 1 - 1/x * ( 1 + log(x))
-	plot [1:50] f(x) '$\frac{x0 * e^{\beta*t}}{1 - x0 + x0 * e^{\beta*t}}$'
-\end{gnuplot}
-
-\begin{gnuplot}[scale=0.8]
-	set ylabel '$f(q)$'
-	set xlabel '$q$'
-	gamma = 0.2
-	q(x) = x/gamma
-	f(x) = 1/q(x/gamma) * ( 1 + log(x/gammaq(x) * 7.8 * 10**6))
-	plot [0:100.000001] f(x) '$\frac{x0 * e^{\beta*t}}{1 - x0 + x0 * e^{\beta*t}}$'
-\end{gnuplot}
-
-\begin{gnuplot}[scale=0.8]
-	set ylabel '$\gamma$'
+    set title '$I_{max}(\beta)$ for $\gamma=0.2$'
+	set ylabel '$f(\beta)$'
 	set xlabel '$\beta$'
-	set zlabel '$f(\beta,\gamma)$'
-	set xrange [0:0.000005]
-	set yrange [0:0.000005]
-	f(x,y) = y/x * ( 1 + log(x/y * 7.8 * 10**6))
-	splot f(x,y) notitle
+	set logscale x
+	gamma = 0.2
+	f(x) = 1 - gamma/x * ( 1 + log(x/gamma))
+	plot [0.21:100] f(x) notitle
 \end{gnuplot}
+
+We can see that the number  grows exponentially 
 
 
 \subsection{SIS Model}
