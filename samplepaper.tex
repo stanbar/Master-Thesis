@@ -347,6 +347,18 @@ or
 which will never happen. 
 Theoretically, the time period between first recovery (which we estimated on about 5 days) would make it possible to infect whole population before anyone gets recovered (assuming small population, or enormous contact ratio)
 
+It might be also valuable to know the total number of people who catch the disease over whole period of time.
+We can say that the disease has ended, only in situation when there is no infected person left $I = 0$, so there is no one left who can infect new people.
+At the end of the epidemic, the total number of people who were infected, is equal to number of recovered people $R$. 
+We know that the total population is always constant, only the proportions of the states changes over time, so we can write the equation
+We can write the equation
+
+R(end) + S(end) + I(end) = $R_0$ + $S_0$ + $I_0$ + $S_0$
+
+afterand  reduction we get
+
+R(end) = -S(end) + $S_0$ + $I_0$
+
 
 \subsection{SIS Model}
 
@@ -371,6 +383,26 @@ After integrating the solution is:
 where 
 \[C = \frac{\beta i_0}{\beta-\gamma-\beta i_0}\]
 
+we can plot the function $i(t)$ for constant $\gamma = 0.2$ and $\beta = 0.5$
+
+\begin{gnuplot}[scale=1]
+    set title '$i(t)$ for $\beta = 0.5$ and $\gamma=0.2$'
+    set ticslevel 0.0
+
+	set xlabel '$\beta$'
+	set ylabel '$i$'
+
+    set xrange [0:100]
+    
+	gamma = 0.2
+	beta = 0.5
+	i0 = 3.8 * 10**(-10)
+	
+	c(b) = (b*i0)/(b-gamma-b*i0)
+	f(x) = (1 - gamma/beta) * (c(beta))/(c(beta) + exp(-(beta-gamma)*x))
+	plot f(x) notitle
+\end{gnuplot}
+
 we can plot the function $i(t, \beta)$ for constant $\gamma = 0.2$
 
 \begin{gnuplot}[scale=1]
@@ -380,14 +412,14 @@ we can plot the function $i(t, \beta)$ for constant $\gamma = 0.2$
 	set xlabel '$\beta$'
 	set ylabel '$t$'
 	set zlabel '$i$'
-	unset grid
-	set ztics autofreq
 	set ztics 0,1.0
 	
 	set view 45,315
 	
-    set xrange [0.1:10]
-    set yrange [0:1510]
+    set xrange [0.1:5]
+    set yrange [0:100]
+    
+    set isosamples 20,20
     
 
 	gamma = 0.2
@@ -398,7 +430,7 @@ we can plot the function $i(t, \beta)$ for constant $\gamma = 0.2$
 	splot f(x,y) notitle
 \end{gnuplot}
 
-
+This model produces similar logistic grow S-curve that we seen in SI model, but here, it is much more 
 \subsection{Summary}
 Unfortunately those modes doesn't fit exactly to our needs, since they are based on the propability that some individual will meet someone else. In our problem, the network is static, our neighbors don't change in time, thus we have to create different model of dissemination spread. 
 
