@@ -3,6 +3,7 @@
 \usepackage{pgfplots}
 \usepackage{gnuplottex}
 \usepackage{graphicx}
+\usepackage{mathtools}
 \newcommand\PDFtitle{Application of blockchain and infection processes in graphs}
 \newcommand\PDFauthors{Stanisław Barański}
 \hypersetup{
@@ -39,13 +40,11 @@ https://www.youtube.com/watch?v=8Z685OF-PS8
 The Information-centric networks introduce paradigm shift from host-centric to content-oriented paradigm. Placing content in the center of interest. This allows us to achieve number of benefits. All network participates become more aware of the transferring content. This kind of awareness allows to implement various improvements over host-based paradigm such as content caching, mobility, integrity and security assurance. All of those features are guaranteed naively by ICN transport layer in contrast to TCP/IP where we needed to build them on top of it. There are many implementations of ICNetworks, the most notable:  NDN\cite{zhang2014named}, DONA\cite{koponen2007data} or IPFS \cite{benet2014ipfs}
 % continue with Content protection in NDN
 
+\section{IPFS}
+"The InterPlanetary File System (IPFS) is a peer-to-peer distributed file system that seeks to connect all computing devices with the same system of files."  \cite{benet2014ipfs} % Can I quote like that ?
+
 
 \section{NDN}
-
-\section{IPFS}
-
-% continue with Content protection in NDN
-
 
 
 \section{Content Poisoning - Problem}
@@ -123,7 +122,7 @@ We need to add the mechanism of node recovering. Once the node is infected it sh
 Another problem is the fact that the requirement that we need to infect whole network is unconvinient at best. It would be much better if we could infect just limited number of nodes, while the rest of the network would be infected by another mechanism.
 In [konor] the author proposes additional mechanism of inner infections. Each node gets infected not only by publisher certificate, but also by its neighbour nodes. That way, the publisher would be responsible just for starting the chain reaction process, which when started with required power, would embrace whole network. 
 
-\subsection{Epidemiology}
+\section{Epidemiology}
 In epidemiology there are some known models used in modeling the spread of disease: SI, SIR, SIS, SIRS. Each letter designate the possible state the host can be in. Respectively S - suspectable, I - infected, R - recovered. An individual in suspectable state is someone who is healthy, but could catch the disease in contact with someone infected; I - someone who is infected and can infect others. R - recovered. Although those classifications are simplified, and don't take into account the inner body mechanisms, there are enought to observe what is happening on the network level. Additionally they completely ignore the contact networks, assuming that each node has equal chace to contact someone else in unit of time, so called homogeneous mixing.
 
 \subsection{SI Model}
@@ -252,14 +251,57 @@ Here we can introduce $R_0$ as Basic Reproduction Number
 
 \[ R_0 = \frac{s_0 \beta}{\gamma}\]
 
-which represent the number of people, each infected person can infect before being recovered. Thus if $R_0 = 2$ then number grows exponentially, and if $R_0 = 0.5$ the number decrease exponentially. $R_0 = 1$ is called $epidemic threshold$ where the number of new infections equals the number of recovers, so the total number of infected people is always the same and equals the initial number of infected people $I_0$. For example, the Basic Reproduction Number $R_0$, for seasonal flu the value is estimated between 0.9–2.1\cite{coburn2009modeling}, whereas for COVID-19 it's estimated to 2.2 in early stage (January) \cite{li2020early} and recently to 5.7 (April) \cite{readeid}.
+which represent the number of people, each infected person can infect before being recovered. Thus if $R_0 = 2$ then each infected person can infect on average 2 new people before being recovered, so the number of infections grows exponentially, and if $R_0 = 0.5$, then for each 2 people, only 1 new infection happens, and the number of infections decrease exponentially. $R_0 = 1$ is called $epidemic threshold$ where the number of new infections equals the number of recovers, so the total number of infected people is always the same and equals the initial number of infected people $I_0$. For example, the Basic Reproduction Number $R_0$, for seasonal flu the value is estimated between 0.9–2.1\cite{coburn2009modeling}, whereas for COVID-19 it's estimated to 2.2 in early stage (January) \cite{li2020early} and recently to 5.7 (April) \cite{readeid}.
 
 To decrease the results of epidemic, we can decrease the numbers $s_0$ and/or $\beta$, or increase $\gamma$. Since we have little control over the time of recovery ($\gamma$), the only way to reduce the impact of infection is to reduce the number of contact between infected and suspicious people. That's why, the social distancing is so important in fight with epidemics.
 
 
+It might be also valuable to know the maximum number of infected people at any given time. We can calculate it by combining the first two parts of SIR differential equations.
+\[
+\begin{rcases}
+\frac{dS}{dt} = - I \beta S \\
+\frac{dI}{dt} = I \beta S - \gamma I
+\end{rcases}
+\]
 
-It might be also valuable to know the maximum number of infected people at any given time. We can calculate it by 
+into 
 
+\[\frac{dI}{dS} = \frac{\beta I S - \gamma I}{\beta I S}\]
+
+which then reduces to 
+\[\frac{dI}{dS} = -1 + \frac{\gamma}{\beta S}\]
+
+here we can replace $\frac{\beta}{\gamma}$ by $q$; so called \it{contact ratio}, which is described as fraction of population, that comes into contact with an infected individual, during the period when they are infectious.
+
+\[\frac{dI}{dS} = -1 + \frac{1}{qS}\]
+
+now we can integrate the equation and get
+
+\[I + S - \frac{1}{q} \ln{S}\]
+
+or more precisely
+
+\[I_0 + S_0 - \frac{1}{q} \ln{S}\]
+
+We know that to find the function maximum we need to find the place where its deritive equals zero. And here, the right side of the equation 
+
+\[\frac{dI}{dS} = -1 + \frac{1}{q S}\]
+
+equals to zero, when this equation is satisfied.
+
+\[1 = \frac{1}{q S}\]
+
+which happens when 
+
+\[S = \frac{1}{q}\]
+
+In order to find the maximum value of I, we can replace the $S$ by $\frac{1}{q}$ in the equation
+
+\[I_0 + S_0 - \frac{1}{q} \ln{S}\]
+
+so we get
+
+\[I_0 + S_0\frac{1}{q} - \frac{1}{q} \ln{S\frac{1}{q}}\]
 
 \subsection{SIS Model}
 
