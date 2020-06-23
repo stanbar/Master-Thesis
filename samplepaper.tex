@@ -159,17 +159,18 @@ or
 
 This kind of fractional equations are called logistic growth equations, and can be solved with:
 
-\[i(t) =\frac{ i0 * e^{\beta*t} }{(1 - i0) + i0 * e^{\beta*t}}\]
+\[i(t) =\frac{ i_0 * e^{\beta*t} }{(1 - i_0) + i_0 * e^{\beta*t}}\]
 
-Where i0 is the value of i at t = 0. Here is the example, where $i0 = 0.01$, $\beta = 1$
+Where $i_0$ is the value of $i$ at $t = 0$. Here is the example, where $i_0 = 0.01$, $\beta = 1$
+
 
 \begin{gnuplot}[scale=0.8]
 	set ylabel '$i(t)$'
 	set xlabel '$t$'
 	i0 = 0.01
-	beta = 1
+	beta = 0.5
 	f(x) = ( i0 * exp(beta*x) ) / (1 - i0 + i0 * exp(beta*x))
-	plot [0:10] f(x) title '$\frac{x0 * e^{\beta*t}}{1 - x0 + x0 * e^{\beta*t}}$'
+	plot [0:30] f(x) notitle
 \end{gnuplot}
 
 \subsection{SIR Model}
@@ -199,7 +200,7 @@ Which reduces to:
 \[\frac{di}{dt} = i(t) \beta s(t) - \gamma i(t)\]
 
 
-Let's see how this model behave with some concrete values.  Consider COVID-19 epidemic with following assumptions; there was 3 people who was initially infected in t0, total human population equals 7.8b people, and no one was immutable to the disease in t0 so:
+Let's see how this model behave with some concrete values.  Consider COVID-19 epidemic with following assumptions; there was 3 people who was initially infected in $t_0$, total human population equals 7.8b people, and no one was immutable to the disease in $t_0$ so:
 
 \[I(0) = 3\]
 \[S(0) = 7.8 * 10^9\]
@@ -236,7 +237,7 @@ But if we decrease the number of infections to one per 5 days, so the $\beta = 0
 
 We can easly notice that, the factor determining if the epidemic will happen is the rate of new infections $\frac{di}{dt}$, if it is positive, then there will be epidemic, and if it's negative, people will recover faster than spread of infection, so there will be no epidemic.
 
-We can calculate the value of $\frac{di}{dt}$ in the t0 and check if the value is negative of positive, the negative value mean the decrease of infections from the beginning, so we can be sure that, there will be no infections.
+We can calculate the value of $\frac{di}{dt}$ in the $t_0$ and check if the value is negative of positive, the negative value mean the decrease of infections from the beginning, so we can be sure that, there will be no infections.
 
 Let's represent the factor determining of the epidemic in form of inequation, which if satisfied, will lead to epidemic
 
@@ -352,17 +353,33 @@ We can say that the disease has ended, only in situation when there is no infect
 At the end of the epidemic, the total number of people who were infected, is equal to number of recovered people $R$. 
 We know that the total population is always constant, only the proportions of the states changes over time, so we can write the equation
 
-R(end) + S(end) + I(end) = $R_0$ + $S_0$ + $I_0$
+\[R(end) + S(end) + I(end) = R_0 + S_0 + I_0\]
+We know that 
+\[I(end) = 0\] and \[R_0 = 0\]
 
 after reduction we get
 
-R(end) = -S(end) + $S_0$ + $I_0$
+\[R(end) = -S(end) + S_0 + I_0\]
+
+To find the value $S(end)$, weNow, we need to bring back our previous equation (integrated $\frac{dI}{dS}$ and applied initial conditions)
+
+\[I + S - \frac{1}{q} \ln{S} = I_0 + S_0 - \frac{1}{q} \ln(S_0)\]
+
+\[S(end) - \frac{1}{q} \ln{S(end)} = I_0 + S_0 - \frac{1}{q} \ln(S_0)\]
+
+and substitute the $S(end)$ in our
+
+\[R(end) = -S(end) + S_0 + I_0\]
+
+and finally we get:
+
+\[R(end) = -S(end) + S_0 + I_0\]
 
 
 \subsection{SIS Model}
 
-There are some kind of diseses, where the individual can gets infected many times e.g. the flu. For this kind of epidemic, the state flow looks following $S -> I -> S$, hence the name SIS. 
-To calculate this kind of model, we need modify the previous equations, that the change $\gamma i(t)$ will go to suspicious state instead of recovery.
+There are some kind of diseses, where the individual can gets infected many times e.g. the flu. For this kind of epidemic, the state flow looks following $Suspicious -> Infected -> Suspicious$, hence the name SIS. 
+To calculate this kind of model, we need modify the previous equations, that the change $\gamma i(t)$, will go to suspicious state, instead of recovery.
 
 \[\frac{si}{dt} = - i(t) \beta s(t) + \gamma i(t)\]
 
@@ -372,13 +389,13 @@ with
 
 \[ s + i = 1\]
 
-we can solve the equation by substituting s in second equation, and solving Linear Differential Equations
+we can solve the equation by substituting $s$ in second equation, and solving Linear Differential Equations
 
 \[\frac{di}{dt} = i(t) * \beta * (1 - i(t)) - \gamma * i(t)\]
 
 After integrating the solution is:
 
-\[x(t) = (1 - \frac{\gamma}{\beta}) \frac{C}{C + e^{-(\beta - \gamma)t}}\]
+\[i(t) = (1 - \frac{\gamma}{\beta}) \frac{C}{C + e^{-(\beta - \gamma)t}}\]
 where 
 \[C = \frac{\beta i_0}{\beta-\gamma-\beta i_0}\]
 
@@ -388,7 +405,7 @@ we can plot the function $i(t)$ for constant $\gamma = 0.2$ and $\beta = 0.5$
     set title '$i(t)$ for $\beta = 0.5$ and $\gamma=0.2$'
     set ticslevel 0.0
 
-	set xlabel '$\beta$'
+	set xlabel '$days$'
 	set ylabel '$i$'
 
     set xrange [0:100]
@@ -402,7 +419,7 @@ we can plot the function $i(t)$ for constant $\gamma = 0.2$ and $\beta = 0.5$
 	plot f(x) notitle
 \end{gnuplot}
 
-we can plot the function $i(t, \beta)$ for constant $\gamma = 0.2$
+we can also plot the function $i(t, \beta)$ for constant $\gamma = 0.2$ and see how the $\beta$ influence the results.
 
 \begin{gnuplot}[scale=1]
     set title '$i(\beta,t)$ for $\gamma=0.2$'
@@ -418,7 +435,7 @@ we can plot the function $i(t, \beta)$ for constant $\gamma = 0.2$
     set xrange [0.1:5]
     set yrange [0:100]
     
-    set isosamples 20,20
+    set isosamples 50,50
     
 
 	gamma = 0.2
@@ -428,6 +445,9 @@ we can plot the function $i(t, \beta)$ for constant $\gamma = 0.2$
 	f(x,y) = (1 - gamma/x) * (c(x))/(c(x) + exp(-(x-gamma)*y))
 	splot f(x,y) notitle
 \end{gnuplot}
+
+
+As we can see, the $\beta$ factor has significant influence on the time to the 
 
 This model produces similar logistic grow S-curve that we seen in SI model, but here, it is much more 
 \subsection{Summary}
