@@ -361,7 +361,7 @@ after reduction we get
 
 \[R(end) = -S(end) + S_0 + I_0\]
 
-To find the value $S(end)$, weNow, we need to bring back our previous equation (integrated $\frac{dI}{dS}$ and applied initial conditions)
+To find the value $S(end)$, we need to bring back our previous equation (integrated $\frac{dI}{dS}$ and applied initial conditions)
 
 \[I + S - \frac{1}{q} \ln{S} = I_0 + S_0 - \frac{1}{q} \ln(S_0)\]
 
@@ -373,7 +373,7 @@ and substitute the $S(end)$ in our
 
 and finally we get:
 
-\[R(end) = -S(end) + S_0 + I_0\]
+% I don't know how to calculate it
 
 
 \subsection{SIS Model}
@@ -432,8 +432,8 @@ we can also plot the function $i(t, \beta)$ for constant $\gamma = 0.2$ and see 
 	
 	set view 45,315
 	
-    set xrange [0.1:5]
-    set yrange [0:100]
+    set xrange [0.1:0.8]
+    set yrange [0:1000]
     
     set isosamples 50,50
     
@@ -447,15 +447,36 @@ we can also plot the function $i(t, \beta)$ for constant $\gamma = 0.2$ and see 
 \end{gnuplot}
 
 
-As we can see, the $\beta$ factor has significant influence on the time to the 
+As we can see, the logistic growth S-curve shape of the number of infected population is driven by the $\beta$ factor. If the value is less than $\gamma$, the epidemic never occur. Values greater than $\gamma$ lead to constant fraction of infectious population (rate of catching the infection by suspicious population is equal to rate of recovers in infected population). The higher the value, the faster the outbreak comes out, and the higher the infection ratio holds.
 
-This model produces similar logistic grow S-curve that we seen in SI model, but here, it is much more 
+\subsection{SIRS Model}
+SIRS model introduces another state change, allowing the recovered people to lose their immunity to the infection. Therefore the state flow looks following: $Susceptible -> Infected => Recovered -> Susceptible$. Luckly, we can write the equations for this model, by simply adding one intermediete state equation to the SIS equations.
+
+\[\frac{si}{dt} = \delta r(t) - i(t) \beta s(t) + \gamma i(t)\]
+
+\[\frac{di}{dt} = i(t) \beta s(t) - \gamma i(t)\]
+
+\[\frac{dri}{dt} = i(t) \gamma i(t) - \delta r(t)\]
+
+
+
+\subsection{SEIRS Models}
+Another, more complex model in terms of states is the SEIRS model. This model introduces ihe intermediarry state between susceptable and infected state. The \bold{E}xposed is the state, where the individual is infected, but is not spreading the infection to other people. Such modification is also easy to write by adding another intermiediary state to previous SIRS model accordingly.
+
+\[\frac{si}{dt} = \delta r(t) - i(t) \beta s(t)\]
+
+\[\frac{ei}{dt} = \delta r(t) - i(t) \beta s(t)\]
+
+\[\frac{di}{dt} = i(t) \beta s(t) - \gamma i(t)\]
+
+\[\frac{dr}{dt} = i(t) \gamma i(t) - \delta r(t)\]
+
+
 \subsection{Summary}
-Unfortunately those modes doesn't fit exactly to our needs, since they are based on the propability that some individual will meet someone else. In our problem, the network is static, our neighbors don't change in time, thus we have to create different model of dissemination spread. 
+Unfortunately those modes doesn't fit exactly to our needs, since they are based on the probability that some individual will meet someone else. In our problem, the network is static, our neighbors don't change in time, thus we have to create different model of infection dissemination. 
 
 In our model the infection is the abstract representing trust, so we should take a look how the trust graph are build to understand how we could leverage the mechanisms for our infection spread.
 
-\subsection{SEIR and SEIRS Models}
 
 
 \section{Trust graph}
