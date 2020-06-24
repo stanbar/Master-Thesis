@@ -378,7 +378,7 @@ and finally we get:
 
 \subsection{SIS Model}
 
-There are some kind of diseses, where the individual can gets infected many times e.g. the flu. Therefore there is no Recovered population. This could be because of the deiese is mutating or the antybody doesn't persist long enough in the organism. For this kind of epidemic, the state flow looks following $Suspicious -> Infected -> Suspicious$, hence the name SIS. 
+There are some kind of diseses, where the individual can gets infected many times e.g. the flu. Therefore there is no Recovered population. This could be because of the disese is mutating or the antibody doesn't persist long enough in the organism. For this kind of epidemic, the state flow looks following $Suspicious -> Infected -> Suspicious$, hence the name SIS. 
 To calculate this kind of model, we need modify the previous equations, that the change $\gamma i(t)$, will go to suspicious state, instead of recovery.
 
 \[\frac{si}{dt} = - i(t) \beta s(t) + \gamma i(t)\]
@@ -449,34 +449,32 @@ we can also plot the function $i(t, \beta)$ for constant $\gamma = 0.2$ and see 
 
 As we can see, the logistic growth S-curve shape of the number of infected population is driven by the $\beta$ factor. If the value is less than $\gamma$, the epidemic never occur. Values greater than $\gamma$ lead to constant fraction of infectious population (rate of catching the infection by suspicious population is equal to rate of recovers in infected population). The higher the value, the faster the outbreak comes out, and the higher the infection ratio holds.
 
-\subsection{SIRS Model}
+\subsection{SIRS and SEIRS Models}
 SIRS model introduces another state change, allowing the recovered people to lose their immunity to the infection. Therefore the state flow looks following: $Susceptible -> Infected => Recovered -> Susceptible$. Luckly, we can write the equations for this model, by simply adding one intermediete state equation to the SIS equations.
 
 \[\frac{si}{dt} = \delta r(t) - i(t) \beta s(t)\]
 
 \[\frac{di}{dt} = i(t) \beta s(t) - \gamma i(t)\]
 
-\[\frac{dr}{dt} = i(t) \gamma i(t) - \delta r(t)\]
+\[\frac{dr}{dt} = \gamma i(t) - \delta r(t)\]
 
 
-
-\subsection{SEIRS Models}
-Another, more complex model in terms of states is the SEIRS model. This model introduces ihe intermediarry state between susceptable and infected state. The \bold{E}xposed is the state, where the individual is infected, but is not spreading the infection to other people. Such modification is also easy to write by adding another intermiediary state to previous SIRS model accordingly.
+Another, more complex model in terms of states is the SEIRS model. This model introduces ihe intermediary state between susceptable and infected state. The \bold{E}xposed is the state, where the individual is infected, but is not spreading the infection to other people. Such modification is also easy to write by adding another intermiediary state to previous SIRS model accordingly.
 
 \[\frac{si}{dt} = \delta r(t) - i(t) \beta s(t)\]
 
-\[\frac{ei}{dt} = \delta r(t) - i(t) \beta s(t)\]
+\[\frac{ei}{dt} = i(t) \beta s(t) - \gamma e(t)\]
 
-\[\frac{di}{dt} = i(t) \beta s(t) - \gamma i(t)\]
+\[\frac{di}{dt} = \gamma e(t) - \omega i(t)\]
 
-\[\frac{dr}{dt} = i(t) \gamma i(t) - \delta r(t)\]
+\[\frac{dr}{dt} = \omega i(t) - \delta r(t)\]
 
+As we can see, those modes can be easly extended to infinite number of intermediary states, more accurately reflecting the reality. Unfortunately there is not known analytical solution to such models, we have to solve them by numerical integration of  differential equations.
 
 \subsection{Summary}
-Unfortunately those modes doesn't fit exactly to our needs, since they are based on the probability that some individual will meet someone else. In our problem, the network is static, our neighbors don't change in time, thus we have to create different model of infection dissemination. 
+Those models operate on idealistic full-mixing assumption, where each individual has equal probability to contact anyone else. This assumption doesn't reflect exactly the human interaction nor computer networks. It's rather approximation, the parameter $\beta$ reflects the chance that individual will have contact with someone else and the infection will spread. In our problem, the network is static, the structure of nodes is fixed, each node has unique set of neighbours where the disease can spread. In real life this might be the family members, friends or coworkers. The chance of contact with the rest of the population can be neglected, because the chance of meeting two people from two end of the earth is very small. For this reason we have to create different model of infection dissemination. 
 
-In our model the infection is the abstract representing trust, so we should take a look how the trust graph are build to understand how we could leverage the mechanisms for our infection spread.
-
+In our model the infection is the abstract, representing trust to an content. We should take a look how the trust graph are build to understand how we could leverage the mechanisms for our infection spread.
 
 
 \section{Trust graph}
@@ -485,15 +483,15 @@ How are they created ? In life, in networks ? What does it mean to create trust 
 Then we assume that such relation is already achieved. 
 LOCKSS - solve the problem in one way, Wikipedia in another (experts consensus), but they doesn't fit to us, why ?. 
 
-Why do we even look for solution for our problem in the context of human trust ? It turns out that people are still one of the most advanced technology, thus we can get inspired by some of the solutions that worked in human societies for centuries. Let's dive into it.
-Yuval Noah Harari in his book "Sapiens: A Brief History of Humankind" states that the most important feature of human language is rumor. Rumor let us know which person is not trustworthy without having to interact with him directly. If our best friend Bob, tells us, that Carlie is theft, we don't need to get stolen to be convinced about it. Same applies in inverse scenario, if Bob tells us, that Carlie sells great quality products, we are now more likely to buy products from him. We notice that each person we know directly or indirectly, gets labeled by some tags. One can be labeled as Helpful, Conscientiousness and also Not-Trustworthy, while other can be labeled as Unhelpful, Lazy but Trustworthy. Here is this paper we are limiting our range of study just to dimension of Trustworthness.
+Why do we even look for solution for our problem in the context of human trust ? It turns out that people are still one of the most advanced technology. We can get inspired by some of the solutions that works in human societies for centuries. Let's dive into it.
+Yuval Noah Harari in his book "Sapiens: A Brief History of Humankind" states that the most important feature of human language is rumor. Rumor let us know which person is not trustworthy without having to interact with him directly. If our best friend Bob, tells us, that Carlie is theft, we don't need to get stolen to be convinced about it. Same applies in inverse scenario, if Bob tells us, that Carlie sells great quality products, we are now more likely to buy products from him; we are biased towards people, whom we gets positive rumors. We notice that each person we know directly or indirectly, gets labeled with some tags. One can be labeled as Helpful, Conscientiousness and also Not-Trustworthy, while other can be labeled as Unhelpful, Lazy but Trustworthy. Here in this paper, we are limiting our range of study just to dimension of Trustworthness.
 What if we have three friends Alice, Bob, Charlie. Alice and  Bob tells us that David is Trustworthy, while Charlie claims that he's not. Decision of labeling David as Trustworthy or not, requires some kind of decision evaluation algorithm.
 One might assume that if there is at least one person who doesn't trust him, there must be something wrong with him, and will label him as Not-Trustworthy. One can use the most natural to human beings evaluator which says, do want majority of people do, thus if Charlie is trusted by majority, I will trust her too. Another one can slightly generalise this evaluator and say that person is trustworthy, only if $\xi$ percentage of my friends trust him. 
 
-At this point it's worth introducing some convention. When we say friend we mean a trustworthy person, in other words, person to who we have trust relation to. Let $N$ to be a set of all considered person group, friends and non-friends. Let $F$ be a set of all our friends $f \in F$. Let $F_n$ be a subset of $F$ where all $f$ trust person $n$. Then we will call $\%_n = |F_n|/|F|$ the proportion of our fiends who trust particular person $n$. Let's call $\xi$ (where $0 \le \xi \leq 1$) the minimum proportion of our friends $\%_n$ who needs to trust person $n$ in order to make me trust him. 
+At this point it's worth introducing some convention. When we say friend we mean a trustworthy person, in other words, person who we have trust relation to. Let $N$ to be a set of all considered individuals group, friends and non-friends. Let $F$ be a set of all our friends $f \in F$. Let $F_n$ be a subset of $F$ where all $f$ trust person $n$. Then we will call $\%_n = |F_n|/|F|$ the proportion of our fiends who trust particular person $n$. Let's call $\xi$ (where $0 \le \xi \leq 1$) the minimum proportion of our friends $\%_n$ who needs to trust person $n$ in order to make me trust him. 
 
 So as we said previously that we will trust David only if majority of our friends trust him. We denote trust function as $T(n) = \%_n > \xi : (N) \rightarrow \{0,1\}$. 
-Let's use this formula to evaluate if $David$ is trustworthy person. Let $\xi = 0.5$. We know that Alice and Bob do trust David, while Charlie don't.
+Let's use this formula to evaluate if $David$ is trustworthy person. Let $\xi = 0.5$. We know that Alice and Bob does trust David, while Charlie doesn't.
 \[T(David) = \%_{David} > \xi\]
 \[= |F_n|/|F| > \xi\]
 \[= \frac{2}{3} > \frac{1}{2}\]
