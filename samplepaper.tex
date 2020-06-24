@@ -378,7 +378,7 @@ and finally we get:
 
 \subsection{SIS Model}
 
-There are some kind of diseses, where the individual can gets infected many times e.g. the flu. For this kind of epidemic, the state flow looks following $Suspicious -> Infected -> Suspicious$, hence the name SIS. 
+There are some kind of diseses, where the individual can gets infected many times e.g. the flu. Therefore there is no Recovered population. This could be because of the deiese is mutating or the antybody doesn't persist long enough in the organism. For this kind of epidemic, the state flow looks following $Suspicious -> Infected -> Suspicious$, hence the name SIS. 
 To calculate this kind of model, we need modify the previous equations, that the change $\gamma i(t)$, will go to suspicious state, instead of recovery.
 
 \[\frac{si}{dt} = - i(t) \beta s(t) + \gamma i(t)\]
@@ -452,11 +452,11 @@ As we can see, the logistic growth S-curve shape of the number of infected popul
 \subsection{SIRS Model}
 SIRS model introduces another state change, allowing the recovered people to lose their immunity to the infection. Therefore the state flow looks following: $Susceptible -> Infected => Recovered -> Susceptible$. Luckly, we can write the equations for this model, by simply adding one intermediete state equation to the SIS equations.
 
-\[\frac{si}{dt} = \delta r(t) - i(t) \beta s(t) + \gamma i(t)\]
+\[\frac{si}{dt} = \delta r(t) - i(t) \beta s(t)\]
 
 \[\frac{di}{dt} = i(t) \beta s(t) - \gamma i(t)\]
 
-\[\frac{dri}{dt} = i(t) \gamma i(t) - \delta r(t)\]
+\[\frac{dr}{dt} = i(t) \gamma i(t) - \delta r(t)\]
 
 
 
