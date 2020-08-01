@@ -31,7 +31,7 @@ Information-centric networks introduce new vector of attacks, one of them is con
 \end{abstract}
 
 
-\section{Introduction - State of the art}
+\section{Introduction}
 Current internet architecture is mostly based on TCP/IP stack, which allow  establish communication channels between two IP addresses. While it worked great for past years,  it struggle to fit current demands. Today internet is dominated by transporting content such as audio, video, images and text[source] from content creators to content consumers. 
 https://www.youtube.com/watch?v=8Z685OF-PS8
 % Write more about how the internet is used today
@@ -45,16 +45,22 @@ There are many projects implementing ICN approach: Data-Oriented Network Archite
 They all differ in details, but the core concepts are the same -- they try to achieve communication model, which is suited for disconnections, disruptions, mobility, and transfering large data to large number of devices. They introduce the in-network storage on each node for data caching. They also decouple senders from receivers, by resolving content by its name -- not the location of the host. 
 In ICN data is requested by its name (Named Data Object - NDO), and is served by the closest possible node who is holding it -- that allows efficient caching on transport layer relieving application layer from implementing cache startedy individualy. 
 
-When we write NDO, we understand any arbitrary data that can be transferred over network: web page, music, images, video, documents and data streams. What's most important NDOs compared to traditional URLs are location independent, they don't specify the location from where the content should be served from, nor how they should be transferred to the receiver. NDO granularlity may differ from packets to data chunks to whole data objects, depending on the approach and data size.
+When we write NDO, we understand any arbitrary data that can be transferred over network: web page, music, images, video, documents and data streams. What's most important NDOs compared to traditional URLs are location independent, they don't specify the location from where the content should be served from, nor how they should be transferred to the receiver. NDO granularity may differ from packets to data chunks to whole data objects, depending on the approach and data size.
 
-Data naming is the most significant concept in the ICN. Data names must be unique -- similary to host names in current Internet architecture; two different DNS nodes should resolve one domain name to the same location -- two different ICN nodes must resolve one name to the same content. 
+Data naming is the most significant concept in the ICN. Data names must be unique -- similarly to host names in current Internet architecture; two different DNS nodes should resolve one domain name to the same location -- two different ICN nodes must resolve one name to the same content. 
 There are two approaches to naming system: hierarchical - similar to URL, and flat - global namespace, often just the hash of the file.
-Additionally each NDO should be authenticated with the publisher who created it. Digital signatures on data objects guarantee both integrity and authentication. If the data is trusted, not the host, then the data can be served from any untrusted source, and we still can trust it.
+Additionally each NDO should be authenticated with the publisher who created it. Digital signatures on data objects guarantee both integrity and authentication. If the data is trusted, not the host, then the data can be served from any untrusted source -- and we still can trust it.
 
 
 
 \section{IPFS}
-"The InterPlanetary File System (IPFS) is a peer-to-peer distributed file system that seeks to connect all computing devices with the same system of files."  \cite{benet2014ipfs} % Can I quote like that ?
+IPFS (Inter-planetarny file system)\cite{benet2014ipfs} is a peer-to-peer distributed file system; its goal is to create global file system where each file is indexed by its content hash. 
+In traditional web, we request file by its URI - which then resolves to certain location where the content is hosted. In IPFS we request file by its content hash - which then resolves to the closest location where the file can be accessed; it can be either: cache, local storage, our neighbor, our ISP node, any other peer in the network, or finally the content publisher. This is possible not because of the structure of the network, but because of the fact that we request the content. In traditional web, each time we request the URI it can resolve to different content, therefore we can not trust our neighbor, that he will send us the content we were asking for. 
+Additionally, in IPFS, each content is signed by its publisher keypair, so we can be sure that the content that our neighbor is serving us, is actually the thing that was created by publisher. Therefore if we request malicious link (hash of the content) and it's integral with its content, we still can reject it -- if it's not signed by the actual publisher we are interested in. 
+We can state that IPFS natively guarantee the integrity and authentication.
+
+
+The fact that the content is authenticated by the publisher keypair seems to be perfectly fine. But here in this thesis, we double down on possible threats and propose solutions on how to solve them.
 
 
 \section{NDN}
@@ -62,7 +68,7 @@ Additionally each NDO should be authenticated with the publisher who created it.
 
 \section{Content Poisoning - Problem}
 The most significant benefit of ICN networks is content caching. It turns out that this benefit becomes double-edged sword when we take into account security concerns. 
-First we would like to narrow our interest of research in this paper. Content Poisoning in NDN (and possibly in all ICN networks) can be divided to two categories: 1. Corrupted Data and 2. Fake Data. In both of them the content gets modified. The first one assume that the attacker does not posses the signing-key of legit publisher, thus the content won't pass the signature verifiaction process. This might look like the problem is resolved. Unfortunatelly the signature verifaiction is optional process, and there are two reasons why this process won't be done on every router. First one is the economic incentivisation, the process of signature verification is highly resource-consuming, thus the businesses might decide to skip it. Next reason is based on the fact, that in order to proceed the signature verification, the corresponding public key is required. How can the router know which public key to use? We can not expect from router to store all possible public keys. Thus the routers are vulnerable to Corrupted Data Content-Poisoning Attacks. This kind of attacks has been addressed in many papers \cite{ghali2014needle} \cite{yu2018content} \cite{nguyen2017content}. Second CPA category (Fake Data) is much more dangerous, because it assumes that the Attacker gets access to publisher private-key. Therefore he is able to forge valid signature, which will successfully pass verification on the end-system. 
+First we would like to narrow our interest of research in this paper. Content Poisoning in NDN (and possibly in all ICN networks) can be divided to two categories: 1. Corrupted Data and 2. Fake Data. In both of them the content gets modified. The first one assume that the attacker does not posses the signing-key of legit publisher, thus the content won't pass the signature verifiaction process. This might look like the problem is resolved. Unfortunatelly the signature verifaiction is optional process, and there are two reasons why this process won't be done on every router. First one is the economic incentivisation, the process of signature verification is resource-consuming, thus the businesses might decide to skip it. Next reason is based on the fact, that in order to proceed the signature verification, the corresponding public key is required. How can the router know which public key to use? We can not expect from router to store all possible public keys. Thus the routers are vulnerable to Corrupted Data Content-Poisoning Attacks. This kind of attacks has been addressed in papers \cite{ghali2014needle} \cite{yu2018content} \cite{nguyen2017content}. Second CPA category (Fake Data) is much more dangerous, because it assumes that the Attacker gets access to publisher private-key. Therefore he is able to forge valid signature, which will successfully pass verification on the end-system. 
 
 Once the bogus content gets propagated across multiple nodes (more specifically on their content caches), each end-user who request the content from that node, will receive the poisoned content. Signature verification will pass successfully, hence the user will be sure that the content is legit. What is even worse, the content can not be as easly revoked as it was disseminated, because most of the ICN networks doesn't allow removing/revoking its cache content, other than natural (e.g. LRU based) cache aging. The one way to effectively prevent from fetching fake content is by explicitly filtering the hash of the content we consider poisoned. But this arises another problem, how the user can know the hash of the poisoned content, and if it's not too late. In \cite{nguyen2017content} we can read "Therefore, it (Fake Data CPA) is harder to create but impossible to detect by end-systems". Here it is worth to cite another quote "It always seems impossible until it's done." from Nelson Mandela. At the time of writing, the problem is still unsolved, but there is one proposal \cite{jekon2019content} which we will research, expand and modify. But before that, let's see how other content-oriented services solve the Fake Data CPA problem, in the hope of inspiration.
 
@@ -102,13 +108,13 @@ Of course this idea also comes with the downsides. The process of reviewing arti
 
 Let's consider the fake news detection in practice. When Alice forgot to logout from social media account on public library computer, someone can submit a content, a post, that says "I don't want to live anymore the way everyone else is living, this rat race is not for me, from today I become homeless, Goodbay", such content is good candidate to become successful Fake News. Mainly because it's created from the author account, which gives it high credibility. Besides that, it contains some arguable truth, that can make it more trustworthy. Unfortunately as we discussed in previous approach (certification services) this idea of content evaluation doesn't scale to the level we need. So what we can do, to decide if this kind of post is fake or not? We can just wait, in this situation the time is playing crucial role, because if such post is deleted from Alice account after short period, we can be sure that it was something Alice would never post, so it was a fake news. On the other hand, if the post is present for the long time on her account page, with high probability we can be sure, that she really want it to be there, thus become legit content.
 
-This idea seems to be quite native and simplistic approach. But  in the history of technology the simplest solutions, seems to displaces the more complex one. And is there anything simpler than doing nothing? 
+This idea seems to be quite naive and simplistic approach. But  in the history of technology the simplest solutions, seems to displaces the more complex one. And is there anything simpler than doing nothing? 
 Of course, this approach also has it's downsides, it's slow. If the information is urgent, like information that some country starts World War III, we don't have hours to just wait until the information gets deleted or not. We need to act fast. In such situation this approach is inefficient. But for less urgent content, this approach offer a whole lot of useful features. It scales linearly. For each content publication, there is only one person involved to remove the content or not. It is maintenance-free. By default, no one needs to do anything if the content is legit. It just stays there. It is Flexible. The reader, the content consumer can individually decide if the amount of time from the publication (let's call it a credibility score), is high enough to trust such content or not. If the information is not important, we can trust it from the first hour from the publication, if it's very important like banking webpage update, we could wait couple of hours until we enter the credentials into in. It is like HTTPS and HTTP, but way more flexible. Some pages can be safely browsed over HTTP, while others should be used only over HTTPS. 
 
 As we discussed before, the problem of Fake News in social network is very similar to the CPA problem in ICN networks. So the solutions that work in one domain could possibly work in the other. In this thesis, we will continue the idea of Credibility Score based on time from the publication, further on we call it Proof of Time.
 
 \section{Proof of Time}
-In previous chapter we introduced mechanism for mitigating Fake News propagation on Social Media accounts, by the most natural and lazy mechanism which is waiting. This mechanism has high potential from its simplicity and scalability, so we will try to apply the concept to ICNetworks. Before that, we need to outline some assumptions. First of all, the attacker is operating in time-constraint environment. He will eventually lose the access to the account, either by revoking, expiration of the  credentials/session/access-token or any other external factor. Additionally he is unable to refresh the credentials, session, access token infinitely long. As a result his access (measured in time) to the publisher account is limited; in contrast to real account owner whose access is unrestricted. 
+In previous chapter we introduced mechanism for mitigating Fake News propagation on Social Media accounts, by the most natural and lazy mechanism which is waiting. This mechanism has high potential from its simplicity and scalability, so we will try to apply the concept to ICN. Before that, we need to outline some assumptions. First of all, the attacker is operating in time-constraint environment. He will eventually lose the access to the account, either by revoking, expiration of the  credentials/session/access-token or any other external factor. Additionally he is unable to refresh the credentials, session, access token infinitely long. As a result his access (measured in time) to the publisher account is limited; in contrast to real account owner whose access is unrestricted. 
 We will leverage the difference between those two scenarios to create new method of authentication. This method require each publisher to proof the access to his secret key over some period of time, hence the name \b{Proof of Time}.
 
 In previous section we discussed, how the mechanism could work in social media networks. ICNnetworks are different in one main aspect, they doesn't allow to remove the content, because the content is distributed across many routers within their (Content Store) data cache, which is designed to ease the content dissemination. To support content removal, each node would need to periodically ask the publisher if the content has been removed or not, in that way, sacrificing the scalability, which was the reason the ICN was created at first place. 
@@ -119,13 +125,13 @@ In previous chapter we mentioned the need to create overlay network of trust whe
 
 \section{Trust propagation}
 
-
 As we discussed in previous chapter, the Credibility Score will spread across the ICNetwork nodes. It can be spreaded in various ways, and in this chapter we will explore different models for this kind of mechanism. 
 
-One mechanism proposed by [konor] abstract the concept of trust to the concept of infection. Therefore allow us to grab the knowledge created by biological researches, and apply it to our problem. In our case, each node that gains the trust to the content is assumed infected. Each node that does not trust the content is called healthy. By deafult, all nodes are healthly, therefore noone trust the content.
+One proposal\cite{konorski2019mitigating} abstract the concept of trust to the concept of infection. Therefore allow us to grab the knowledge created by biological researches, and apply it to our problem. In our case, each node that gains the trust to the content is assumed infected. Each node that does not trust the content is called healthy. By deafult, all nodes are healthly, therefore noone trust the content.
 Publisher has the ability to infect the nodes by sending them the proof-of-time certificate. [Fig of certificate].
 Each node who gets the certificate, sets credibility score to 1 in its local trust table. That way, the publisher can easly flood the whole network, leading to epidemic in relative short time.  This is not what we want. We want the trust, to increase slowly. Slow enought that malicious publisher is not able to infect whole network. In order to slow down the spread process, we can use various mechanisms. In [konor], the author proposed the mechanism where each node refuses the infection unless the certificate is signed by previous node. That way the publisher could infect new nodes sequentialy which is much slower than infecting them in parallel. But it is still not enough. In order to take control over the speed of infection dissemination. What we can do is to design the nodes to sign the certificate after some time of delay (e.g. 10min). This might be the analouge to time while the host is infected, but is not infecting other people yet. This constraint seems to prevent form rapid dissemination, but the smart publisher could request many nodes at the same time to sign the certificate, and proceed many chain of certification in parallel. To prevent from that, we need to force the publisher to start the chain from its home node (assigned by some external mechanism), and each node needs to point out, which node can trust the certificate in next order. That way, the publisher can not create the certification chain in parallel, it needs to follow the rules set by nodes. This mechanism looks similar to very slow iterative dns query.
 
+% TODO
 [IMG]
 
 There are still some missing points, that we needed to solve. Although we can control the speed of infection dissemination, we don't have the mechanism to recover from malicious publications.  After the limited period of time (the malicious publisher has access to), the network should eventually notice that fact and reject the authentication. While the honest publisher who don't have time constraints, can successfully infect whole network - leading to epidemic, thus authenticating the content. 
@@ -540,28 +546,43 @@ Next, if we have a friend, who have a friend, we will trust that person. But if 
 Having the trust network model, we can try to simulate the epidemics using the graphs obtained by that model. Let's describe the algorithm used to generate trust graphs.
 We start with the $N_0$ nodes that gets connected with random $E_0$ edges. They becomes the root of the friendship. Each of them meets new people, and becomes friends. So for all remaining $N - N_0$ nodes we connect to one randomly selected node with friend relation. The new node $N_n$ connect to the old node $N_o$ then, for all $N_o$ friends $F_{N_o}$ we need to evaluate the trust function $T(n)$.
 
-In Fig \ref{fig:trustgraph500} we can see the resulting trust graph for 100 nodes and $\xi = 0.5$
+In Fig \ref{fig:trustgraph500} we can see the resulting trust graph for 500 nodes and $\xi = 0.5$, and its corresponding histogram in \ref{fig:trustgraph500histogram}
 
 \begin{figure}[h!]
-    \includegraphics[width=10cm]{img/webOfTrust500nodes05xi.png}
+    \includegraphics[width=11cm]{img/webOfTrust500Graph.png}
     \centering
-    \caption{Trust Graph generated by Web Of Trust algorithm for $\xi=0.5$}
+    \caption{Trust Graph generated by Web Of Trust algorithm for $\xi=0.5$ and $n = 500$}
     \label{fig:trustgraph500}
 \end{figure} https://www.overleaf.com/project/5e41b2db999014000170c7ec
 
 \begin{figure}[h!]
-    \includegraphics[width=11cm]{img/webOfTrust500nodes05xiHistogram.png}
+    \includegraphics[width=11cm]{img/webOfTrust500Hist.png}
     \centering
-    \caption{Degree Histogram generated by Web Of Trust algorithm for $\xi=0.5$}
+    \caption{Degree Histogram generated by Web Of Trust algorithm for $\xi=0.5$ and $n = 500$}
     \label{fig:trustgraph500histogram}
 \end{figure} 
 
 \subsection{Different types of trust graph generators}
 \paragraph{Random generator}
+Random graph generation is the simplest one. We take n nodes, m edges -- each edge is connected to two random nodes $n_1$, $n_2$ where $n_1 != n_2$. Although random trust graph is far from reality, we will use it for comparison.
 
-\paragraph{scale-free generator}
+\paragraph{Probabilistic duplication}
+Another trust graph generator proposed by Konorski\cite{konorski2019mitigating} base on probability duplication and can be visualized as natural process of acquiring new colleagues on our friends' party. When we get to the party, we meet new people and with some probability become colleagues. This algorithm works as follows: we take $n_0$ nodes and $m_0$ edges and connect them randomly. Then we add new node and connect it to one random node in current graph (your friend invited you to his party), then with $\phi$ probability you connect to each of his friends (you acquire new friends with some of his friends), you repeat this process $n = N - N_0$ times. 
+The most important advantage of this generator is the fact that it produces scale-free graphs. Figure \ref{fig:propdup500graph} shows the graph generated by the method and Figure \ref{fig:propdup500histogram}, histogram of edge degrees.
 
-\paragraph{Konorski scale-free propabilistic dulication}
+\begin{figure}[h!]
+    \includegraphics[width=11cm]{img/propDup500Graph.png}
+    \centering
+    \caption{Trust Graph generated by Probabilistic Duplication algorithm for $\xi=0.5$ and $n = 500$}
+    \label{fig:propdup500graph}
+\end{figure}
+
+\begin{figure}[h!]
+    \includegraphics[width=11cm]{img/propDup500Hist.png}
+    \centering
+    \caption{Degree Histogram generated by Probabilistic Duplication algorithm for $\xi=0.5$ and $n = 500$}
+    \label{fig:propdup500histogram}
+\end{figure} 
 
 // How to continue from trust graph subchapter 
 
@@ -588,32 +609,75 @@ it allows us to create any arbitrary graph  Fortunately we know that structure o
 
 
 
-
-%\section{Blockchain}
-%When we speak about trust, openness and decentralization it's always worth to consider Blockchain technology. Here we will try to use Blockchain to achieve previously stated requirements. Some of the properties Blockchain technology gives us are: immutability - once written, data can not be modified. Time assurance - each block is published in apprx. 10min. This feature gives us a clock that will provide us signed timestamps. Sign ensure trust based on consensus settled by proof-of-work algorithm.
-
-\section{Proof of Time - Abstract solution}
-We propose system where authentication is based on \textit{proof of time} access to private keys. 
-We noticed that the proof-of-time must be published in either neutral place or in verifier place. So the publisher can not use it's influence to modify the data. 
-
-
-
-
-
-
-
 \section{Stolen Credentials Problem}
-How long on average does it take to detect stolen credentials on average.
+ICN authentication model is based on credentials.  Unit with access to credentials can publish authenticated data, because rest of the network has no other ways to verify the content authentication other than checking signature validity (created with credentials). Credentials can be loosely categorized to two categories: cold/offline credentials e.g. private keys -- this type of credentials has very long (days or months) or not at all expiration time, they are typically stored on hard drives and rarely leave the device; hot/online credentials e.g. access tokens -- are created for limited period of time(minutes or hours) and are often transmitted over the network. 
+Stolen Credentials is serious problem. Multi-factor authentication methods tries to mitigate the problem, but here in this thesis we assume that even it -- is not able to stop such attacks.
+Stolen credentials in conjunction with ICN caching, can lead to destructive consequences, because ICN protocols doesn't provide data revoking/removal functions. Malicious entity who gains access to stolen credentials can publish autheticated data that can stays in nodes' cache for long(how long) period of time. 
 
-\section{Graph Burning}
-How does it differ from out solution ? Where to place fire so it burn as fast as possible ?
+For cold/offline data breaches we can find reports (DBIR - Data Breach Investigations Report 2020) showing that 45\% of attacks is caused by "hacking", 22\% is caused by misconfiguration, 22\% by phishing.  17\% caused by malicious software, 4\% by misuse by authorized users and 4\% by physical interaction.
+
+Most of the attacks (70\%) are performed by external entities, who are financially motivated (86\%). Also most attacks are targeted on big corporations (72\%), while in most of them (58\%) the data breach include user personal informations.  
+
+If we look at historical data in Fig. \ref{fig:data-breach-historical}.
+
+\begin{figure}[h!]
+    \includegraphics[width=11cm]{img/data-breach-historical.png}
+    \centering
+    \caption{Select action varieties in breaches over time}
+    \label{fig:data-breach-historical}
+\end{figure} 
 
 
-\section{Graph Infections - Concrete solution}
-Proposition \cite{jekon2019content}
-Simulator \url{https://github.com/stasbar/MASTI}
+The most decsearease gets Trojan horses -- from 50\% in 2016 to 5.6\% in 2020. Similar decrease gets RAM Scrapers, which search operating system memory for potential confidential data. 
+On contrary, the highest increase can be noted on misconfiguration and accidental data leakage (possibly caused by millennials messiness). Yet the highest popularity is still for phishing attacks and usage of stolen credentials. 
 
-The graph we are considering is limited only to one content at a time. So we can assume that all nodes in the graph are interested in such content trust.
+... Dokończyć z raportu...
+
+
+For hot/online credentials ...
+
+
+\section{Graph Infections}
+Graph Infection algorithm proposed in \cite{jekon2019content} is similar to SEIRS model, but some changes were made. The possible node states are Susceptible-Acute-Recoverable-Quarantine-Susceptable, the flow diagram is presented in fig x. In Susceptible state nodes are healthly -- does not propagate infection -- but can get infection and change state to Acute; Acute nodes are infected -- does inflicts infection propagation -- and can switch state to Recoverable or Quarantine depending how many of their neighbors are infected; Recoverable nodes are infected, but can switch to Quarantine if some of their neighbor gets healthy; Quarantine nodes are healthly, and can switch state to Susceptible or Acute depending how many of their neighbors are infected. 
+Nodes can get infected by either:
+- external infection -- content publisher can always infect his home node, and then next nodes after fixed period of time.
+- internal infection -- when the fraction of infected neighbors pass the $\xi$ treshhold, then the node gets infected. 
+
+
+At the beginning all nodes are healthly (distrust new content). When publisher wants to authenticate new content, he start the infection process. Initially he can infect only home node that is assigned by some external mechanism. Home node issue certificate that allows to infect next random node after some constant period of time. After that time, the publisher infect next node by showing the certificate signed by previous node. This process is then repeated until the network lead to the epidemic, or,  the publisher, will be out of time with its stolen credentials. To give this process some momentum, we allow the nodes to infect each other by internal infections. That way, the publisher doesn't need to coordinate whole process until the epidemic, but just start the chain reaction with sufficient power (proofs-of-time) which will then turn into epidemic itself.
+
+Internal infections have to follow some rules. First of all, the node gets infected by its neighbours only if the threshold $\epsilon$ -- that is the fraction of its infected  neighbors -- gets reached.  Second 
+
+\subsection{Simulator}
+We provide two simulators, first for visualization and second for fast calculations. Visualization simulator helps us better understand processes on graph, and find potential bugs. Fast simulator allows us to perform many calculations on different input data in acceptable time. The source code for both simulators is available under this link \url{https://github.com/stasbar/ProofOfTime-Auth}. Visual simulator is presented in Fig \ref{fig:visualsimulator}. Fast simulator is presented in Fig \ref{fig:fastsimulator}.
+
+\begin{figure}[h!]
+    \includegraphics[width=11cm]{img/simulator.png}
+    \centering
+    \caption{Visual simulator}
+    \label{fig:visualsimulator}
+\end{figure}
+
+\begin{figure}[h!]
+    \includegraphics[width=11cm]{img/fastsimulator.png}
+    \centering
+    \caption{Fast simulator}
+    \label{fig:fastsimulator}
+\end{figure}
+
+\section{Consensus}
+If we look at the problem from different perspective we notice that what we are trying achieve is to achieve consensus among all nodes about if the content is legit or bogus. In graph infection algorithm, the consensus was dictated by the initial power of the chain reaction process. Too low power lead to extinctionendemic, high enough power lead to epidemic. Both epidemic and edmenic can be considered consensus decision from all nodes. Graph infection consensus struggle with Byzantine Failure nodes -- each node controls the time after the next propagation is allowed, if the node is Byzantine failure it can allow immediate propagation or doesn't allow at all. Additionally the consensus is not deterministic, there is guarantee that with the initial conditions the network will lead to epidemic or extinctionendemic for 100%.
+
+< Chyba za ostre wejście >
+
+There are many other consensus algorithms, but most of them assume that nodes will act honesty -- are not Byzantine-failure resistant. 
+
+Additionally most of them doesn't allow decentralization -- new nodes can not freely join the peer group without permission from Central Authorithy. When we talk about internet level protocol -- that is innately decentralized, we must crate protocols that also support easy decentralization.
+
+Consensus protocols that works with Byzantine-failure nodes, and allow open membership are open Blockchains. 
+
+Blockchain 
+
 
 \section{Bitcoin - naive solution}
 In previous section we discussed solution based on graph infections. Here we will propose naive solution based on one of the core features of Bitcoin Blockchain, precisely on probabilistic fixed interval between blocks creation. In bitcoin protocol, transactions are stored in data structure called Blockchain. Each node in p2p Bitcoin network can participate in block creation process called mining, this becoming miner. Each node becomes validator of new transactions that gets to Bitcoin network. follows strict rules that 
@@ -632,10 +696,12 @@ Therefore we constructed new consensus algorithm where each node spread infectio
 - previous time of infection was x time ago
 - it is the home publisher or contains authorization token issued by some neighbour pointing to the node.
 
+\section{Federated Byzantine Agreement}
+When we talk about trust graphs, Blockchain and internet level protocols, we have to mention Federated Byzantine Agreement (FDA) which uses trust connections in order to secure its decentralized  Blockchain network. FDA was initially proposed for Stellar cryptocurrncy, and its implementation is called Stellar Consensus Protocol (SCP).  What's most important, it doesn't require mining for securing the network. In FDA each node chooses its own list of trusted peers. Those peers trust their trusted peers and so one (similarly as in our infection model), forming quorums. Each quorum must overlap with other quorum with at least one node. This model can hold up to 33\% Byzantine failure nodes. Additionally, FDA is much faster than bitcoin -- can process 200 transactions per seconds, and produces new block each 3-5 second. 
+
 \section{Fusion - Graph infection blockchain based scheme}
 We notice that, the chain of approval can be threat like a blockchain. Consensus mechanism here is based purely on each node. Each node control the time delay of the next block. If some node block the transaction, or sends it faster than designed (malicious actor), we can distrust that node. Each external publication create next block. Publisher is responsible for extending that chain to the length of acceptable trust to that content.
 
-\section{Comparison}
 \begin{table}[]
 \begin{tabular}{lll}
                                    & Graph Infections & Blockchain \\
