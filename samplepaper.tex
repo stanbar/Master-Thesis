@@ -2,9 +2,8 @@
 \usepackage[unicode=true]{hyperref}
 \usepackage{pgfplots}
 \usepackage{gnuplottex}
-\usepackage[demo]{graphicx}
+\usepackage{graphicx}
 \usepackage{mathtools}
-\usepackage{subcaption}
 \usepackage{wrapfig}
 \newcommand\PDFtitle{Application of blockchain and infection processes in graphs}
 \newcommand\PDFauthors{Stanisław Barański}
@@ -467,6 +466,7 @@ In our model the infection is the abstract, representing trust to an content. We
 
 
 \section{Trust graph}
+\label{trust-graph}
 %ow are they created ? In life, in networks ? What does it mean to create trust relationship. What do we understand by trust relationship. In environments that or another. 
 
 %Then we assume that such relation is already achieved. LOCKSS - solve the problem in one way, Wikipedia in another (experts consensus), but they doesn't fit to us, why ?. 
@@ -614,40 +614,57 @@ Nodes can get infected by either:
 
 At the beginning all nodes are healthly (distrust new content). When publisher wants to authenticate new content, he start the infection process. Initially he can infect only home node that is assigned by some external mechanism. Home node issue certificate that allows to infect next random node after some constant period of time. After that time, the publisher infect next node by showing the certificate signed by previous node. This process is then repeated until the network lead to the epidemic, or, the publisher, will be out of time with its stolen credentials. To give this process some momentum, we allow the nodes to infect each other by internal infections. That way, the publisher doesn't need to coordinate whole process until the epidemic, but just start the chain reaction with sufficient power (proofs-of-time) which will then turn into epidemic itself.
 
-Internal infections works as follows: node $n$ in susceptible state, switch to acute state, by being infected by its neighbours $N_n$ only if the threshold $\xi$ gets reached by the fraction of its infected neighbors $\%_n = |I_n|/|N_n|$, where $|I_n|$ is the number of infected $n$'s neighbours and $|N_n|$ is the number of all $n$'s neighbours. To give some momentum both acute and quarantine state are introduced. The node in one of this states have to spend some random time in it before it can leave the state. Here the $random(1/Z_IA)$ and $random(1/Z_HQ)$ are introduced to denote the random period in which the node needs to spend in that state before evaluating its neighbours. $Z_IA$ dictate the number of cycles in acute state, where $Z_hq$ do the same for quarantine state. Node in acute state, after the random period that on average take $\frac{Z_IA}{2}$ cycles leave its state. Depending on the $\%_n$ it switch either to recoverable -- if the $\%_n = 1$; or directly to quarantine -- if the $\%_n < 1$. In recoverable state the node is still infected, but as soon as one of his neighbours recover, it immediately switch to quarantine. Quarantine state is simillar to acute with one exception, node can be locked in this state if it gets immunized. The immunization is acquired after $\tau$ cycles from the first infection on the node. It works as a timeout, preventing from endemic state of the network. When the network stays in endemy for long time, it means that the publisher proof-of-time was to weak to reach epidemic. As we discussed earlier, there is no known analytical solution to such graph model, therefore it needs to be simulated on computer.
+Internal infections works as follows: node $n$ in susceptible state, switch to acute state, by being infected by its neighbours $N_n$ only if the threshold $\xi$ gets reached by the fraction of its infected neighbors $\%_n = |I_n|/|N_n|$, where $|I_n|$ is the number of infected $n$'s neighbours and $|N_n|$ is the number of all $n$'s neighbours. To give some momentum both acute and quarantine state are introduced. The node in one of this states have to spend some random time in it before it can leave the state. Here the $random(1/Z_{IA})$ and $random(1/Z_{HQ})$ are introduced to denote the random period in which the node needs to spend in that state before evaluating its neighbours. $Z_{IA}$ dictate the number of cycles in acute state, where $Z_{HQ}$ do the same for quarantine state. Node in acute state, after the random period that on average take $\frac{Z_{IA}}{2}$ cycles leave its state. Depending on the $\%_n$ it switch either to recoverable -- if the $\%_n = 1$; or directly to quarantine -- if the $\%_n < 1$. In recoverable state the node is still infected, but as soon as one of his neighbours recover, it immediately switch to quarantine. Quarantine state is simillar to acute with one exception, node can be locked in this state if it gets immunized. The immunization is acquired after $\tau$ cycles from the first infection on the node. It works as a timeout, preventing from endemic state of the network. When the network stays in endemy for long time, it means that the publisher proof-of-time was to weak to reach epidemic. As we discussed earlier, there is no known analytical solution to such graph model, therefore it needs to be simulated on computer.
 
 \subsection{Simulator}
-We provide two simulators, first for visualization and second for fast calculations. Visualization simulator helps us better understand processes on graph, and find potential bugs. Fast simulator allows us to perform many calculations on different input data in reasonable period of time. The source code for both simulators is available under this link \url{https://github.com/stasbar/ProofOfTime-Auth}. Visual simulator is presented in Fig. \ref{fig:visualsimulator} or direct access under the link \url{masti.stasbar.com}. Fast simulator is presented in Fig. \ref{fig:fastsimulator}.
-\begin{figure}
-\begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[width=5cm=.8\linewidth]{img/simulator.png}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[width=5cm.8\linewidth]{img/fastsimulator.png}
-\end{subfigure}
+We provide two simulators, first for visualization and second for fast calculations. Visualization simulator helps us better understand processes on graph, and find potential problems. Fast simulator allows us to perform many calculations on different input data in reasonable period of time. The source code for both simulators is available under this link \url{https://github.com/stasbar/ProofOfTime-Auth}. Both simulators are presented in Fig. \ref{fig:simulators}. Visual simulator is accessuble under \url{masti.stasbar.com}.
+\begin{figure}[h!]
+  \subfloat[Visual simulator]{
+	\begin{minipage}[c][1\width]{
+	   0.5\textwidth}
+	   \centering
+	   \includegraphics[width=1\textwidth]{img/simulator.png}
+	\end{minipage}}
+ \hfill 	
+  \subfloat[Fast simulator]{
+	\begin{minipage}[c][1\width]{
+	   0.5\textwidth}
+	   \centering
+	   \includegraphics[width=1.1\textwidth]{img/fastsimulator.png}
+	\end{minipage}}
 \caption{Simulators preview}
 \label{fig:simulators}
 \end{figure}
+Simulators allows us to generate the trust graph using 3 different generators: random, web of trust and probabilistic duplication discussed in Section \ref{trust-graph}; and customize the parameters: number of nodes, number of nodes and edges in initial kernel and $\phi$ -- used in web of trust and probabilistic duplication to customize the connections density. After the graph is generated we can save it and restore it -- that way we always work on the same graph during the research. 
+When the graph is loaded, we can set the $\xi$, $\tau$, $Z_{HQ}$, $Z_{IA}$ and number of external infections or publications or proofs-of-time. 
+Visual simulator provide us live preview of graph and chart during the infection process.  
+Fast simulator print the results of simulations, green color indicate that the network ended in extinction state, red color indicate the epidemic state; length of the block indicate the number of cycles needed to reach the final state.
 
-Visual simulator allows to preview the process of dynamic 
+\subsubsection{Observations}
+Running the visual simulation provide us some interesting feedback. We notice that there is some unfortunate graph and $\xi$ configuration that prevent whole network from reaching epidemic even with with strong proof-of-time i.e. a lot of external infections.
+If in trust graph $G$ there exist defensive alliance $A \subseteq G$ of connected nodes $v \in A$, where each node $v$ is connected to at most $|N[v] \cap A| - \xi^{-1}$ nodes outside the $A$, then such alliance prevent whole network from epidemic. If we assume $\xi = 1/4$ and graph structure visible on \ref{fig:defensive-alliance}a,
+\begin{figure}[h!]
+  \subfloat[Defensive alliance]{
+	\begin{minipage}[c][1\width]{
+	   0.5\textwidth}
+	   \centering
+	   \includegraphics[height=0.7\textwidth]{img/offensive-alliance-numbered.png}
+	\end{minipage}}
+ \hfill 	
+  \subfloat[Defensive alliance clique]{
+	\begin{minipage}[c][1\width]{
+	   0.5\textwidth}
+	   \centering
+	   \includegraphics[height=0.7\textwidth]{img/offensive-alliance-clique-numbered.png}
+	\end{minipage}}
+\caption{Defensive Alliance}
+\label{fig:defensive-alliance}
+\end{figure}
+then infected nodes (red) are not able to infect the healthy ones (blue), especially the $v_1$, which is the single connection to the the $A$. It happens because the healthy node $v_1$ is connected to $\xi^{-1} = 4$ healthy nodes $\{v_2,v_3,v_4,v_5\}$ that are also part of $A$ and for each of them holds $|N[v] \cap A| / N[v] \ge>= 1 - \xi$. Let's take different graph where defensive alliance $A$ is connected to rest of the graph from many nodes as shown in \ref{fig:defensive-alliance}b. Nodes from $A$ can not be infected since there is not enough connections from outside $A$ to reach the $\xi$ threshold. For each of them the $|N[v] \cap A| / N[v] \ge>= 1 - \xi$ holds true. The result is that rest of the network stays in acute state until the nodes connected to $A$ change their state to quarantine (notice that their $\%_n$ is less than 1), which then propagate on the rest on the network leading to extinction. Of course, we could generate network where such alliances are prohibited, but we previously assumed that the trust graph can have arbitrary structure, and the generator used is only the supposition.
+Lowering $\xi$ may be another option, but that way we speed up the infection process on whole network which is unwanted effect. 
 
-\subsubsection{Results}
-Running the simulations provide us some interesting feedback. First of all, we notice that there is some unfortunate graph and $\xi$ configuration that prevent whole network from reaching epidemic, even with with strong proof-of-time -- a lot of external infections. 
-If in trust graph there exist a node that is connected to at least $\xi^{-1}$ nodes that are not connected to infected node then such clique prevent whole network from pandemic. Such structure is presented in Fig. \ref{fig:grapeproblem}.
-\begin{wrapfigure}{r}{0.25\textwidth}
-    \includegraphics[width=0.25\textwidth]{img/grapeing-numbered.png}
-    \centering
-    \label{fig:grapeproblem}
-\end{wrapfigure}
-Infected nodes (red) are not able to infect the susceptible ones (blue) in any other way than external infection. It happens because the susceptible node no. 1 is connected to $\xi^{-1} = 4$ healthy nodes no. 3 that are not connected to any other node. The single infected node no. 1 has not sufficient influence to pass the $\xi$ threshold of no. 2 node. The result is that rest of the network stays in acute state until the node no. 1 change it state to quarantine (its $\%_n$ is less than 1), which then propagate on the rest on the network leading to extinction. Forcing nodes to connect to at least two nodes doesn't help here since the blue nodes can connect to each other (Fig. \ref{fig:grape-cliquie-numbered}). 
-Lowering $\xi$ may be another option, but that way we speed up the infection process on whole network which is unwanted effect. Of course, we could generate network where such structures are prohibited, but we previously assumed that the trust graph can have arbitrary structure.
-\begin{wrapfigure}{l}{0.25\textwidth}
-    \includegraphics[width=0.25\textwidth]{img/grape-cliquie-numbered.png}
-    \centering
-    \label{fig:grape-cliquie-numbered}
-\end{wrapfigure}
+
+
 
 %If in trust graph, there exist two nodes -- let's call them Alice and Bob -- who are connected each other in such a way that if the edge would be removed, whole graph would split to two components. 
 
