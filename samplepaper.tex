@@ -724,7 +724,10 @@ There must be some mechanism to resolve the conflict
 Proof of Elapsed Time (PoET)
 %https://arxiv.org/pdf/1809.05613.pdf
 %2) Proof of Elapsed Time (PoET): Proof of Elapsed Time is a consensus method proposed by Intel which works similar to PoW but with significantly lower energy consumption. In this method, miners have to solve a hash problem similar to that of PoW. However, instead of a competition between miners to solve the next block, the winning miner is randomly chosen based on a random wait time. The winning miner is the one whose timer expires first. The verification of correctness of timer execution is done using a Trusted Execution Environment (TEE) like Intel’s Software Guard Extension (SGX) [25]
-
+There are number of different blockchain consensus protocols, but not all of them are sutable for internet level protocol and to be run on network devices.
+If we consider network devices simillar to IoT devices we can leverage the research done on this kind of protocols \cite{salimitari2018survey} and notice that there are subset of protocols especially suitable for IoT networksdevices. Those protocols are: PoET, PBFT and Tangle. The paper suggest that Stellar consensus is not ideal for IoT devices since it is too slow. %too much messages or what ? PBFT need to communicate with everyone afaik
+ Since the proof-of-timework claims are not the matter for milliseconds, but rather minuter or hours, we believe that the protocol is fast enough for our needs. to be hours long, we don't need to expect instant transactions. 
+Also, there already exist proposal of modified FBA algorithm\cite{FCPpdf50:online} that uses virtual voting algorithm which can achieve consensus in almost no communication overhead. We find those topic interested to research in future work.
 
 \section{Modification}
 %Disallow prepublishing
