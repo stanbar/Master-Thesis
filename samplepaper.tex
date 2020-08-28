@@ -670,7 +670,7 @@ We evaluate the algorithm using three known consensus requirements, which are: V
 \end{enumerate}
 Validity and Agreement specify what must not happen, in distributed systems literature\cite{lamport1977proving} those are called safety property. Termination specify what must happen and is called liveness property.
 
-WIt is hard to evaluate the protocol using common consensus requirements (safety, liveness and fault-tolerance), since they are designed for deterministic algorithms. Yet, we proved that in strong form of Byzantine-failure-node the protocol neither satisfy fault-tolerance nor safety. One single faulty node can prevent non-faulty nodes to decide on the same value--breaking the safety requirement using one single faulty node. Although liveness--eventual termination--is satisfied, the protocol should be disqualified since the eventual-termination is possible only to extinction state. We can say that the protocol can asymmetrically-terminate. In other words, we can not state that the protocol will eventually lead to either epidemic or extinction, we can only say that the protocol will eventually lead to extinction.
+We proved that in strong form of Byzantine-failure-node the protocol neither satisfy fault-tolerance nor safety. One single faulty node can prevent non-faulty nodes to decide on the same value--breaking the safety requirement using one single faulty node. Although liveness--eventual termination--is satisfied, the protocol should be disqualified since the eventual-termination is possible only to extinction state. We can say that the protocol can asymmetrically-terminate. In other words, we can not state that the protocol will eventually lead to either epidemic or extinction, we can only say that the protocol will eventually lead to extinction.
 
 % Very important chapter
 We don't claim that its impossible to form the graph infection algorithm that satisfy those properties. If the nodes would gain more awareness of the state of the network, they could detect faulty nodes and therefore become fault-tolerant.
@@ -709,6 +709,9 @@ In decentralized systems, where nodes can join and leave at will, its hard to kn
 
 When the nodes attend to agree on one version of the ledger, they start voting process inside their \textit{quorum slice}. And the process of approving the ledger is based on voting. 
 
+Scalability is another feature where FBA shines. Nodes does not need to communicate with all other nodes in the network (like in other PBFT protocols) to achieve consensus, instead they need to communicate with their quorum-slice subset which is way more efficient, especially at internet level protocol.
+
+% Possible remove
 Also SCP does not introduce the concept of mining, therefore the incentive of joining the network as a validator is much smaller than joining as a miner, so the Stellar network is not as decentralized as e.g. Ethereum. We can find paper \cite{kim2019stellar} where authors shows that the whole Stellar network can stop, if only two nodes controlled by Stellar Foundation fail. David Mazières who designed the SCP, addressed this issue \cite{Safetyvs90:online}, and claims that the problem does no longer exist.
 
 % Problems 
@@ -716,6 +719,11 @@ The problem arise, when such nodes (quorum intersection) are byzantine failed, l
 We can expect the network to form a connections where there always exist quorum-intersection because the internet--that we are designing the protocol for--itself satisfy such property.
 How can we expect the network to form a connections where there always exist quorum-intersection ? 
 There must be some mechanism to resolve the conflict
+
+\section{Discission}
+Proof of Elapsed Time (PoET)
+%https://arxiv.org/pdf/1809.05613.pdf
+%2) Proof of Elapsed Time (PoET): Proof of Elapsed Time is a consensus method proposed by Intel which works similar to PoW but with significantly lower energy consumption. In this method, miners have to solve a hash problem similar to that of PoW. However, instead of a competition between miners to solve the next block, the winning miner is randomly chosen based on a random wait time. The winning miner is the one whose timer expires first. The verification of correctness of timer execution is done using a Trusted Execution Environment (TEE) like Intel’s Software Guard Extension (SGX) [25]
 
 
 \section{Modification}
