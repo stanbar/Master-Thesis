@@ -734,12 +734,6 @@ In this paper, authors suggest that there are subset of protocols especially sui
 \section{Modification}
 %Disallow prepublishing
 
-\section{Federated Byzantine Agreement}
-When we talk about trust graphs, blockchain and internet level protocols, we have to mention Federated Byzantine Agreement (FDA) which uses trust connections to secure its decentralized blockchain network. FDA was initially proposed for Stellar cryptocurrency, and its implementation is called Stellar Consensus Protocol (SCP). FDA is based on Practical Byzantine Fault Tolerance (PBFT) \cite{castro1999practical} used also in e.g. Ripple and Hyperledger. In PBFT nodes agree on the ledger using the voting process, once the 66\% of network agree on the state, the ledger is closed and can not be reverted. PBFT chooses Safety over Liveness, so the problem of blockchain partitioning does not exist. Once the transaction is approved by blockchain it can not change its state. Also the confirmation speed is much faster, in Stellar the ledger closes in about 3-5sec. What is most important it does not require mining for securing the network. Therefore it is asymptotic resistant, meaning that the node consisting of large computational resources does not gain any advantages in the network, especially can not proceed 51\% attack, that is possible in PoW protocols. 
-
-In FDA each node chooses its own list of trusted peers. Those peers trust their trusted peers and so one (similarly as in our infection model), forming quorums. Each quorum must overlap with other quorum with at least one node. This model can hold up to 33\% Byzantine failure nodes. Additionally, FDA is much faster than bitcoin -- can process 200 transactions per seconds, and produces new block each 5 second. 
-
-
 \section{Blockchain layer}
 In our proposition nodes in the network plays two roles, ICN node where it participate in routing and content caching and as blockchain node where he participate in consensus and blockchain storage (see Fig. \ref{fig:layers}a). Not every node has to play two roles, the ones which are not connected to end-uses might not participate in blockchain network, since they don't get asked for content trustworthy. 
 The blockchain layer could also be managed by completely different entities, separating transport layer from trust layer (see Fig. \ref{fig:layers}b). That way the ICN nodes could be abstracted from the trust network overhead introduced by trust system -- keeping them simpler and more reliable. Also the trust system would be more portable; it could be used in many different ICN solutions, and even in legacy systems since the trust does not depend on ICN but on the hash of the content and publisher credentials. That way the blockchain trust network could be hosted by more powerful devices, and 
@@ -766,8 +760,6 @@ The blockchain layer could also be managed by completely different entities, sep
 In graph infection algorithm there are two states of content authenticity: authenticated or not-authenticated. We believe that this is limiting. Content like e.g. weather forecasting should not be authenticated for the same amount of time as online banking website. Therefore we propose more flexible model, where authentication can be acquired progressively via Credibility Score. Credibility Score mentioned in Section \ref{proof-of-time} increase authentication granularity. Pictures, music, movies doesn't require as much trust as websites where we enter our credentials and credit cards details. Different thresholds should be used for different content types. For example, if 3 trust thresholds are used: low, medium, high;
 
 
-\section{Blockchain - Concrete solution}
-We could use Bitcoin blockchain, or any other blockchain with constant time block creation, to persist proof-of-time claims. In Bitcoin each block is created in appx. 10min. We could take advantage of it, as a global, secure signing clock. Each new block has it's own unique hash, which can be used as a signing key. For our proof-of-time claims, or better we could persist our claims inside blockchain itself. Naive approach would be to send a empty (just fee) transaction from publisher account to hash of the content address. This way everyone can check, the history of hash of the content. Ensuring that it was proven by publisher for long enough. Of course this approach is conceptual. Bitcoin network is not suitable to operate in for network devices. Therefore we will outline the properties especially interesting in blockchain, and try to find out another blockhain or propose our own design. We consider Blockchain in first place, mainly because it's secure. Secure in terms of Byzantine Fault Tolerant system, but also as immutable storage. Not one can change the previously written data, without recalculating the proof-of-work puzzle, and overtaking rest of the network in computational power competition. This mechanisms works great for blockchains that servers store of value purposes. Our needs are completely different, we need a system that is asymptotic secure, so no (more powerful) node can overtake the whole network. That way, we lose the property of ~10min period ticking clock. We also can not incentivese nodes to behave honest by staking electrical power. We also need to get rid of fees since the Internet protocol on this level must be free. Therefore we need to protect from DoS attack in different way. Another important properties are openness and scalability. We need to design system that allow joining new participants and is highly scalable, otherwise we are limiting the protocol to special use cases, rather than global Internet protocol. Such software needs to operate on network devices which are resources constrained. Thus it needs to be lightweight, both in computational power and memory consumption.
 %review, delete or continue
 Our solution to this problem is modification of \cite{konorski2019mitigating}, by adding Blockchain as a storage, and modifying consensus algorithm.
 
@@ -779,20 +771,6 @@ Therefore we constructed new consensus algorithm where each node spread infectio
 - didn't spread the infection for such content before
 - previous time of infection was x time ago
 - it is the home publisher or contains authorization token issued by some neighbour pointing to the node.
-
-%TODO
-//TODO
-
-
-
-%TODO
-//TODO
-
-\section{Fusion - Graph infection blockchain based scheme}
-We notice that, the chain of approval can be threat like a blockchain. Consensus mechanism here is based purely on each node. Each node control the time delay of the next block. If some node block the transaction, or sends it faster than designed (malicious actor), we can distrust that node. Each external publication create next block. Publisher is responsible for extending that chain to the length of acceptable trust to that content.
-
-%TODO
-//TODO
 
 \section{Discussion}
 
