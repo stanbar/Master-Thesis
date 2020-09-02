@@ -47,10 +47,9 @@ In ICN data is requested by its name (Named Data Object - NDO), and is served by
 
 When we write NDO, we understand any arbitrary data that can be transferred over network: web page, music, images, video, documents and data streams. What's most important NDOs compared to traditional URLs are location independent, they don't specify the location from where the content should be served from, nor how they should be transferred to the receiver. NDO granularity may differ from packets to data chunks to whole data objects, depending on the approach and data size.
 
-Data naming is the most significant concept in the ICN. Data names must be unique---similarly to host names in current Internet architecture; two different DNS nodes should resolve one domain name to the same location -- two different ICN nodes must resolve one name to the same content. 
+Data naming is the most significant concept in the ICN. Data names must be unique––similarly to host names in current Internet architecture; two different DNS nodes should resolve one domain name to the same location––two different ICN nodes must resolve one name to the same content. 
 There are two approaches to naming system: hierarchical - similar to URL, and flat - global namespace, often just the hash of the file.
-Additionally each NDO should be authenticated with the publisher who created it. Digital signatures on data objects guarantee both integrity and authentication. If the data is trusted, not the host, then the data can be served from any untrusted source -- and we still can trust it.
-
+Additionally each NDO should be authenticated with the publisher who created it. Digital signatures on data objects guarantee both integrity and authentication. If the data is trusted, not the host, then the data can be served from any untrusted source––and we still can trust it.
 
 
 %\section{IPFS}
@@ -63,12 +62,11 @@ Additionally each NDO should be authenticated with the publisher who created it.
 
 %\section{NDN}
 
-\section{Content Poisoning - Problem}
+\section{Content Poisoning}
 The most significant benefit of ICN networks is content caching. It turns out that this benefit becomes double-edged sword when we take into account security concerns. 
 First we would like to narrow our interest of research in this paper. Content Poisoning in NDN (and possibly in all ICN networks) can be divided to two categories: 1. Corrupted Data and 2. Fake Data. In both of them the content gets modified. The first one assume that the attacker does not posses the signing-key of legit publisher, thus the content won't pass the signature verifiaction process. This might look like the problem is resolved. Unfortunatelly the signature verifaiction is optional process, and there are two reasons why this process won't be done on every router. First one is the economic incentivisation, the process of signature verification is resource-consuming, thus the businesses might decide to skip it. Next reason is based on the fact, that in order to proceed the signature verification, the corresponding public key is required. How can the router know which public key to use? We can not expect from router to store all possible public keys. Thus the routers are vulnerable to Corrupted Data Content-Poisoning Attacks. This kind of attacks has been addressed in papers \cite{ghali2014needle} \cite{yu2018content} \cite{nguyen2017content}. Second CPA category (Fake Data) is much more dangerous, because it assumes that the Attacker gets access to publisher private-key. Therefore he is able to forge valid signature, which will successfully pass verification on the end-system. 
 
 Once the bogus content gets propagated across multiple nodes (more specifically on their content caches), each end-user who request the content from that node, will receive the poisoned content. Signature verification will pass successfully, hence the user will be sure that the content is legit. What is even worse, the content can not be as easly revoked as it was disseminated, because most of the ICN networks doesn't allow removing/revoking its cache content, other than natural (e.g. LRU based) cache aging. The one way to effectively prevent from fetching fake content is by explicitly filtering the hash of the content we consider poisoned. But this arises another problem, how the user can know the hash of the poisoned content, and if it's not too late. In \cite{nguyen2017content} we can read "Therefore, it (Fake Data CPA) is harder to create but impossible to detect by end-systems". Here it is worth to cite another quote "It always seems impossible until it's done." from Nelson Mandela. At the time of writing, the problem is still unsolved, but there is one proposal \cite{konorski2019mitigating} which we will research, expand and modify. But before that, let's see how other content-oriented services solve the Fake Data CPA problem, in the hope of inspiration.
-
 
 \subsection{Wikipedia}
 Wikipedia is great example of system that face content poisoning problem. Let's investigate how do they solve the problem. 
@@ -629,11 +627,15 @@ Visual simulator provide us live preview of graph and chart during the infection
 
 
 \subsubsection{Observations}
-Running the visual simulation provide us some interesting feedback. 
+\label{observations}
+Running simulations give us interesting feedback.
 First of all, we notice, that the parameters $Z_ia$ and $xi$ can completely change the outcome depending on the graph, if we want to make a solution that works on all types of networks, then it may be hard to find one constant value that will work for whole time. Those values should be rather dynamically changed when the size of the network changes.
+For example for $\xi=0.25$, $Z_{IA}=50$, $Z_{HQ}=1$, $\tau=200$ the probability of epidemic depends mostly on the size of the graph.
+
 
 %Second, we noticed that when the infection ends up in epidemic, it never happen after the last infectiion. In other words, we couldn't find a configuration when the epidemic happen after the last publication. Like the network would not have any momentum that would help it reach the epidemic when the publisher stop to push it. We can't proof that it's impossible, but we also can't proof that it's possible.
 
+Running the visual simulation provide us some interesting feedback. 
 
 We notice that there is some unfortunate graph and $\xi$ configuration that prevent whole network from reaching epidemic even with with strong proof-of-time i.e. a lot of external infections.
 If in trust graph $G$ there exist defensive alliance $A \subseteq G$ of connected nodes $v \in A$, where each node $v$ is connected to less than $\xi * |N(v)|$ nodes outside the $A$, then such alliance prevent whole network from epidemic. If we assume $\xi = 1/4$ and graph structure visible on \ref{fig:defensive-alliance}a,
@@ -715,7 +717,7 @@ Strength of the proof-of-time is calculated by counting total number of transact
 
 As we mentioned earlier, the Bitcoin consensus protocol and any other Nakamoto Consensus––in which the leader capable of updating the blockchain is elected in form of lottery where the chance of winning is determined by the amount of spent resource––is not suitable for our use case. Fortunately the topic of distributed systems and especially consensus algorithms is studied for decades so there is a lot to choose from.
 
-\section{Federated Byzantine Agreement}
+\subsection{Federated Byzantine Agreement}
 We find Federated Byzantine Agreement (FBA)––and its blockchain Stellar Consensus Protocol (SCP)\cite{mazieres2015stellar}––the most suitable protocol for our needs. In contrast to proof-of-work, where computational power dictate the contribution to consensus, FBA is based on trust model. That way, it become fast, lightweight and asymptotic resistant\footnote{the node consisting of large computational power does not gain any advantages in the consensus protocol}. Instead the contribution value is determined by the node trustworthy––similarly to graph infection protocol. New node, joining the network, has no contribution to the protocol until someone trusted––start to trust it.
 Blockchain like any other asynchronous distributed system, faces FLP\cite{fischer1985impossibility} impossibility trilemma––where only two of three properties can be achieved. Those properties are: Fault tolerance, Liveness and Safety. Most systems must be fault tolerance so the choice is left between Liveness and Safety. Safety guarantee state consistency across all nodes in the network. If nodes does not agree on some transaction, they will not split to two different states, but rather wait until the conflict is resolved. Liveness guarantee that the consensus will always terminate, and the system will always be available to accept new transactions. When the conflict occurs, the ledger split to two different versions, until it's resolved, but in the mean time, it can process new transactions. Most of the blockchain protocols chooses liveness, tolerating temporary partitioning. They argue that the time of the partitioning is short enough that the users expecting high credibility of the transaction can just wait---until the chance of shifting the state is acceptably small\footnote{In proof-of-work the chance of changing the state of some block gets smaller with the length of chain of the blocks attached to this block}. The conflict settlement is dictated, again, by computational power. The state which gets the fastest used as a previous block is considered winner. That way the system can guarantee permanent availability, even with just one working node. 
 
@@ -739,13 +741,14 @@ Also, there already exist proposal of modified FBA algorithm\cite{FCPpdf50:onlin
 
 In this paper, authors suggest that there are subset of protocols especially suitable for IoT networks. Those protocols are: Proof of Elapsed Time (PoET), Practical Byzantine Fault Tolerance (PBFT) and Tangle.
 
+\subsection{Credibility Score}
+In graph infection algorithm there are two states of content authenticity: authenticated or not-authenticated. We believe that this is limiting. Content like e.g. weather forecasting should not be authenticated for the same amount of time as online banking website. Therefore we propose more flexible model, where authentication can be acquired progressively via Credibility Score. Credibility Score mentioned in Section \ref{proof-of-time} increase authentication granularity. Pictures, music, movies doesn't require as much trust as websites where we enter our credentials and credit cards details. Different thresholds should be used for different content types. For example, if 3 trust thresholds are used: low, medium, high; then we can require 10min, 2h, 12h of proofs of time accordingly. Each time the content is published to the network the author can be notified about that fact, and if the publisher used stolen credentials, the actual author have a time frame to revoke the credentials and halt the malicious authentication process.
 
-\section{Modification}
-%Disallow prepublishing
-
-\section{Blockchain layer}
+\subsection{Blockchain layer}
 In our proposition nodes in the network plays two roles, ICN node where it participate in routing and content caching and as blockchain node where he participate in consensus and blockchain storage (see Fig. \ref{fig:layers}a). Not every node has to play two roles, the ones which are not connected to end-uses might not participate in blockchain network, since they don't get asked for content trustworthy. 
-The blockchain layer could also be managed by completely different entities, separating transport layer from trust layer (see Fig. \ref{fig:layers}b). That way the ICN nodes could be abstracted from the trust network overhead introduced by trust system -- keeping them simpler and more reliable. Also the trust system would be more portable; it could be used in many different ICN solutions, and even in legacy systems since the trust does not depend on ICN but on the hash of the content and publisher credentials. That way the blockchain trust network could be hosted by more powerful devices, and 
+The blockchain layer could also be managed by completely different entities, separating transport layer from trust layer (see Fig. \ref{fig:layers}b). That way the ICN nodes could be abstracted from the trust network overhead introduced by trust system––keeping them simpler. Also the trust system would be more portable, it could be used in many different ICN solutions, and even in legacy systems since the trust does not depend on ICN, but on the hash of the content and publisher credentials. That way the blockchain trust network could be hosted by more powerful devices and possible different organizations––achieving separation of concerns which is always a good thing in long term.
+
+as well as in current internet scheme
 \begin{figure}[h!]
   \subfloat[Combined layers]{
 	\begin{minipage}[c][1\width]{
@@ -764,22 +767,10 @@ The blockchain layer could also be managed by completely different entities, sep
 \label{fig:layers}
 \end{figure}
 
-\section{Credibility Score}
-In graph infection algorithm there are two states of content authenticity: authenticated or not-authenticated. We believe that this is limiting. Content like e.g. weather forecasting should not be authenticated for the same amount of time as online banking website. Therefore we propose more flexible model, where authentication can be acquired progressively via Credibility Score. Credibility Score mentioned in Section \ref{proof-of-time} increase authentication granularity. Pictures, music, movies doesn't require as much trust as websites where we enter our credentials and credit cards details. Different thresholds should be used for different content types. For example, if 3 trust thresholds are used: low, medium, high; then we can require 10min, 2h, 12h of proofs of time accordingly. Each time the content is published to the network the author can be notified about that fact, and if the publisher used stolen credentials, the actual author have a time frame to revoke the credentials and halt the malicious authentication process.
+\section{Summary}
+We started this paper from formulating the problem of Fake Data CPA and looking at it from different perspectives. It turns out that Fake Data CPA is hard problem, but assuming certain conditions (time constraints), we proved that it is solvable. Time constrain allows us to extend the authentication from \textit{access to credentials} to both \textit{access to credentials} and \textit{access to time}. The access to credentials over some period of time is called the \textit{Proof of Time}. We build simulators and analyzed the proof-of-time implementation based on graph infections proposed in \cite{jekon2019content} and found some interesting observations. The graph infections algorithm struggle with defensive alliance problem described in Section \ref{observations}. And we doubt if its configuration (parameters $\xi$ and $Z_{ia}$) sensitivity is suitable for internet level networks where the structure can change. We also point the lack of both fail-stop and Byzantine-fault tolerance property. Then we generalize the problem to distributed system consensus problem, and propose solution based on blockchain technology, that have valuable properties in terms of trust and security such as immutability, neutrality, and security. 
 
-%review, delete or continue
-Our solution to this problem is modification of \cite{konorski2019mitigating}, by adding Blockchain as a storage, and modifying consensus algorithm.
-
-Each publisher who wants to publish the content to the network, must start with its home node. That node, create transaction in which he certifies the content proved by the publisher. Such certificate is then flooded to whole network, so they can update the current state of trust to the content. After some delay (clock tic), such node also create certificate in which he point to the one of neighbours node which can be infected next, where the publisher is also allowed to publish the content. The next node will accept the infection only if he is an home publisher, or if he is pointed as the next node by the previous node. Publisher show valid certificate (signed by previous node, and by himself - proving access to private key). Each node can create certification only once per content. 
-
-That way, each node control the time of infection dissemination. If any node notice, that, the new certification was published earlier than previous certification + some fixed delay, it can assume that such node is cheating, and filter the certifications from such node.
-
-Therefore we constructed new consensus algorithm where each node spread infection only if:
-- didn't spread the infection for such content before
-- previous time of infection was x time ago
-- it is the home publisher or contains authorization token issued by some neighbour pointing to the node.
-
-\section{Discussion}
+FBA on the other hand struggle with disjoint-quorums problem.
 
 \bibliographystyle{plain}
 \bibliography{refs}
