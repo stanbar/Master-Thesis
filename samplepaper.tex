@@ -628,11 +628,29 @@ Visual simulator provide us live preview of graph and chart during the infection
 
 \subsubsection{Observations}
 \label{observations}
-Running simulations give us interesting feedback.
-First of all, we notice, that the parameters $Z_ia$ and $xi$ can completely change the outcome depending on the graph, if we want to make a solution that works on all types of networks, then it may be hard to find one constant value that will work for whole time. Those values should be rather dynamically changed when the size of the network changes.
-For example for $\xi=0.25$, $Z_{IA}=50$, $Z_{HQ}=1$, $\tau=200$ the probability of epidemic depends mostly on the size of the graph.
+
+We run the simulator against many different configurations to find influence of each parameter. The probabilistic nature of the algorithm force us to run the simulation 200 for each configuration to get stable results. We run the simulation on 1000 nodes graphs generated using both Web of Trust (WoT), Random(RND) and Probabilistic Duplication (PD) generators, but for each simulation we use the same single generated graph. First we check the $Z_{IA}$ parameter by assuming all remaining parameters constant: $\xi=0.25, Z_{HQ} = 1, \tau=200$ with the maximum number of publications equal to 300. The Figure \ref{fig:influence-of-zia} shows how the $Z_{IA}$ influences the probability of reaching epidemic (Pr[epidemic]) in the domain of number of publications (proof-of-time). We can notice the familiar S-curve that we could see in epidemiology models. It shouldn't be a surprise that the higher $Z_{IA}$ the larger momentum the infection has, the faster it reach epidemic. The graphs generated using propabilistic duplication and random generators produces similar shapes, although the random graph starts to reach epidemics with lower number of publications. The web of trust graph seems to be the most resistant to epidemics.
+\begin{figure}[h!]
+    \includegraphics[width=11cm]{img/influence-of-zia.png}
+    \centering
+    \caption{Influence of $Z_{IA} parameter$}
+    \label{fig:influence-of-zia}
+\end{figure} 
 
 
+
+Running the simulations provides us interesting observations. 
+We don't want to repeat the results from \cite{jekon2019content}, but rather write about novel observations, but as a remindedr.
+First of all, we notice, that the parameters $Z_ia$ and $xi$ can completely change the outcome depending on the graph, if we want to make a solution that works on all types of networks, then it may be hard to find one constant value that will work for whole time. If we want to set fixed number of publications needed to achieve epidemic, then those values $\xi$ and $\Z_{IA}$ should be dynamically changed when the size of the network changes.
+For example for $\xi=0.25$, $Z_{IA}=25$, $Z_{HQ}=1$, $\tau=200$ the probability of epidemic is significantly influenced by the size of the graph (see Figure \ref{fig:influence-network-size}).
+\begin{figure}[h!]
+    \includegraphics[width=11cm]{img/Influence-of-network-size.png}
+    \centering
+    \caption{Influence of network size}
+    \label{fig:influence-network-size}
+\end{figure} 
+
+Second, we notice the fact that the number of cycles in iterations that lead to extinction is greater than than in those which lead to epidemic.
 %Second, we noticed that when the infection ends up in epidemic, it never happen after the last infectiion. In other words, we couldn't find a configuration when the epidemic happen after the last publication. Like the network would not have any momentum that would help it reach the epidemic when the publisher stop to push it. We can't proof that it's impossible, but we also can't proof that it's possible.
 
 Running the visual simulation provide us some interesting feedback. 
