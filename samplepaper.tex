@@ -571,12 +571,7 @@ In fig \ref{fig:credentials-steal-discovery}, we can see that for 60\% of incide
     \label{fig:credentials-steal-discovery}
 \end{figure} 
 
-If we consider the credentials as a access tokens (e.g. JWT tokens) that are used in communication between two parties, then each of them has some lifetime duratperoiond after which the credentials expire. In RFC 6819\ref{RFC6819O36:online} we can find that the suggested lifetime for such credentials range from minutes to hours depending on risk associated with token leakage.
-
-For hot/online credentials 
-%TODO
-//TODO
-
+If we consider the credentials as a access tokens (e.g. JWT tokens) that are used in communication between two parties, then each of them has some lifetime duration after which the credentials expire. In RFC 6819\ref{RFC6819O36:online} we can find that the suggested lifetime for such credentials range from minutes to hours depending on risk associated with token leakage.
 
 \section{Graph Infections}
 Graph Infection (GI) algorithm proposed in \cite{konorski2019mitigating} is similar to SEIRS model, but some changes were made. The possible node states are \textbf{S}usceptible-\textbf{A}cute-\textbf{R}ecoverable-\textbf{Q}uarantine-\textbf{S}usceptable (SARQS), the flow diagram is presented in fig. \ref{fig:finite-state-machine-jekon}.
