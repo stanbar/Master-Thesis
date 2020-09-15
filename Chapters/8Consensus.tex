@@ -1,0 +1,32 @@
+
+\chapter{Consensus}
+\label{consensus}
+If we look at our problem from a different perspective, we notice that we are trying to achieve a consensus among all the nodes about whether the given piece of content is authentic or not. In the graph infection (GI) algorithm, the consensus is dictated by the number of external infections. Too low a number leads to an extinction, whereas a high enough leads to an epidemic. Both an epidemic and an extinction can be considered consensus decisions. In an epidemic, the whole network generates a positive decision about the content authentication, while in an extinction, the network decides the opposite.
+
+% Very important chapter
+If we evaluate GI in terms of the consensus problem, it turns out that it struggles with faulty nodes. In GI, each node controls the time after the next external infection is allowed. If a node fails, it can allow immediate propagation or not allow it at all. Additionally, the consensus is not deterministic––there is no guarantee that the network will reach the same final occurrence for each simulation run with the same initial conditions. Although the consensus is achieved using timeout (the $\tau$ parameter specifying the time to immunization), the time to reach a consensus is non-deterministic.
+
+If we consider \textit{Byzantine failures}\cite{lamport2019byzantine} that allow nodes to act arbitrarily (e.g., send corrupted, malicious, or conflicting information to other nodes) then a node can be stuck in either a healthy or infected state, ignoring the state of its neighbors, hence a single faulty node can change the decision of all non-faulty nodes. In consequence, it can prevent the whole network from reaching an extinction or an epidemic. Consider again the graph in Fig. \ref{fig:defensive-alliance}a where all nodes are healthy, node 1 is an adversary and falsifies its state as infected; in this way, it infects nodes ${2,3,4,5}$ which are entirely dependent on node 1; therefore, they will stay infected as long as node 1 decides. 
+
+We evaluate the presented GI protocol using three known consensus requirements: Validity, Agreement, and Termination.
+\begin{enumerate}
+    \item Validity: any value decided upon must be proposed by one of the nodes.
+    \item Agreement: all non-faulty nodes must agree on the same value
+    \item Termination: all non-faulty nodes eventually decide.
+\end{enumerate}
+
+Validity and Agreement specify what \textit{must not} happen––there cannot be a situation where the consensus is reached on a value that was not proposed by any node (in our case, neither an epidemic nor an extinction). Also, there must be no non-faulty nodes that decide other than the rest of the nodes. In the distributed systems literature \cite{lamport1977proving} those properties are called \textit{safety}. On the other hand, Termination specifies what \textit{must} happen––at some point, all non-faulty nodes must reach a consensus. In the literature, this property is also called \textit{liveness}.
+
+The Validity requirement is stated to avoid trivial consensus algorithms like "always choose 0," which is not the case in the GI protocol.
+
+The Agreement requirement is satisfied owing to the timeout parameter $\tau$ that covers some corner cases involving defensive alliances.
+
+Termination is also satisfied––if the network cannot reach a consensus, then after $\tau$ number of cycles, nodes get immunized leading the whole network to the final occurrence. The longer the simulation takes, the more likely the network is to reach an extinction and less likely to reach an epidemic.
+
+We have seen that in the case of Byzantine failures,  neither fault-tolerance nor safety is satisfied. One single faulty node can prevent non-faulty nodes from deciding on the same value, breaking the safety requirement using one single faulty node.
+% Very important chapter
+It is probably not impossible to extend the GI algorithm such that it satisfies those properties. If the nodes could gain more awareness of the network state, they could detect faulty nodes and therefore become fault-tolerant. However, it is worth looking at alterntive solutions. 
+
+There are a variety of  consensus algorithms that differ in the allowed types of node failure (Byzantine or not), synchrony (Asynchronous or Synchronous), the number of tolerated failure nodes, authentication (whether messages have to be signed by their authors), and the number of cycles to achieve consensus. 
+
+Instead of looking at the original Stolen Credentials problem as a consensus protocol design problem, we propose a solution that can be deployed on top of an already existing consensus protocol. We search for protocols resilient to Byzantine failures because, for an Internet-level protocol managed by many organizations, we cannot assume that all nodes will act reliably and honestly. Additionally, the protocol must allow open membership--nodes should be able to join and leave the network at any time. 
