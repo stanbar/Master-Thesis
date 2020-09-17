@@ -19,6 +19,7 @@ There are two approaches to a naming system: hierarchical - similar to URL, and 
 Additionally, each NDO should be authenticated with the publisher who created it. Digital signatures on data objects guarantee both integrity and authentication. If the data is trusted, not the host, then the data can be served from any untrusted source––and we still can trust it.
 
 \section{Named Data Networking}
+To get better understanding of how ICN networks work, we describe one of the most mature 
 Named Data Networking (NDN) is an example of ICN implementation. The design was initialy proposed under the name Content-Centric Network by Van Jacobson in 2006 \cite{4ANewWay38:online}. Currently the project is under development with name Named Data Networking \cite{NamedDat22:online}. 
 
 NDN replace TCP/IP protocol stack by placing the chunks of named content in place of IP addresses (see Fig \ref{fig:ndn-design}a). The only layer that can not be changed is the layer 3–––the thin "waist" of the stack. All protocols in rest of the layers can be adjusted to the needs.
@@ -27,14 +28,14 @@ NDN replace TCP/IP protocol stack by placing the chunks of named content in plac
 	\begin{minipage}[c][1\width]{
 	   0.5\textwidth}
 	   \centering
-	   \includegraphics[height=0.57\textwidth]{img/ndn-stack.png}
+	   \includegraphics[height=0.5\textwidth]{img/ndn-stack.png}
 	\end{minipage}}
  \hfill 	
   \subfloat[]{
 	\begin{minipage}[c][1\width]{
 	   0.5\textwidth}
 	   \centering
-	   \includegraphics[height=0.57\textwidth]{img/ndn-packets.png}
+	   \includegraphics[height=0.5\textwidth]{img/ndn-packets.png}
 	\end{minipage}}
 \caption{Named Data Networking design. Source \cite{jacobson2009networking}}
 \label{fig:ndn-design}
@@ -68,7 +69,7 @@ To better understand the model, the concrete packet flow is presented in Fig.\re
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\linewidth]{img/ndn-operations.png}
+    \includegraphics[width=\linewidth]{img/ndn-flowoperations.png}
     \caption{NDN packets flow. Source \cite{ahlgren2012survey}}
     \label{fig:ndn-flow}
 \end{figure}
