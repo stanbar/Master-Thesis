@@ -19,8 +19,7 @@ There are two approaches to a naming system: hierarchical - similar to URL, and 
 Additionally, each NDO should be authenticated with the publisher who created it. Digital signatures on data objects guarantee both integrity and authentication. If the data is trusted, not the host, then the data can be served from any untrusted source––and we still can trust it.
 
 \section{Named Data Networking}
-To get better understanding of how ICN networks work, we describe one of the most mature 
-Named Data Networking (NDN) is an example of ICN implementation. The design was initialy proposed under the name Content-Centric Network by Van Jacobson in 2006 \cite{4ANewWay38:online}. Currently the project is under development with name Named Data Networking \cite{NamedDat22:online}. 
+To get better understanding of how ICN networks work, we describe one of the most mature project–––Named Data Networking (NDN). The design was initialy proposed under the name Content-Centric Network by Van Jacobson in 2006 \cite{4ANewWay38:online}. Currently the project is under development with name Named Data Networking \cite{NamedDat22:online}. 
 
 NDN replace TCP/IP protocol stack by placing the chunks of named content in place of IP addresses (see Fig \ref{fig:ndn-design}a). The only layer that can not be changed is the layer 3–––the thin "waist" of the stack. All protocols in rest of the layers can be adjusted to the needs.
 \begin{figure}[h!]
@@ -40,10 +39,10 @@ NDN replace TCP/IP protocol stack by placing the chunks of named content in plac
 \caption{Named Data Networking design. Source \cite{jacobson2009networking}}
 \label{fig:ndn-design}
 \end{figure}
-NDN defines two types of packets: Interest, and Data (see Fig. \ref{fig:ndn-design}b). Interest packet as the name suggest, indicate the interest of some data chunk, where the data chunk is identified by its Content Name. An consumer broadcast a interest packet to all its connection faces. If any node which receive such message has the corresponding data locally (in Content Store), it can respond with the Data Packet. 
-The operations of NDN node are similar to IP node. In Fig. \ref{ndn-operations} we can see the forward engine model in NDN node. When request arrive at one of the available faces it get dispatched based on the lookup result. 
+NDN defines two types of packets: Interest, and Data (see Fig. \ref{fig:ndn-design}b). Interest packet as the name suggest, indicate the interest of some data chunk, where the data chunk is identified by its Content Name. An consumer broadcast a Interest packet to all its connection faces. If any node that receive such message has the corresponding data locally (in Content Store), it can respond with the Data Packet, otherwise the Interest is forwarded to next router..
+The operations of NDN node are similar to IP node. In Fig. \ref{fig:ndn-operations} we can see the forward engine model in NDN node. When request arrive at one of the available faces it get dispatched based on the lookup result. 
 
-The FIB (Forwarding
+The FIB (Forwarding 
 Information Base) is responsible for forwarding the interests to potential nodes where the data can be found (similar to FIB used in IP, except it allows for multiple outgoing faces rather than single one). 
 
 The Content Store(CS) is responsible for buffering a content that was requested by Interest packet. Since the data can be served to multiple consumers–––not just single connection, as it is done in IP––it is not recycled after the first Interest request is satisfied. This mechanism is called in-network storage, because the network itself is storing the data. It is possible due to idempotency, self-identification, and self-authentication of the packets so each packet is equally useful for many consumers (e.g. two hosts interesting in Netflix video, can receive the content from single node without requesting the Netflix servers). The data is stored as long as possible and different storage policy can be used e.g. LRU replacement.
@@ -64,12 +63,13 @@ To better understand the model, the concrete packet flow is presented in Fig.\re
     \item 4. Finally the Interest reaches the data source router, where the content is present in the CS so it is immediately returned.
     \item 5. The router receive the Data packet and store it in its CS, check which nodes are waiting for the data in PIT and forward the Data packet accordingly.
     \item 6. This router (that was initialy requested by the requestor) do the same as the previous router storing the data in CS and responding with the Data packet.
-    \item 7-8. After some time, when different requestor ask for the same data, it gets immediately response from its closes router–––saving the network bandwidth and reducing the latency.
+    \item After some time, different requestor send the Interest packet to its closest router.
+    \item Router lookup the Content Name and finds out that the content is already stored in CS, therefore it immediately return the Data packet–––saving the network bandwidth and reducing the latency.
 \end{enumerate}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\linewidth]{img/ndn-flowoperations.png}
+    \includegraphics[width=\linewidth]{img/ndn-flow.png}
     \caption{NDN packets flow. Source \cite{ahlgren2012survey}}
     \label{fig:ndn-flow}
 \end{figure}
