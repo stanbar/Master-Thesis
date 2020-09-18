@@ -1,44 +1,58 @@
-\chapter{Comparison}
-\label{comparison}
-In comparing the two presented approaches, GI and Blockchain, we have focused on five main characteristics referred to as outcome, resilience, communication complexity, processing scalability (measured by the pieces of content the entire system can handle at a time), and fault-tolerance. One also has to consider the implementation requirements in terms of overlay IT infrastructure. We present the comparison in Table \ref{table:comparison}.
-\begin{itemize}
 
-    \item Outcome -- GI is indeterministic when it comes to a consensus decision. Even a high number of proof-of-times can sometimes result in an extinction, which is an unwanted property. Blockchain, on the other hand, is deterministic; a publisher with a high number of proof-of-time claims can be sure that his/her content will be authenticated. This is guaranteed by the safety property of FBA.
-    
-    \item Resilience -- GI is sensitive to both chance, the network size and structure, and the $\xi$, and $Z_{IA}$ parameters. While Blockchain––particularly using FBA––has just one assumption regarding the quorums-intersection property. We state that Blockchain is more resilient.
-    
-    \item Communication complexity -- In GI, each node has to communicate with just a constant number of its neighbors, so the complexity is linear in the number of nodes––$O(|N|)$. In Blockchain, each node has to communicate with all other nodes in the network, so the communication complexity is quadratic in the number of nodes––$O(|N|^2)$. In this regard, GI prevails.
-    
-    \item Processing capability -- to achieve safety, Blockchain has each network node process each piece of content sequentially, so the system is as fast as a single node in the network. Hence, adding nodes does not increase the total processing capability, which therefore is constant in the number of network nodes. In GI, communicates only with its neighbors. Therefore, nodes that are not connected can process different pieces of content independently--more network nodes increase the total processing capability, which is therefore linear in the number of network nodes.
-    
-    \item Fault-tolerance -- GI in its raw form does not handle fail-stop, let alone Byzantine faults. Blockchain tolerates up to $\frac{|N|-1}{3}$ Byzantine nodes, similarly as Stellar FBA. Blockchain therefore outperforms GI in this regard.
-    
-\end{itemize}
+\chapter{Comparison}
+Let's try to compare those two mechanisms. 
+
+First of all, the GI in its raw form doesn't handle faulty nodes––both in stop and Byzantine fault form. Most of the blockchains tolerate up to $\frac{n-1}{3}$ Byzantine-faulty nodes, and Stellar FBA is not different here. A blockchain solution is better in this aspect.
+
+Along with the Byzantine-fault tolerance, comes the PKI overhead. Therefore the Blockchains solution require PKI infrastructure
+
+GI allows to prune its trust table as the content is being removed from Content Store, so there is no need to store the trust information to content that is no longer stored. Blockchain on the other hand is permanent, and in order to be consistent no data can be removed (otherwise the chain of hashes would be broken). 
+
+
+GI method also require topology awareness. All nodes in the network should know all other nodes in the network––or at least some of them. It needs to know all nodes in the network to select random node where publisher can infect it for next infection
+
+
+Another property is determinism, the GA algorithm is highly random when it comes to a consensus decision. Even a high number of proof-of-times can sometimes result in graph extinction which we consider unwanted property. Blockchain solution on the other side is deterministic, a publisher with a high number of proof-of-time claims can be completely sure that his content gets authenticated. 
+
+Resilience is another aspect worth comparing. GI algorithm is sensitive to both randomness, network structure, network size, $\xi$, and $Z_{IA}$ parameters. While the blockchain––particularly FBA––has just one assumption about the quorums-intersection. We state that the blockchain solution is more resilient. 
+
+Another aspect is communication complexity, in GI each node has to communicate just with its neighbors so the complexity is constant $O(1)$, while in blockchain solutions the communication has to be made with all nodes in the network $O(n)$. In this matter, the GI algorithm wins.
+
+GI allows to prune its trust table as the content is being removed from Content Store, so there is no need to store the trust information to content that is no longer maintained. Blockchain on the other hand is completely immutable, and the data once stored can not be removed. Blockchain storage is permament. in order to be consistent no data can be removed (otherwise the chain of hashes would be broken). 
+
+
+
+
+We present comparison in the Table \ref{table:comparison} present the comparison in tabular format.
 
 \begin{table}[h!]
 \centering
-\begin{tabular}{ || m{3cm} | m{5cm}| m{5cm} || }
+\begin{tabular}{ || m{3cm} | m{6cm}| m{6cm} || } 
 \hline
 \hline
-Property & GI & Blockchain \\
+Property & Graph Infection & Blockchain \\ 
 \hline\hline
-Outcome & Indeterministic & Deterministic \\
+Fault-tolerance & None & Byzantine-Fault tolerance  \\ 
 \hline
-Resilience & Depends on chance, $|N|$, $\xi$ and $Z_{IA}$ parameters, network structure (defensive alliance-sensitive) & Depends on network structure (quorums-intersection required) \\
+Outcome & Probabilistic & Deterministic  \\ 
 \hline
-Communication complexity & $O(|N|)$ & $O(|N|^2)$ \\
+Resilience & Depend on randomness, network structure, network size, $\xi$, and $Z_{IA}$ parameters & Depend on network structure (quorums-intersection)  \\ 
 \hline
-Processing capability & $O(|N|)$ & $O(1)$ \\
+Communication complexity & O(1) & O(n)  \\ 
 \hline
-Fault-tolerance & None & Byzantine-fault tolerance up to $\frac{|N|-1}{3}$ faulty nodes \\
+PKI required & No & Yes  \\ 
 \hline
-Required overlay infrastructure & NDN, PKI & NDN, PKI, and blockchain network \\
+Storage & Prunable & Permanent  \\ 
+\hline
+Throughput & No & Yes \\
 \hline
 \end{tabular}
-\caption{Comparison of GI and Blockchain}
+\caption{Comparison of GI and Blockchain algorithms}
 \label{table:comparison}
 \end{table}
 
 \chapter{Summary}
-We have elaborated on the Stolen-Credentials Cpntent Poisoning Attack problem proposed in \cite{konorski2019mitigating}. Assuming time- constrained operation of a potential malicious publisher, we have quantified the effectiveness of the existing graph infection-based GI protocol and proposed an alternative, blockchain-based approach. The presence of the time constraint allows to extend the authentication abstraction from \textit{access to credentials} to both \textit{access to credentials} and \textit{access to time}, coining the term \textit{Proof of Time}. We have developed simulators and analyzed the proof-of-time implementation based on GI. Among others, we have observed that GI struggles with the Defensive Alliance problem described in Section \ref{observations}, and remarked on GI's sensitivity to the parameter configuration ($\xi$ and $Z_{ia}$), which may be troublesome in Internet-level graph structures can change in time. Then we have generalize the considerations to a distributed consensus problem and proposed a solution based on Blockchain technology. Besides solving the consensus problem, it also offers valuable properties such as security, integrity, immutability, and Byzantine-fault tolerance. We have proposed a scheme in which the content authentication mechanism is embedded not in the consensus mechanism, but as an overlay structure (blockchain) on top of the consensus algorithm. In consequence, we gain a deterministic and reliable authentication mechanism called Credibility Score. We have found Stellar and its Federated Byzantine Agreement consensus protocol to be a blockchain implementation most suitable for our needs. One disadvantage of it is the quorum-intersection requirement described in Section \ref{FBA}. Additionally, the Blockchain solution is more demanding in terms of overlay infrastructure and does not scale well with the network size.
-We believe that authentication schemes based on proof-of-time may become a valuable option for the future development of ICN environments.
+We started this paper from formulating the problem of Fake Data CPA. It turns out that Fake Data CPA is a hard problem, but assuming certain conditions (time constraints), we proved that it is solvable. Time constrain allows us to extend the authentication from \textit{access to credentials} to both \textit{access to credentials} and \textit{access to time}. We call the access to credentials over some time the \textit{Proof of Time}. We build simulators and analyzed the proof-of-time implementation based on graph infections proposed in \cite{jekon2019content} and found some interesting observations. The graph infections algorithm struggle with the Defensive Alliance problem described in Section \ref{observations}. Also, we claim doubt if its configuration (parameters $\xi$ and $Z_{ia}$) sensitivity is suitable for internet level networks where the structure can change. We also point out the lack of both fail-stop and Byzantine-fault tolerance property. Then we generalize the problem to a distributed system consensus problem and propose a solution based on blockchain technology. Besides the fact that blockchain as a distributed system solves the consensus problem, it also offers valuable properties in terms of trust and security such as immutability, neutrality, and security. We propose a scheme in which the content authentication mechanism is embedded not in the consensus mechanism, but as an overlay structure on top of the consensus algorithm. In consequence, we gain the deterministic and progressive authentication. We found Stellar and its Federated Byzantine Agreement consensus protocol to be the most suitable blockchain implementation to our needs, it doesn't require mining or any other market forces to achieve security. One disadvantage is the disjoint-quorums problem described in Section \ref{FBA}. 
+
+We believe that authentication schemas based on proof-of-time may become the valuable option for future development of ICN networks. 
+
