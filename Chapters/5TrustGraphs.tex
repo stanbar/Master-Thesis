@@ -1,103 +1,89 @@
 \chapter{Trust graph}
 \label{trust-graph}
 
-When looking into the construction of trust graphs, one can get inspiration from solutions that have worked in human societies for centuries.
-In his book "Sapiens: A Brief History of Humankind" \cite{harari2014sapiens}, Yuval Noah Harari, states that the most important feature of human language is rumor; it lets us know which person is or is not trustworthy without having to interact with him/her directly. If our best friend Bob tells us that Charlie is a thief, we do not need to get robbed to be convinced about it. The same applies to an inverse scenario--if Bob tells us that Charlie sells excellent quality products, we are more likely to buy products from him; we are biased towards people about whom we hear positive rumors. Each person we know directly or indirectly gets labeled with some tags. One can be labeled as Helpful, Conscientiousness, or Untrustworthy, while others can be labeled as Unhelpful, Lazy but Trustworthy etc. In this thesis we  limit the scope just to the Trustworthiness dimension.
+People are still one of the most advanced technology. We can get inspired by some of the solutions that work in human societies for centuries.
+Yuval Noah Harari in his book "Sapiens: A Brief History of Humankind" \cite{harari2014sapiens} states that the most important feature of human language is a rumor. Rumor let us know which person is not trustworthy without having to interact with him directly. If our best friend Bob, tells us, that Carlie is theft, we don't need to get stolen to be convinced about it. The same applies to the inverse scenario, if Bob tells us, that Carlie sells great quality products, we are now more likely to buy products from him; we are biased towards people, whom we get positive rumors. We notice that each person we know directly or indirectly gets labeled with some tags. One can be labeled as Helpful, Conscientiousness, and also Not-Trustworthy, while others can be labeled as Unhelpful, Lazy but Trustworthy. Here in this thesis, we are limiting our range of study just to the dimension of Trustworthiness.
+What if we have three friends Alice, Bob, Charlie. Alice and  Bob tell us that David is Trustworthy, while Charlie claims that he is not. The decision to labeling David as Trustworthy or not requires some kind of decision evaluation algorithm.
+One might assume that if there is at least one person who does not trust him, there must be something wrong with him, and will label him as Not-Trustworthy. One can use evaluator which says, do want the majority of people do, thus if Charlie is trusted by the majority, I will trust her too. Another one can slightly generalize this evaluator and say that person is trustworthy, only if $\xi$ percentage of my friends trust him. 
 
-Suppose we have three friends Alice, Bob, and Charlie. Alice and Bob tell us that David is Trustworthy, while Charlie claims that he is not. The decision to label David as Trustworthy or Untrustworthy requires some decision evaluation algorithm.
-One might for example assume that if there is at least one person who does not trust him, there must be something wrong with him and so label him as Untrustworthy. One can use another, majority-based evaluator: if a majority of my friends trust Charlie, so will I. Another one can slightly generalize this evaluator and say that person is trustworthy, only if a given percentage $\xi$ of my friends trust him. 
+At this point, it is worth introducing some conventions. When we say friend we mean a trustworthy person, in other words, a person whom we have trust relation to. Let $N$ be a set of all considered individuals groups, friends, and non-friends. Let $F$ be a set of all our friends $f \in F$. Let $F_n$ be a subset of $F$ where all $f$ trust person $n$. Then we will call $\%_n = \frac{|F_n|}{|F|}$ the proportion of our friends who trust a particular person $n$. Let's call $\xi$ (where $0 \le \xi \leq 1$) the minimum proportion of our friends $\%_n$ who needs to trust person $n$ to make me trust him. 
 
-We now introduce some conventions. A trust relation implies that two nodes trust each other, either by being friends (a friendship relation being given a priori) or have a large enough proportion of mutual friends. 
-Let $N$ be a set of all considered individuals. Let $F_n \subset N$ be the set of all $n$'s friends. Then 
-\begin{equation}
-\%(n_1, n_2) = \frac{|F_{n_1} \cap F_{n_2}|}{|F_{n_1}|}    
-\end{equation}
-is the proportion of $n_1$'s friends who are also $n_2$'s friends. Let's call $\xi$ (where $0 \le \xi \leq 1$) the minimum value of $\%(n_1, n_2)$ needed to create trust relation from $n_1$ to $n_2$.
-
-Coming back to our example, we trust David only if the majority of our friends trust him. We denote trust function as $T : N \times N \rightarrow \{true, false\}$, $T(n_1,n_2) = \%(n_1,n_2) > \xi$. 
-To evaluate if we should create trust relation to David, let $\xi = 0.5$ and assume Alice, Bob and Charlie are our friends, and Alice and Bob are David's friends, but Charlie is not.
-\begin{equation}
-\begin{split}
-T(Me, David) &= \%(Me, David) > \xi \\
-&= \frac{|F_{me} \cap F_{David}|}{|F_{me}|} > \xi \\
+Going back to our example, we will trust David only if majority of our friends trust him. We denote trust function as $T : N \rightarrow \{true, false\}$, $T(n) = \%_n > \xi$. 
+Let's use this formula to evaluate if $David$ is a trustworthy person. Let $\xi = 0.5$. We know that Alice and Bob do trust David, while Charlie doesn't.
+\begin{align}
+T(David) &= \%_{David} > \xi \\
+&= \frac{|F_n|}{|F|} > \xi \\
 &= \frac{2}{3} > \frac{1}{2}
-\end{split}
+\end{align}
+
+Then it turns out that $David$ is \textbf{Trustworthy}
+
+
+People with low $\xi$ easily get manipulated, we call them naive.
+People with high $\xi$ hardly gets convinced, we call them stubborn. 
+
+Another generalization might be adding weights to this evaluator, let's say that Charlie is our brother, while Alice and Bob are our cousins, and we trust 3 times stronger to our brother than a cousin. Let's call $W : F \rightarrow \mathbb{N}$ the function that maps our friend to the weight of how strong we trust him. In this case weighted proportion of our friends 
+\begin{equation}
+\%_n = \frac{\sum\limits_{f \in F_n} W(f)}{\sum\limits_{f \in F} W(f)}
 \end{equation}
-Then David is \textbf{Trustworthy} and we should create trust relation to him.
 
-Intuitively, people with low $\xi$ easily get manipulated and can be called naive; people with high $\xi$ hardly get convinced and can be called stubborn. 
+When we assume weights $W(Alice) = 1, W(Bob) = 1, W(Charlie) = 3$, and $\xi = 0.5$. We can calculate weighted proportion $T(David)$ as follows:
+\begin{align}
+T(David) &= \%_n > \xi \\
+&= \frac{\sum \{1,1\}}{\sum\{1,1,3\}} > \frac{1}{2} \\
+&= \frac{2}{5} > \frac{1}{2}
+\end{align}
+Then it turns out that $David$ is \textbf{Not-Trustworthy}
 
-Having a trust model, we can describe an algorithm to generate a trust graph.
-\begin{enumerate}
-    \item start with initial $N_0$ nodes and $E_0$ edges and connect them randomly, such that the graph is connected.
-    \item each remaining node $n \in N \backslash N_0$, gets connected to one randomly selected node.
-    \item for each node $n \in N$,
+But this view is based on a static network of connections. We somehow meet Alice, Bob, and Charlie, and we get convinced about their trustworthiness. Thus there must be a second way of gaining our trust. We will call this way a External Trust Obtaining(ETO), and we define it as $ETO : N \rightarrow \{true,false\}$, where the function return $true$ if the trust to a person is obtained in some external way, and $false$ if it's not. In other words, we allow the trust to be acquired not only by listening to our friends, but also by some external means (e.g. kinship). Let's modify our trust function $T(n)$ by allowing External Trust Obtaining. 
 
-\quad for each node $f \in F_n$,
+\begin{equation}
+T(n) = ETO(n) \lor \%_n > \xi
+\end{equation}
 
-\quad \quad for each node $p \in F_f \backslash F_n$,
+Another thing we can observe in the context of the trust-network is time. Should we still trust our friend from elementary school if we haven't seen him for decades? We could modify the trust function to be dependent on the time, but for now, let's assume that the friendship is immortal.
 
-\quad \quad \quad if $T(n, p) = true$, add connection between $n$ and $p$.
-\end{enumerate}
+Next, if we have a friend, who has a friend, we will trust that person. But if someone asks us, if that person is our friend, we will say no. Therefore only the friendship relation can propagate the trust.
 
-We find some similarities between our graph generator and a trust network formed in PGP systems \cite{RFC4880O31:online} (with just one level of indirect trust); therefore, we call this algorithm the Web of Trust generator.
+Having the trust network model, we can try to simulate the epidemics using the graphs obtained by that model. Let's describe the algorithm used to generate trust graphs.
+We start with the $N_0$ nodes that get connected with random $E_0$ edges. They become the root of friendship. Each of them meets new people and becomes friends. So for all remaining $N \\\ N_0$ nodes we connect to one randomly selected node with friend relation. The new node $N_n$ connect to the old node $N_o$ then, for all $N_o$ friends $F_{N_o}$ we need to evaluate the trust function $T(n)$.
 
-In Fig. \ref{fig:trustgraph500} we see the resulting trust graph for $N=500$, $N_0=10$, $E_0=20$ and $\xi = 0.5$, and its corresponding histogram of node degree in Fig. \ref{fig:trustgraph500histogram}
+In Fig \ref{fig:trustgraph500} we can see the resulting trust graph for 500 nodes and $\xi = 0.5$, and its corresponding histogram in \ref{fig:trustgraph500histogram}
 
 \begin{figure}[h!]
-    \includegraphics[width=\textwidth]{img/webOfTrust500Graph.png}
+    \includegraphics[width=11cm]{img/webOfTrust500Graph.png}
     \centering
-    \caption{Trust Graph generated by Web Of Trust algorithm for $N=500$, $N_0=10$, $E_0=20$ and $\xi = 0.5$}
+    \caption{Trust Graph generated by Web Of Trust algorithm for $\xi=0.5$ and $n = 500$}
     \label{fig:trustgraph500}
 \end{figure}
 
 \begin{figure}[h!]
-    \includegraphics[width=\textwidth]{img/webOfTrust500Hist.png}
+    \includegraphics[width=11cm]{img/webOfTrust500Hist.png}
     \centering
-    \caption{Degree histogram generated by Web Of Trust algorithm for $N=500$, $N_0=10$, $E_0=20$ and $\xi = 0.5$}
+    \caption{Degree Histogram generated by Web Of Trust algorithm for $\xi=0.5$ and $n = 500$}
     \label{fig:trustgraph500histogram}
 \end{figure} 
 
-\section{Other trust graph generators}
+\section{Different types of trust graph generators}
 
 \paragraph{Probabilistic duplication}
-Another trust graph generator used in \cite{konorski2019mitigating} is based on probabilistic duplication and works as follows:
-\begin{enumerate}
-    \item start with initial $N_0$ nodes and $E_0$ edges and connect them randomly, such that the graph is connected
-    \item add new node $n_1$ and connect it to one randomly selected node $n_2$ in the current graph.
-    \item connect $n_1$ to $n_2$'s friends, to each with probability $\phi$. Repeat steps 2 and 3 $|N \backslash N_0|$ times. 
-\end{enumerate}
-
-The most important advantage of this generator is the fact that it produces almost scale-free graphs. Figure \ref{fig:propdup500graph} shows the graph generated by this method and Figure \ref{fig:propdup500histogram} shows the histogram of node degree.
+Another trust graph generator proposed in \cite{konorski2019mitigating} base on probability duplication and can be visualized as a natural process of acquiring new colleagues at our friends' party. When we get to the party, we meet new people who with some probability become our colleagues. This algorithm works as follows: we take an initial $n_0$ nodes and $m_0$ edges and connect them randomly---creating a kernel. Then we add a new node and connect it to one random node in the current graph (your friend who invited you to his party), then with $\phi$ probability you connect to each of his friends (you acquire new friends with some of his friends), you repeat this process $n = N - N_0$ times. 
+The most important advantage of this generator is the fact that it produces scale-free graphs. Figure \ref{fig:propdup500graph} shows the graph generated by the method and Figure \ref{fig:propdup500histogram}, histogram of edge degrees.
 
 \begin{figure}[h!]
-    \includegraphics[width=\textwidth]{img/propDup500Graph.png}
+    \includegraphics[width=11cm]{img/propDup500Graph.png}
     \centering
-    \caption{Trust Graph generated by Probabilistic Duplication algorithm for $N=500$, $N_0=10$, $E_0=20$ and $\phi = 0.5$}
+    \caption{Trust Graph generated by Probabilistic Duplication algorithm for $\xi=0.5$ and $n = 500$}
     \label{fig:propdup500graph}
 \end{figure}
 
 \begin{figure}[h!]
-    \includegraphics[width=\textwidth]{img/propDup500Hist.png}
+    \includegraphics[width=11cm]{img/propDup500Hist.png}
     \centering
-    \caption{Degree histogram generated by Probabilistic Duplication algorithm for $N=500$, $N_0=10$, $E_0=20$ and $\phi = 0.5$}
+    \caption{Degree Histogram generated by Probabilistic Duplication algorithm for $\xi=0.5$ and $n = 500$}
     \label{fig:propdup500histogram}
 \end{figure} 
 
 \paragraph{Random generator}
+Random graph generation is the simplest one. We take $n$ nodes, $m$ edges. Each edge is connected to two random nodes $n_1$, $n_2$ where $n_1 ≠ n_2$. Although random trust graphs are far from real trust graph used in reality, we will use it for comparison.
 
-A random graph generator is the simplest one. Take $N$ nodes, $E$ edges and connect them randomly, such that the graph is connected. Although random trust graphs are far from  real-world trust graphs, we use it for comparison. Figure \ref{fig:random500graph} shows the graph generated by the method and Figure \ref{fig:random500histogram} shows the histogram of node degree.
-
-\begin{figure}[h!]
-    \includegraphics[width=\textwidth]{img/random500Graph.jpg}
-    \centering
-    \caption{Random graph generated by Random generator for $N=500$ $E=1000$}
-    \label{fig:random500graph}
-\end{figure}
-
-\begin{figure}[h!]
-    \includegraphics[width=\textwidth]{img/random500Histogram.jpg}
-    \centering
-    \caption{Degree histogram generated by Random generator for $N=500$ and $E=500$}
-    \label{fig:random500histogram}
-\end{figure} 
