@@ -10,7 +10,7 @@ At this point, it is worth introducing some conventions. When we say friend we m
 \begin{equation}
 \%(n_1, n_2) = \frac{|F_{n_1} \cap F_{n_2}|}{|F_{n_1}|}    
 \end{equation}
-$\%(n_1, n_2) = \frac{|F_n|}{|F|}$ the proportion of $n_1$our friends who are also $n_2$ friendstrust a particular person $n$. Let's call $\xi$ (where $0 \le \xi \leq 1$) the minimum proportion of our friends needed to trust other person in a graph. $\%_n$ who needs to trust person $n$ to make me trust him. 
+the proportion of $n_1$ friends who are also $n_2$ friends. Let's call $\xi$ (where $0 \le \xi \leq 1$) the minimum proportion of $n$'s friends needed to make trust relation other person in a graph. $\%_n$ who needs to trust person $n$ to make me trust him. 
 
 Going back to our example, we trust David only if majority of our friends trust him. We denote trust function as $T : N \rightarrow \{true, false\}$, $T(n) = \%_n > \xi$. 
 Let's use this formula to evaluate if $David$ is a trustworthy person. Let $\xi = 0.5$. We know that Alice and Bob do trust David, while Charlie does not.
