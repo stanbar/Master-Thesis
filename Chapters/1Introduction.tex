@@ -1,53 +1,71 @@
 \chapter{Introduction}
 \label{introduction}
-Current internet architecture is mostly based on TCP/IP stack, which allows establishing communication channels between two IP addresses. While it worked great for past years, it struggles to fit current demands. Today the internet is dominated by transporting content such as audio, video, images, and text from content creators to content consumers. 
+Current internet architecture basedis mostly based on TCP/IP stack, which allows establishing communication channels between two IP addresses. While ithis model worked for past years, now it struggles to fit current internet demands. Today the internet is dominated by transporting content such as audio, video, images, and text from content creators to content consumers. 
 
 % Write more about how the internet is used today
 % Write more about why current architecture doesn't fit 
 % ICN - the solution !!!
-The Information-centric networks introduce a paradigm shift from a host-centric to a content-oriented paradigm. Placing content in the center of interest. This allows us to achieve several benefits. All network participants become more aware of the transferring content. This kind of awareness allows implementing various improvements over host-based paradigms such as content caching, mobility, integrity, and security assurance. All of those features are guaranteed naively by the ICN transport layer in contrast to TCP/IP where we needed to build them on top of it. 
+The Information-centric networks introduce a paradigm shift from a host-orientedcentric to a content-oriented paradigm. By pPlacing content in the center of interest, it. This allows forus to achievinge several benefits. All network participants become more aware of the transferring content. This kind of awareness allows implementing various improvements over host-based paradigms such as content caching, mobility, integrity, and security assurance. All of those features are guaranteed naively by anthe ICN transport layer. in contrast to TCP/IP where we needed to build them on top of it. 
 
-Many projects are implementing the ICN approach: Data-Oriented Network Architecture (DONA), Named Data Networking (NDN), Publish-Subscribe Network Technology (PURSUIT), Scalable and Adaptable Network Solutions (SAIL), Inter-planetary File System (IPFS).
+Many projects implements the ICN approach: Data-Oriented Network Architecture (DONA), Named Data Networking (NDN), Publish-Subscribe Network Technology (PURSUIT), Scalable and Adaptable Network Solutions (SAIL), Inter-planetary File System (IPFS).
 
-They all differ in details, but the core concepts are the same, they try to achieve a communication model that is suited for disconnections, disruptions, mobility, and transferring large data to a large number of devices. They introduce the in-network storage on each node for data caching. They also decouple senders from receivers, by resolving content by its name---not the location of the host. 
-In ICN data is requested by its name (Named Data Object - NDO), and is served by the closest possible node who is holding it. That allows efficient caching on the transport layer---relieving the application layer from implementing a cache strategy individually. 
+They all differ in details, but the core concepts are the same, they try to achieve a pull-driven communication model that is suited for disconnections, disruptions, mobility, and transferring large data to manya large number of devices. They introduce the in-network storage on each node for data caching. AThey also, decouple senders from receivers, by resolving content by its name––not a host'sthe location of the host. 
+In ICN, data is requested by its name (Named Data Object - NDO), and is served by the closest possible node that is storing it, allowing efficient caching on the transport layer––relieving anthe application layer from implementing a cache strategy individually.
 
-When we write NDO, we understand any arbitrary data that can be transferred over the network: web page, music, images, video, documents, and data streams. What's most important NDOs compared to traditional URLs are location independent, they do not specify the location where the content should be served from, nor how they should be transferred to the receiver. NDO granularity may differ from packets to data chunks to whole data objects, depending on the approach and data size.
+When we write NDO, we understand any arbitrary data that can be transferred over the network: a web page, music, images, video, documents, and data streams. MWhat is most important, NDOs, compared to traditional URLs, are location independent. T, they do not specify the location where the content should be served from, nor how ithey should be transferred to the receiver. NDO granularity may differ from packets to data chunks to whole data objects, depending on the approach and data size.
 
-Data naming is the most significant concept in ICN. Data names must be unique––similarly to hostnames in current Internet architecture; two different DNS nodes should resolve one domain name to the same location––two different ICN nodes must resolve one name to the same content. 
-There are two approaches to a naming system: hierarchical - similar to URL, and flat - global namespace, often just the hash of the file.
-Additionally, each NDO should be authenticated with the publisher who created it. Digital signatures on data objects guarantee both integrity and authentication. If the data is trusted, not the host, then the data can be served from any untrusted source––and we still can trust it.
+Data naming is the most significant concept in ICN. Data names must be unique––similarly to hostnames in current iInternet architecture; two different DNS nodes must resolve one domain name to the same location––two different ICN nodes must resolve one name to the same content. 
+There are two approaches to a naming system: 1) hierarchical - similar to URL, and 2) flat - global namespace, often just athe hash of the file.
+Additionally, each NDO should be authenticated bywith the publisher who created it. Digital signatures on data objects guarantee both integrity and authentication. If the data is trusted, not the host, then the data can be served from any untrusted source––and we still can trust it.
+
+The most significant benefit of ICN networks is content caching. It turns out that this benefit becomes a double-edged sword when we take into account security concerns. If everything that makes athe content authentic is a valid signature, anthe intruder who gets access to the publisher's private key, can create poisoned content with valid signatures. Such content can be easily disseminated to ICN nodes, but hardly removed due to lack of removal operation in ICN architecture. 
+
+The goal of this thesis aimis to provide a mechanism to protect the subscribers from trusting poisoned content, even in situations when anthe intruder has access to a stolen private key (making it indistinguishable from the actual publisher).
+
+This thesis contributes to the field of ICN networking by 
+\begin{enumerate}
+    \item Formulating the general approach to protect a subscriber from a content poisoning attack.
+    \item Building simulators that allows to analyzinge a graph infection (GI) implementation proposed by \cite{konorski2019mitigating}. 
+    \item Observing a Defensive Alliance phenomenon that causes problems in the GI algorithm.
+    \item Proposing new implementation based on Blockchain technology.
+    \item Evaluating and comparing those two approaches in the context of scalability, complexity, fault-tolerance, and resiliency. 
+\end{enumerate}
+
+The remainder of thise thesis is organized as follows.
+In Sec. \ref{ndn}, we present an example project implementing ICN architecture;, we decided on Named Data Networking (NDN) since it is the most popular one.
+In Sec. \ref{content-poisoning}, we describe athe problem of Content Poisoning Attacks and in Sec. \ref{proof-of-time} and \ref{network-structure} anthe approach to solve it. In Sec. \ref{epidemiology} we study the epidemiology models to get intuition to graph infection algorithm proposed in \cite{konorski2019mitigating} and described in Sec. \ref{graph-infection}. Then in Sec. \ref{simulator}, we describe the simulators used to analyze the algorithm, and in Sec. \ref{observations} observations that shows the weaknesses of such an algorithm. In Sec. \ref{consensus}, we generalize our initial problem to athe consensus problem, which we then solve by using Blockchain technology (described in Chapter \ref{blockchain}). Finally, an comparison of both protocols is presented in Sec. \ref{comparison}.
 
 \section{Named Data Networking}
-To get better understanding of how ICN networks work, we describe one of the most mature project–––Named Data Networking (NDN). The design was initialy proposed under the name Content-Centric Network by Van Jacobson in 2006 \cite{4ANewWay38:online}. Currently the project is under development with name Named Data Networking \cite{NamedDat22:online}. 
+\label{ndn}
+To get a better understanding of how ICN networks work, we describe one of the most mature project–––Named Data Networking (NDN). The design was initially proposed under the name Content-Centric Network by Van Jacobson in 2006 \cite{4ANewWay38:online}. Currently, the project is under development with the name Named Data Networking \cite{NamedDat22:online}. 
 
-NDN replace TCP/IP protocol stack by placing the chunks of named content in place of IP addresses (see Fig \ref{fig:ndn-design}a). The only layer that can not be changed is the layer 3–––the thin "waist" of the stack. All protocols in rest of the layers can be adjusted to the needs.
+NDN replace TCP/IP protocol stack by placing the chunks of named content in place of IP addresses (see Fig \ref{fig:ndn-design}a). The only layer that can not be changed is the layer 3–––the thin "waist" of the stack. All protocols in the rest of the layers can be adjusted to the needs.
 \begin{figure}[h!]
   \subfloat[]{
-	\begin{minipage}[c][1\width]{
-	   0.5\textwidth}
+	\begin{minipage}[c][\width]{
+	   0.49\textwidth}
 	   \centering
-	   \includegraphics[height=0.5\textwidth]{img/ndn-stack.png}
+	   \includegraphics[width=1\textwidth]{img/ndn-stack.png}
 	\end{minipage}}
  \hfill 	
   \subfloat[]{
-	\begin{minipage}[c][1\width]{
-	   0.5\textwidth}
+	\begin{minipage}[c][\width]{
+	   0.49\textwidth}
 	   \centering
-	   \includegraphics[height=0.5\textwidth]{img/ndn-packets.png}
+	   \includegraphics[width=1\textwidth]{img/ndn-packets.png}
 	\end{minipage}}
 \caption{Named Data Networking design. Source \cite{jacobson2009networking}}
 \label{fig:ndn-design}
 \end{figure}
-NDN defines two types of packets: Interest, and Data (see Fig. \ref{fig:ndn-design}b). Interest packet as the name suggest, indicate the interest of some data chunk, where the data chunk is identified by its Content Name. An consumer broadcast a Interest packet to all its connection faces. If any node that receive such message has the corresponding data locally (in Content Store), it can respond with the Data Packet, otherwise the Interest is forwarded to next router..
-The operations of NDN node are similar to IP node. In Fig. \ref{fig:ndn-operations} we can see the forward engine model in NDN node. When request arrive at one of the available faces it get dispatched based on the lookup result. 
+NDN defines two types of packets: Interest, and Data (see Fig. \ref{fig:ndn-design}b). Interest packet as the name suggest, indicate athe interest of some data chunk, where athe data chunk is identified by its Content Name. An consumer broadcast a Interest packet to all its connection faces. If any node that receive such message has the corresponding data locally, it can respond with athe Data Packet, otherwise the Interest is forwarded to next router. In Fig. \ref{fig:ndn-operations} we can see the forward engine model in NDN node. When request arrive at one of the available faces it get dispatched based on the lookup result. 
 
-The FIB (Forwarding 
-Information Base) is responsible for forwarding the interests to potential nodes where the data can be found (similar to FIB used in IP, except it allows for multiple outgoing faces rather than single one). 
+\begin{itemize}
+    \item The FIB (Forwarding Information Base) is responsible for forwarding the interests to potential nodes where the data can be found (similar to FIB used in IP, except it allows for multiple outgoing faces rather than a single one). 
 
-The Content Store(CS) is responsible for buffering a content that was requested by Interest packet. Since the data can be served to multiple consumers–––not just single connection, as it is done in IP––it is not recycled after the first Interest request is satisfied. This mechanism is called in-network storage, because the network itself is storing the data. It is possible due to idempotency, self-identification, and self-authentication of the packets so each packet is equally useful for many consumers (e.g. two hosts interesting in Netflix video, can receive the content from single node without requesting the Netflix servers). The data is stored as long as possible and different storage policy can be used e.g. LRU replacement.
+    \item The Content Store(CS) is responsible for buffering content that was requested by the Interest packet. Since the data can be served to multiple consumers–––not just a single connection, as it is done in IP––it is not recycled after the first Interest request is satisfied. This mechanism is called in-network storage because the network itself is storing the data. It is possible due to idempotency, self-identification, and self-authentication of the packets, so each packet is equally useful for many consumers (e.g., two hosts interesting in Netflix video, can receive the content from a single node without requesting the Netflix servers). DThe data is stored as long as possible, and different storage policies can be used, e.g., LRU replacement.
 
-The PIT (Pending Interest Table) store information about the interests forwarded to potential data sources. When one of them reply with the Data packet, the PIT is checked if some consumer is waiting for the data, and if so, the Data packet is forwarded to corresponding face.
+    \item The PIT (Pending Interest Table) store information about the interests forwarded to potential data sources. When one of them reply with the Data packet, the PIT is checked if some consumer is waiting for the data, and if so, the Data packet is forwarded to corresponding face.
+\end{itemize}
 \begin{figure}[h]
     \centering
     \includegraphics[width=\linewidth]{img/ndn-operations.png}
@@ -55,16 +73,16 @@ The PIT (Pending Interest Table) store information about the interests forwarded
     \label{fig:ndn-operations}
 \end{figure}
 
-To better understand the model, the concrete packet flow is presented in Fig.\ref{fig:ndn-flow}. 
+To better understand the model, athe concrete packet flow is presented in Fig.\ref{fig:ndn-flow}. 
 \begin{enumerate}
-    \item 1. The requester application wants to receive some data so it sends the request to its local NDN engine. The node first check the local CS, and since the concent is absent, it request the Interest packet to the closes router.
-    \item 2. The router first check its Content Store, and if the data is absent, it check if there is already pending interest in PIT for such data, if not the request is forwarded to the next router according to FIB.  
-    \item 3. The next router do the same as previous router, it check its CS, PIT, and then forward the Interest packet through FIB.
-    \item 4. Finally the Interest reaches the data source router, where the content is present in the CS so it is immediately returned.
-    \item 5. The router receive the Data packet and store it in its CS, check which nodes are waiting for the data in PIT and forward the Data packet accordingly.
-    \item 6. This router (that was initialy requested by the requestor) do the same as the previous router storing the data in CS and responding with the Data packet.
-    \item After some time, different requestor send the Interest packet to its closest router.
-    \item Router lookup the Content Name and finds out that the content is already stored in CS, therefore it immediately return the Data packet–––saving the network bandwidth and reducing the latency.
+    \item AThe requester application wants to receive some data. I so it sends athe request to its local NDN engine. The node first checks the local CS, and since the content is absent, it requests the Interest packet to the closes router.
+    \item The router first checks its Content Store, and if the data is absent, it checks if there is already a pending interest in the PIT for such data. I, if not, the request is forwarded to the next router, according to FIB.  
+    \item The next router does the same as the previous router. I, it checks its CS, PIT, and then forward the Interest packet through FIB.
+    \item Finally, the Interest reaches the data source router, where the content is present in the CS, so it is immediately returned.
+    \item The router receives the Data packet and stores it in its CS, check which nodes are waiting for the data in PIT and forward the Data packet accordingly.
+    \item This router (that was initially requested by the requestor) does the same as the previous router storing the data in CS and responding with the Data packet.
+    \item After some time, the different requestor sends the Interest packet to its closest router.
+    \item Router lookup the Content Name and finds out that the content is already stored in CS. T, therefore it immediately returns the Data packet–––saving the network bandwidth and reducing the latency.
 \end{enumerate}
 
 \begin{figure}[h]
