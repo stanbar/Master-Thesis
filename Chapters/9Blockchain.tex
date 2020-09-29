@@ -1,123 +1,32 @@
 
-\chapter{Blockchain}
+\chapter{bBlockchain}
 \label{blockchain}
-Consensus protocols that work with Byzantine-failure nodes and allow open membership are used in open Blockchains. By open Blockchain, we understand the Blockchains where nodes can freely join the network and participate in the consensus protocol. Examples of such Blockchains are Bitcoin \cite{nakamoto2008peer}, Ethereum \cite{wood2014ethereum}, and Stellar \cite{mazieres2015stellar}. Bitcoin uses a proof-of-work consensus algorithm where the computational power dictates the contribution to the consensus decision. Ethereum plans to switch to a proof-of-stake consensus where the amount of cryptocurrency dictates the contribution to the consensus decision. Stellar uses federated byzantine agreement where the trust dictates the contribution to the consensus decision. 
+Consensus protocols that work with Byzantine-failure nodes and allow open membership are used in open bBlockchains. By open bBlockchain, we understand the bBlockchains where nodes can freely join the network and participate in the consensus protocol. Examples of such bBlockchains are Bitcoin \cite{nakamoto2008peer}, Ethereum \cite{wood2014ethereum}, and Stellar \cite{mazieres2015stellar}. Bitcoin uses a proof-of-work consensus algorithm where the computational power dictates the contribution to the consensus decision. Ethereum plans to switch to a proof-of-stake consensus where the amount of cryptocurrency dictates the contribution to the consensus decision. Stellar uses federated byzantine agreement where the trust dictates the contribution to the consensus decision. We decide to use the last one, and the rationale of doing so is described in Sec. \ref{FBA}.
 
-Data stored in Blockchain is immutable––once written to Blockchain, no one can change it, data is also secure against the intruders (as long as they do not control the majority of consensus means). Data types differ in different Blockchains, but most of them store the transactions that update the global ledger. Some Blockchains, like Ethereum, also allows storing smart contracts\footnote{Scripts that are executed on virtual machines on all nodes and uses Blockchain as a persistent storage}. In our case, we use Blockchain to store Proof-of-Time claims. 
+Data stored in a bBlockchain is immutable––once written, it to Blockchain, can not be changed. Data is also secure against the intruders (as long as they do not control most of the means of consensus means). Data types differ in different bBlockchains, but most of them store the transactions that update the global ledger. Some bBlockchains, like Ethereum, also allows storing smart contracts\footnote{Scripts that are executed on virtual machines on all nodes and uses bBlockchain as a persistent storage}, but we do not see any benefit of using them in our system. We use a simple transaction model with a slight modification that prevents pre-signing pProof-of-tTime transactions. Full description is provided in Sec. \ref{blockchain-structure}.
+
 
 \section{System proposition}
-We propose the system where all or part of the nodes in the network participate in a Blockchain consensus protocol––securely storing common database consisting of Proof-of-Time claims, along with Content Store. Each node can be sure that rest of the network stores the same version of the blockchain database. But the most vital feature for our system is the fact that by using a Blockchain we ensure that a publishers can publish only one Proof-of-Time at a time. Therefore  to authenticate the content, they must proof their access to credentials over long period of time, long enough so the malicious publisher can not afford to do that, while legit publisher can––the statrequirement we base our authentication mechanism on. To achieve it, a publisher wishing to confirm a content authenticity must submit a carefully prepared transaction to a Blockchain network. The transaction––a Proof-of-Time claim––must include:
+We propose the system where all or part of the nodes in the ICN network participate in a bBlockchain consensus protocol––securely storing common database consisting of pProof-of-tTime claims, along with Content Store. Each node can be sure that rest of the network stores the same version of the blockchain database. But the most vital feature for our system is the fact that by using a bBlockchain we ensure that a publishers can publish only one pProof-of-tTime at a time. Therefore  to authenticate the content, they must proof their access to credentials over long period of time, long enough so the malicious publisher can not afford to do that, while legit publisher can––the statement we base our authentication mechanism on. To achieve it, a publisher wishing to confirm a content authenticity must submit a carefully prepared transaction to a bBlockchain network. The transaction––a pProof-of-tTime claim––must include:
 \begin{itemize}
     \item Hash of the content wishing to authenticate.
     \item Signature on the claim which proves the access to credentials.
     \item Publisher public key, that can be used to verify the signature and identify the publisher.
     \item Hash of the previous block––preventing pre-signing transactions.
 \end{itemize}
-Graphical illustration of such transaction is presented in Fig. \ref{fig:proof-of-time}.
+Graphical illustration of such transaction is presented in Fig. \ref{fig:pproof-of-time}.
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.4\textwidth]{img/proof-of-time_transaction.png}
-    \caption{Structure of Proof-of-Time claim}
-    \label{fig:proof-of-time}
+    \includegraphics[width=0.4\textwidth]{img/pproof-of-time_transaction.png}
+    \caption{Structure of pProof-of-tTime claim}
+    \label{fig:pproof-of-time}
 \end{figure}
 
-The transaction can then be submitted to a node which include it in a block and broadcast to the rest of the network. Once the block is approved by all network participants (through the consensus protocol described in Sec. \ref{FBA}), the publisher can create next Proof-of-Time transaction pointing to the previous block's hash.    In further chapters we describe the details of the system based on blockchain.
+The transaction can then be submitted to a node which include it in a block and broadcast to the rest of the network. Once the block is approved by all network participants (through the consensus protocol described in Sec. \ref{FBA}), the publisher can create next pProof-of-tTime transaction pointing to the previous block's hash. The process is then repeated until the required Credibility Score (described in Sec. \ref{credibility-score}) is reached. In further chapters we describe the details of the system based on blockchain.
 
-Let's imagine a naive solution based on the Bitcoin blockchain. The solution is naive because Bitcoin's proof-of-work consensus protocol has no practical application in our system. We can not expect resource-constrained network devices to participate in mining process, especially when there are alternatives that achieve security without a mining process. Nevertheless, we decide to explain it on the simplest and most commonly known one. 
-Before that, let's recall what we want to achieve. We want the end-user, the content consumer to be sure about the content authentication. We achieve it by requiring the publisher to prove its access to private keys for a long period of time, long enough so the malicious publisher can not afford to do that, while legit publisher can. We call those access proofs––proofs-of-time. In the GI algorithm, the proof-of-time is denoted in a sequential number of external infections. The publisher who can perform long enough proof-of-time lead the network to epidemic, while the short proof-of-time lead to extinction. 
-
-In the blockchain solution, the simplest way to proof access to private-key in the context of some content is to publish transactions from the publisher account to the content account. The content account is the imagined account whose address is the hash of such content. The publisher's account is the same key-pair used to sign the content in the ICN network. The flow is shown in Fig. \ref{fig:distribution-flow}.
-\begin{figure}[h!]
-\includegraphics[width=9cm]{img/distribution-flow.png}
-\centering
-\caption{Flow of publishing content to ICN and proof-of-time to blockchain}
-\label{fig:distribution-flow}
-\end{figure} 
-The strength of the proof-of-time is calculated by counting the total number of transactions to the content hash address. 
-
-Here we will use one of the most fundamental features in Bitcoin blockchain––blocks. Block is a container holding bunch of transactions. Bitcoin is designed to produce a new block every 10min on average, it is achieved by the dynamic complexity of the mining process. If we count each block where the transaction from the publisher account to the content hash exists, we get the strength of proof-of-time that can be interpreted as sufficient to trust the content. This way, the proof-of-time is propagated not as a consensus, but as an overlay structure on top of a trusted immutable database. In Fig. \ref{fig:blockchain-of-claims} we show an example of three blocks consisting of proof-of-time claims. Each block also consists of some meta-data like a hash of its content, a hash of the previous block (pointer to the previous block), and block creation timestamp. We assume that blocks are created with 10min intervals, and each content requires proof-of-time in minimum strength of 20min. Alice first publishes her content to the ICN node getting the hash of the NDO as shown in Figure \ref{fig:distribution-flow}, then the claim is created and published to the Blockchain node. After 10 minutes once again she publishes the claim, and again after another 10 minutes she repeats the process. Three publications in a row certify that Alice had Alice's credentials for at least 20min. Bob was able to publish only two claims, which we consider not enough to trust the content. Carol, on the other hand, skipped the second block which is considered as a break in the proof-of-time chain, therefore we start measuring the proof-of-time from the third block. The algorithm used to process new blocks and check if the content is authenticated is presented in Listing. \ref{listing_process_new_block}.
-
-The mechanism can be extended to the "certification services" (discussed in chapter \ref{mitigating-certification-services}) in such a way that not only the publisher can participate in creating proof-of-time claims, but also some set of trusted units that can certify the content trustworthily–––similar how we trust root CA certificates. 
-
-Attacker who wants to publish bogus content, could pre-sign many proof-of-time transactions and then publish them one by one without access to the credentials. To prevent that, we require from each publisher to provide the hash of the previous block in the transaction. Since the hash of the block is not deterministic for individual publishers, they can not pre-sign transactions. Instead they have to sign the transaction just before sending the transaction to the blockchain.
-\begin{figure}[h!]
-\includegraphics[width=\textwidth]{img/blockchain_of_claims.png}
-\centering
-\caption{Blockchain of claims}
-\label{fig:blockchain-of-claims}
-\end{figure} 
-
-\begin{lstlisting}[language=Python, caption=Processing new block, label=listing_process_new_block,float,floatplacement=H]
-stored_claims      # { [content-hash] : [publisher_pubkey] : number }
-candidating_claims  # { [content-hash] : [publisher_pubkey] : number }
-previous_block_hash
-
-
-def process_new_block(block):
-    # handle broken proof-of-time chains
-    for content_hash in candidating_claims:
-        for publisher_pubkey in candidating_claims[content_hash]:
-            if (content_hash, publisher_pubkey) not in block.transactions:
-                # proofs-of-time chain has been broken, store the length
-                stored_claims[content_hash][publisher_pubkey] = \
-                    candidating_claims[content_hash][publisher_pubkey]
-                delete candidating_claims[content_hash][publisher_pubkey]
-
-    for transaction in block.transactions:
-        content_hash = transaction.hash
-        publisher_publickey = transaction.publisher_publickey
-        previous_block_hash = transaction.previous_block_hash
-        # check the previous_block_hash to prevent pre-signed proofs
-        if previous_block_hash != previous_block_hash:
-            return
-        candidating_claims[content_hash][publisher_publickey] += 1
-
-    previous_block_hash = block.hash
-
-
-def get_credibility_score(content):
-    if stored_claims[content] > candidating_claims[content]:
-        return stored_claims[content]
-    else:
-        return candidating_claims[content]
-
-\end{lstlisting}
-
-
-As we mentioned earlier, the Bitcoin consensus protocol and any other Nakamoto Consensus––in which the leader capable of updating the blockchain is elected in form of a lottery where the chance of winning is determined by the amount of spent resource––is not suitable for our use case. Fortunately, the topic of distributed systems and especially consensus algorithms are studied for decades so there is a lot to choose from.
-
-\section{Federated Byzantine Agreement}
-\label{FBA}
-We find Federated Byzantine Agreement (FBA)––and its blockchain Stellar Consensus Protocol (SCP)\cite{mazieres2015stellar}––the most suitable protocol for our needs. In contrast to proof-of-work, where computational power dictates the contribution to consensus, FBA is based on a trust model. That way, it becomes a fast, lightweight, and asymptotic resistant\footnote{the node consisting of large computational power does not gain any advantages in the consensus protocol}. Instead, the contribution value is determined by the node trustworthy––similar to GI protocol. A new node, joining the network, has no contribution to the protocol until someone trusted––start to trust it.
-Blockchain like any other asynchronous distributed system faces FLP\cite{fischer1985impossibility} impossibility trilemma––where only two of three properties can be achieved. Those properties are Fault tolerance, Liveness, and Safety. Most systems must be fault tolerance so the choice is left between Liveness and Safety. Safety guarantee state consistency across all nodes in the network. If nodes do not agree on some transaction, they will not split into two different states, but rather wait until the conflict is resolved. Liveness guarantee that the consensus will always terminate and the system will always be available to accept new transactions. When the conflict occurs, the ledger is split into two different versions, until it's resolved, but in the meantime, it can process new transactions. Most of the blockchain protocols choose liveness, tolerating temporary partitioning. They argue that the time of the partitioning is short enough that the users expecting high credibility of the transaction can just wait---until the chance of shifting the state is acceptably small\footnote{In proof-of-work the chance of changing the state of some block gets smaller with the length of the chain of the blocks attached to this block}. The conflict settlement is dictated, again, by computational power. The state which gets the fastest used as a previous block is considered the winner. That way the system can guarantee permanent availability, even with just one working node. 
-
-Stellar Consensus Protocol on the other hand chooses Safety over Liveness. Once the state has been approved, it can not be changed. State gets approved when the quorum of the network agree on the proposed state. This allows much faster confirmation times, in Stellar the ledger closes in about 5 sec. 
-Stellar Consensus Protocol is based on Practical Byzantine fault tolerance (PBFT)\cite{castro1999practical}, and extends its functionality by allowing open membership, therefore promoting decentralization. In SCP each node pick its trusted set of nodes called \textit{quorum slice} (in which it is also \textit{ipso facto} a member). The \textit{quorum slice} should be different for each node, but naturally, some nodes are more trustworthy, therefore are chosen more often in the quorum slices. Transitive trust for all node's \textit{quorum-slice} members, forms \texitt{quorum}. For any two quorums, there must exist \textit{quorum-intersection} to prevent network partitioning.
-
-In non-federated byzantine agreement systems, the decision on some state proposal is determined by the majority of the nodes. Once the proposal gets accepted by a quorum (a majority of the nodes), the rest of the network can be sure that other proposals will fail, since they can't reach the quorum, since the nodes can't change their mind. That way the whole network converges to the final outcome.
-In decentralized systems, where nodes can join and leave at will, it is hard to know the total number of nodes in the network \texit{a priori}. Therefore it's hard to calculate the majority of the network. Additionally, open systems can not rely on quantitive majority since this would open them to Sybil attacks\footnote{In this attack single entity can join many nodes to the network that looks as independent units, therefore forcing decisions based just on the majority number of nodes}. To solve this issue, FBA introduces the federated voting process that starts locally and expands until it reaches the whole network. To make it work, the local quorums must overlap with at least one node that will convey the voting decisions across different quorums. This property guarantee that if one quorum agrees on some value P, the other quorum can not agree on not-P, because it includes some nodes from the first quorum that already voted on P.
-
-Federated voting starts when some node sends a broadcast to the network announcing a vote on a particular value V. Node sending such value promise that it will never vote against V. Each node sees how other nodes are voting by their broadcast messages. If the node notice that some quorum of nodes voted on value V, it can be sure that such value will be eventually accepted by the whole network (by the definition of quorum), therefore it can switch to \textit{accepting V} state and announce that fact to the whole network, the same way as announced vote decision. Accepting is stronger than voting because voting for V means that the \textit{node} will never vote for non-V while accepting V means that the \textit{each node in the network} will never accept non-V. When a node notices some quorum of nodes accepting V, it \textit{confirms V}, and by the definition of the quorum, all nodes in the network will eventually confirm value V, ending the process of federated voting.
-
-The problem arises, when such nodes which are in quorum intersection are Byzantine-failed, lying about the decisions made on each quorum. In SCP whitepaper, there is an assumption that the network is configured in such a way that even if the malicious nodes are removed from the network, it still holds quorum-intersection. If it does not hold, the network halts until the quorum-slices are reconfigured.
-We can only \textit{expect} the network to form connections where there always exist quorum-intersection because the internet––that we are designing the protocol for––itself satisfy such property.
-
-Another problem in an attempt to apply FBA to our use case might be the problem of the DoS attack. A malicious client might publish a huge number of proof-of-time claims successfully leading to network congestion. Stellar prevents that by introducing the transaction fees, therefore attacker is discouraged by financial means. Here in our approach, we don't want to introduce any financial aspects, so other mechanisms must be used to prevent it. DoS is a vital problem in ICN networking in general\cite{gasti2013and}, so the solutions that will be worked out will also solve our problems. 
-
-There are several different blockchain consensus protocols, but not all of them are suitable for internet level protocol and to be run on network devices.
-If we consider network devices similar to IoT devices we can leverage the research done on this kind of protocols \cite{salimitari2018survey}. The paper suggests that Stellar consensus is not ideal for IoT devices since it is too slow.
-Since the proof-of-time claims are not the matter for milliseconds, but rather minuter or hours, we believe that the protocol is fast enough for our needs.
-Also, there already exists a proposal of a modified FBA algorithm\cite{FCPpdf50:online} that uses a virtual voting algorithm that can achieve consensus in almost no communication overhead. We find this topic interested, and plan to research it in future work.
-
-In that paper, the authors suggest that there is a subset of protocols especially suitable for IoT networks. Those protocols are Proof of Elapsed Time (PoET), Practical Byzantine Fault Tolerance (PBFT), and Tangle.
-
-\section{Credibility Score}
-In the GI algorithm, there are two states of content authenticity: authenticated or not-authenticated. We believe that this is limiting. Content like e.g. weather forecasting should not be authenticated for the same amount of time as an online banking website. Therefore we propose a more flexible model, where authentication can be acquired progressively via Credibility Score. Credibility Score mentioned in Section \ref{proof-of-time} increase authentication granularity. Pictures, music, movies do not require as much trust as websites where we enter our credentials and credit card details. Different thresholds should be used for different content types. For example, if 3 trust thresholds are used: low, medium, high; then we can require 10min, 2h, 12h of proofs of time accordingly. Each time the content is published to the network the author can be notified about that fact, and if the publisher used stolen credentials, the actual author has a time frame to revoke the credentials and halt the malicious authentication process.
-
-\section{Blockchain layer}
-In our proposition nodes in the network plays two roles, an ICN node where it participates in routing and content caching, and as blockchain node where he participates in consensus and blockchain storage (see Fig. \ref{fig:combined_layers}). Not every node has to play two roles, the ones which are not connected to end-uses might not participate in the blockchain network, since they don't get asked for content trustworthy. 
-The blockchain layer could also be managed by completely different entities, separating the transport layer from the trust layer (see Fig. \ref{fig:separated_layers}). That way the ICN nodes could be abstracted from the trust network overhead introduced by the trust system––keeping them simpler. Also, the trust system would be more portable, it could be used in many different ICN solutions, and even in legacy systems since the trust does not depend on ICN, but on the hash of the content and publisher credentials. That way the blockchain trust network could be hosted by more powerful devices and possible different organizations––achieving separation of concerns which is always a good thing in the long term.
-
+\section{bBlockchain layer}
+In our proposal, nodes in the network plays two roles, an ICN node where it participates in routing and content caching, and as blockchain node where he participates in consensus and blockchain storage (see Fig. \ref{fig:combined_layers}). Not every node has to play two roles, the ones which are not connected to end-uses might not participate in the blockchain network, since they don't get asked for content trustworthy. 
+The blockchain layer could also be managed by completely different entities, separating the transport layer from the trust layer (see Fig. \ref{fig:separated_layers}). That way the ICN nodes could be abstracted from the trust network overhead introduced by the trust system––making them simpler. Also, the trust system would be more portable, it could be used in many different ICN solutions, and even in legacy systems since the trust does not depend on ICN, but on the hash of the content and publisher credentials. That way the blockchain trust network could be hosted by more powerful devices and possible different organizations––achieving separation of concerns which is always a good thing in the long term. For the rest of the thesis we assume the separation of roles (ICN and bBlockchain), but the decision if one node should play two roles or the roles should be separated on different networks is up to the implementations.
 \begin{figure}[h!]
 \centering
 \includegraphics[width=1\textwidth]{img/combined-layers.png}
@@ -132,8 +41,149 @@ The blockchain layer could also be managed by completely different entities, sep
 \label{fig:separated_layers}
 \end{figure}
 
+\section{Credibility Score}
+\label{credibility-score}
+In the GI algorithm, there are two states of content authenticity: authenticated or not-authenticated. We believe that this is limiting. Content like e.g. weather forecasting should not be authenticated for the same amount of time as an online banking website. Therefore we propose a more flexible model, where authentication can be acquired progressively via Credibility Score. Credibility Score mentioned in Section \ref{pproof-of-time} increase authentication granularity. Different thresholds should be used for different content types. For example, if 3 trust thresholds are used: low, medium, high; then we can require 10min, 2h, 12h of pProof-of-tTime accordingly. Each time the content is published to the network the author can be notified about that fact, and if the publisher used stolen credentials, the actual author has a time frame to revoke the credentials and halt the malicious authentication process.
+
+
+%Let's imagine a naive solution based on the Bitcoin blockchain. The solution is naive because Bitcoin's proof-of-work consensus protocol has no practical application in our system. We can not expect resource-constrained network devices to participate in mining process, especially when there are alternatives that achieve security without a mining process. Nevertheless, we decide to explain it on the simplest and most commonly known one. 
+%Before that, let's recall what we want to achieve. We want the end-user, the content consumer to be sure about the content authentication. We achieve it by requiring the publisher to prove its access to private keys for a long period of time, long enough so the malicious publisher can not afford to do that, while legit publisher can. We call those access proofs––proofs-of-time. In the GI algorithm, the pproof-of-time is denoted in a sequential number of external infections. The publisher who can perform long enough pproof-of-time lead the network to epidemic, while the short pproof-of-time lead to extinction. 
+
+%In the blockchain solution, the simplest way to proof access to private-key in the context of some content is to publish transactions from the publisher account to the content account. The content account is the imagined account whose address is the hash of such content. The publisher's account is the same key-pair used to sign the content in the ICN network. The flow is shown in Fig. \ref{fig:distribution-flow}.
+\section{Publisher flow}
+A publisher wishing to publish a content over the ICN network and then authenticate the content over bBlockchain network, needs to proceed following steps:
+\begin{enumerate}
+    \item Create NDO, which require signing the content using the publisher's keypair.
+    \item Compute hash of the NDO.
+    \item Create pProof-of-tTime transaction which include hash of the NDO, hash of the previous blockchain block, and the signature (proving access to private key).
+    \item Publish the pProof-of-tTime transaction to the bBlockchain node.
+    \item The steps 3. and 4. are repeated until the Credibility Score is reached.
+\end{enumerate}
+The complete flow of publishing the content to the ICN node and blockchain node is presented in \ref{fig:distribution-flow}
+\begin{figure}[h!]
+\includegraphics[width=9cm]{img/distribution-flow.png}
+\centering
+\caption{Flow of publishing content to ICN and pProof-of-tTime to bBlockchain}
+\label{fig:distribution-flow}
+\end{figure} 
+
+\section{Subscriber flow}
+On the other side, a subscriber willing to fetch the content from ICN network and verify the authenticity from bBlockchain has to proceed following steps:
+\begin{enumerate}
+    \item Send Interest Packet with content name to the nearest node.
+    \begin{itemize}
+        \item The ICN node return Data Packet with content, signature and publisher pubkey.
+    \end{itemize}
+    \item Send Credibility Score request along with hash of the content and publisher pubkey from bBlockchain node.
+    \begin{itemize}
+        \item Receive the Crediblity Score value from bBlockchain node.
+    \end{itemize}
+    \item Decide if the Credibility Score is sufficient to trust the content.
+\end{enumerate}
+The complete flow of verifying the Credibility Score is presented in \ref{fig:verifying-flow}.
+\begin{figure}[h!]
+\includegraphics[width=9cm]{img/verifying-flow.png}
+\centering
+\caption{Flow of fetching and verifying content Credibility Score}
+\label{fig:verifying-flow}
+\end{figure} 
+
+The strength of the pproof-of-time is calculated by counting the total number of transactions to the content hash address.
+
+\subsection{bBlockchain structure}
+\label{blockchain-structure}
+Blocks are the fundamental primitives of every bBlockchain system. Typical block consist of: set of transactions, a Merkle Root \cite{merkle1989certified} that represent the hash of all the transactions, UNIX timestamp, hash of the previous block (pointer), hash of whole block, and other optional fields\footnote{bBlockchains using pProof-of-wWork consensus algorithms also include the nonce field––a proof of pProof-of-wWork puzzle}.
+Every block is created on some interval,
+Bitcoin is designed to produce a new block every 10min on average, Ethereum 15sec, and Stellar 5sec––this value is contractual\footnote{Shorter block creation intervals give faster confirmations, but increase the rate of bBlockchain size growth}. We leverage this feature to achieve global clock where every block can be interpreted as a clock tic. By counting the number of "tics" and multiplying by the "tic interval" we get the a amount of pProof-of-tTime––a Credibility Score. In Fig. \ref{fig:blockchain-of-claims} we show an example of three blocks consisting of pProof-of-tTime claims.
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{img/blockchain_of_claims.png}
+\centering
+\caption{bBlockchain of claims}
+\label{fig:blockchain-of-claims}
+\end{figure} 
+We assume that blocks are created with 10min intervals, and each content requires Credibility Score in minimum value of 20min. Alice first publishes her content to the ICN node getting the hash of the NDO as shown in Fig. \ref{fig:distribution-flow}, then the claim is created and published to the bBlockchain node. After 10 minutes once again she publishes the pProof-of-tTime transaction, and again after another 10 minutes she repeats the process. Three publications in a row certify that Alice had Alice's credentials for at least 20min. Bob was able to publish only two claims, which we consider not enough to trust the content. Carol, on the other hand, skipped the second block which is considered as a break in the pProof-of-tTime chain, therefore we start counting the pProof-of-tTime from the third block. 
+
+\section{Algorithm}
+The algorithm used to process new blocks and checking content Credibility Score is presented in Listing. \ref{listing_process_new_block}. Line 1 define the state of finalized pProof-of-tTime chains, we allow each content to be authenticated by multiple publishers, each subscriber can decide which content publisher trust. Line 2 define the state of candidate claims––those which haven't broken the chain of proofs yet. Each bBlockchain node upon receiving new block execute method on line 6, first it check if some of the proofs has been broken (are not present in the block), and if so, they are finalized and stored in \verb|stored_claims| (lines 10-14). Then it iterate over transactions present in the block, check if the \verb|previous_block_hash| matches the actual previous block hash (line 21), then extend the Credibility Score (line 23), and store current block as a \verb|previous_block_hash|.
+
+
+
+%The mechanism can be extended to the "certification services" (discussed in chapter \ref{mitigating-certification-services}) in such a way that not only the publisher can participate in creating pproof-of-time claims, but also some set of trusted units that can certify the content trustworthy–––similar how we trust root CA certificates. 
+
+%Attacker who wants to publish bogus content, could pre-sign many pproof-of-time transactions and then publish them one by one without access to the credentials. To prevent that, we require from each publisher to provide the hash of the previous block in the transaction. Since the hash of the block is not deterministic for individual publishers, they can not pre-sign transactions. Instead they have to sign the transaction just before sending the transaction to the blockchain.
+
+
+\begin{lstlisting}[language=Python, caption=Processing new block, label=listing_process_new_block,float,floatplacement=H]
+stored_claims      # { [content-hash] : [publisher_pubkey] : integer }
+candidating_claims  # { [content-hash] : [publisher_pubkey] : integer }
+previous_block_hash
+
+
+def process_new_block(block):
+    # handle broken pproof-of-time chains
+    for content_hash in candidating_claims:
+        for publisher_pubkey in candidating_claims[content_hash]:
+            if (content_hash, publisher_pubkey) not in block.transactions:
+                # proofs-of-time chain has been broken, store the length
+                stored_claims[content_hash][publisher_pubkey] = 
+                    candidating_claims[content_hash][publisher_pubkey]
+                delete candidating_claims[content_hash][publisher_pubkey]
+
+    for transaction in block.transactions:
+        content_hash = transaction.hash
+        publisher_publickey = transaction.publisher_publickey
+        previous_block_hash = transaction.previous_block_hash
+        # check the previous_block_hash to prevent pre-signed proofs
+        if previous_block_hash != previous_block_hash:
+            continue
+        candidating_claims[content_hash][publisher_publickey] += 1
+
+    previous_block_hash = block.hash
+
+
+def get_credibility_score(content):
+    if stored_claims[content] > candidating_claims[content]:
+        return stored_claims[content]
+    else:
+        return candidating_claims[content]
+
+\end{lstlisting}
+
+
+
+
+\section{Federated Byzantine Agreement}
+\label{FBA}
+As we mentioned earlier, the pProof-of-wWork consensus protocol and any other consensus algorithm where the leader capable of updating the blockchain is elected in form of a lottery where the chance of winning is determined by the amount of spent resource––called Nakamoto Consensus––is not suitable for our use case. The topic of distributed systems and consensus algorithms is studied for decades so there is a lot of different consensus protocols.
+
+We find Federated Byzantine Agreement (FBA)––and its blockchain Stellar Consensus Protocol (SCP)\cite{mazieres2015stellar}––the most suitable protocol for our needs. In contrast to proof-of-work, where computational power dictates the contribution to consensus, FBA is based on a trust model. That way, it becomes a fast, lightweight, and asymptotic resistant\footnote{the node consisting of large computational power does not gain any advantages in the consensus protocol}. Instead, the contribution value is determined by the node trustworthy––similar to GI protocol. A new node, joining the network, has no contribution to the protocol until someone trusted––start to trust it.
+bBlockchain like any other asynchronous distributed system faces FLP\cite{fischer1985impossibility} impossibility trilemma––where only two of three properties can be achieved. Those properties are Fault tolerance, Liveness, and Safety. Most systems must be fault tolerance so the choice is left between Liveness and Safety. Safety guarantee state consistency across all nodes in the network. If nodes do not agree on some transaction, they will not split into two different states, but rather wait until the conflict is resolved. Liveness guarantee that the consensus will always terminate and the system will always be available to accept new transactions. When the conflict occurs, the ledger is split into two different versions, until it's resolved, but in the meantime, it can process new transactions. Most of the blockchain protocols choose liveness, tolerating temporary partitioning. They argue that the time of the partitioning is short enough that the users expecting high credibility of the transaction can just wait---until the chance of shifting the state is acceptably small\footnote{In proof-of-work the chance of changing the state of some block gets smaller with the length of the chain of the blocks attached to this block}. The conflict settlement is dictated, again, by computational power. The state which gets the fastest used as a previous block is considered the winner. That way the system can guarantee permanent availability, even with just one working node. 
+
+Stellar Consensus Protocol on the other hand chooses Safety over Liveness. Once the state has been approved, it can not be changed. State gets approved when the quorum of the network agree on the proposed state. This allows much faster confirmation times, in Stellar the ledger closes in about 5 sec. 
+Stellar Consensus Protocol is based on Practical Byzantine fault tolerance (PBFT)\cite{castro1999practical}, and extends its functionality by allowing open membership, therefore promoting decentralization. In SCP each node pick its trusted set of nodes called \textit{quorum slice} (in which it is also \textit{ipso facto} a member). The \textit{quorum slice} should be different for each node, but naturally, some nodes are more trustworthy, therefore are chosen more often in the quorum slices. Transitive trust for all node's \textit{quorum-slice} members, forms \texitt{quorum}. For any two quorums, there must exist \textit{quorum-intersection} to prevent network partitioning.
+
+In non-federated byzantine agreement systems, the decision on some state proposal is determined by the majority of the nodes. Once the proposal gets accepted by a quorum (a majority of the nodes), the rest of the network can be sure that other proposals will fail, since they can not reach the quorum, since the nodes ca not change their mind. That way the whole network converges to the final outcome.
+In decentralized systems, where nodes can join and leave at will, it is hard to know the total number of nodes in the network \texit{a priori}. Therefore it's hard to calculate the majority of the network. Additionally, open systems can not rely on quantitative majority because it would open them to Sybil attacks\footnote{In this attack single entity can join many nodes to the network that looks as independent units, therefore forcing decisions based just on the majority number of nodes}. To solve this issue, FBA introduces the federated voting process that starts locally and expands until it reaches the whole network. To make it work, the local quorums must overlap with at least one node that will convey the voting decisions across different quorums. This property guarantee that if one quorum agrees on some value P, the other quorum can not agree on not-P, because it includes some nodes from the first quorum that already voted on P.
+
+Federated voting starts when some node sends a broadcast to the network announcing a vote on a particular value V. Node sending such value promise that it will never vote against V. Each node sees how other nodes are voting by their broadcast messages. If the node notice that some quorum of nodes voted on value V, it can be sure that such value will be eventually accepted by the whole network (by the definition of quorum), therefore it can switch to \textit{accepting V} state and announce that fact to the whole network, the same way as announced vote decision. Accepting is stronger than voting because voting for V means that the \textit{node} will never vote for non-V while accepting V means that the \textit{each node in the network} will never accept non-V. When a node notices some quorum of nodes accepting V, it \textit{confirms V}, and by the definition of the quorum, all nodes in the network will eventually confirm value V, ending the process of federated voting.
+
+The problem arises, when such nodes which are in quorum intersection are Byzantine-failed, lying about the decisions made on each quorum. In SCP whitepaper, there is an assumption that the network is configured in such a way that even if the malicious nodes are removed from the network, it still holds quorum-intersection. If it does not hold, the network halts until the quorum-slices are reconfigured.
+We can only \textit{expect} the network to form connections where there always exist quorum-intersection because the internet––that we are designing the protocol for––itself satisfy such property.
+
+Another problem in an attempt to apply FBA to our use case might be the problem of the DoS attack. A malicious client might publish a huge number of pproof-of-time claims successfully leading to network congestion. Stellar prevents that by introducing the transaction fees, therefore attacker is discouraged by financial means. Here in our approach, we don't want to introduce any financial aspects, so other mechanisms must be used to prevent it. DoS is a vital problem in ICN networking in general\cite{gasti2013and}, so the solutions that will be worked out will also solve our problems. 
+
+There are several different bBlockchain consensus protocols, but not all of them are suitable for internet level protocol and to be run on network devices.
+If we consider network devices similar to IoT devices we can leverage the research done on this kind of protocols \cite{salimitari2018survey}. The paper suggests that Stellar consensus is not ideal for IoT devices since it is too slow.
+Since the pProof-of-tTime claims are not the matter for milliseconds, but rather minuter or hours, we believe that the protocol is fast enough for our needs.
+Also, there already exists a proposal of a modified FBA algorithm\cite{FCPpdf50:online} that uses a virtual voting algorithm that can achieve consensus in almost no communication overhead. We find this topic interested, and plan to research it in future work.
+
+In that paper, the authors suggest that there is a subset of protocols especially suitable for IoT networks. Those protocols are Proof of Elapsed Time (PoET), Practical Byzantine Fault Tolerance (PBFT), and Tangle.
+
+
+
+
 %\section{Transaction throughput}
 %Transaction throughput––measured in transactions per second––is one of the biggest problems in the blockchain ecosystem. Bitcoin public network can process up to 7 transactions per second (TPS), Ethereum can process 15TPS and Stellar can process 200TPS. The limitation comes from the practical aspects of the system. If we want the system to be decentralized, we can not require all nodes in the network to be super-computers, both in processing power and storage capacity. In our case, we design the system for network devices that have limited resources.
 
 \section{Storage}
-Typically blockchain nodes stores whole blocks that consists of bunch of transactions. Our system does not need to store whole transaction (Proof-of-Time claims) history. There is no need to do so. After the sequence of Proof-of-Times is broken, nodes can prune their databases from that transactions, storing only the length of the sequence.
+Typically blockchain nodes stores whole blocks that consists of bunch of transactions. Our system does not need to store whole transaction (pProof-of-tTime claims) history. There is no need to do so. After the sequence of pProof-of-tTimes is broken, nodes can prune their databases from that transactions, storing only the length of the sequence.
